@@ -1,0 +1,17 @@
+.table-striped > tbody > tr.capacity-row {
+  border: 5px solid cyan;
+}
+
+.table-striped > tbody > tr.contract-about-to-finish-row > td {
+  background-color: rgb(218, 233, 123);
+}
+
+.table-striped > tbody > tr.contract-finished-row > td {
+  background-color: rgb(244, 166, 166);
+}
+
+/* .table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: rgb(118, 187, 189);
+}
+ */
