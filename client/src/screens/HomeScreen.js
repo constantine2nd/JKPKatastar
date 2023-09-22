@@ -223,5 +223,5 @@ const HomeScreen = (props) => {
   );
 };
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyACV2yMJcx_aByY3PwY1b59WvppbM9_ovc",
+  apiKey: process.env.GOOGLE_KEY,
 })(HomeScreen);

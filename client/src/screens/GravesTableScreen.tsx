@@ -28,7 +28,7 @@ const getRowStyling = (
   let contractDatePlus = new Date(contractTo);
   contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
   let today = new Date();
-  if (Number(capacity) + Number(numberOfDeceaseds) === 0)
+  if (Number(capacity) - Number(numberOfDeceaseds) === 0)
     classString += "capacity-row";
   if (today > contractDate) {
     classString += " contract-finished-row";

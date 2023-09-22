@@ -1,5 +1,6 @@
 import Grave from "../models/graveModel.js";
 import Deceased from "../models/deceasedModel.js";
+import Payer from "../models/payerModel.js";
 
 const saveGrave = async (req, res, next) => {
   console.log(req.body);
@@ -63,7 +64,8 @@ const getSingleGrave = async (req, res, next) => {
   try {
     const foundGrave = await Grave.findById(graveId);
     const deceased = await Deceased.find({ grave: graveId });
-    let objToSend = { ...foundGrave._doc, deceased: deceased };
+    const payers = await Payer.find({ grave: graveId });
+    let objToSend = { ...foundGrave._doc, deceased: deceased, payers: payers };
 
     res.send(objToSend);
   } catch (error) {

@@ -23,10 +23,10 @@ interface FormData {
 }
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Broj grobnog mesta je obavezno polje"),
-  surname: Yup.string().required("Polje grobnog mesta je obavezno polje"),
-  dateBirth: Yup.string().required("Red grobnog mesta je obavezno polje"),
-  dateDeath: Yup.string().required("Kapacitet grobnog mesta je obavezno polje"),
+  name: Yup.string().required("Ime pokojnika je obavezno polje"),
+  surname: Yup.string().required("Prezime pokojnika je obavezno polje"),
+  dateBirth: Yup.string().required("Datum rodjenja je obavezno polje"),
+  dateDeath: Yup.string().required("Datum smrti je obavezno polje"),
 });
 
 const AddGrave: React.FC = () => {
@@ -100,7 +100,7 @@ const AddGrave: React.FC = () => {
                     type="text"
                     name="surname"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite polje grobnog mesta"
+                    placeholder="Unesite prezime pokojnika"
                   />
                   <ErrorMessage
                     name="surname"

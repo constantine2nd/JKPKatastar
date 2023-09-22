@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import {
   useSearchParams,
@@ -18,19 +18,22 @@ import {
 interface FormData {
   name: string;
   surname: string;
-  dateBirth: string;
-  dateDeath: string;
+  address: string;
+  phone: string;
+  jmbg: string;
 }
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Broj grobnog mesta je obavezno polje"),
-  surname: Yup.string().required("Polje grobnog mesta je obavezno polje"),
-  dateBirth: Yup.string().required("Red grobnog mesta je obavezno polje"),
-  dateDeath: Yup.string().required("Kapacitet grobnog mesta je obavezno polje"),
+  name: Yup.string().required("Ime platioca je obavezno polje"),
+  surname: Yup.string().required("Prezime platioca je obavezno polje"),
+  address: Yup.string().required("Red grobnog mesta je obavezno polje"),
+  phone: Yup.string().required("Broj telefona je obavezno polje"),
+  jmbg: Yup.string().required("JMBG je obavezno polje"),
 });
 
 const AddPayer: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const [activeChecked, setActiveChecked] = useState(true);
   const graveId = searchParams.get("id");
 
   let navigate = useNavigate();
@@ -38,21 +41,24 @@ const AddPayer: React.FC = () => {
   const initialValues: FormData = {
     name: "",
     surname: "",
-    dateBirth: "",
-    dateDeath: "",
+    address: "",
+    phone: "",
+    jmbg: "",
   };
 
   const handleSubmit = async (values: FormData) => {
     // Ovdje možete postaviti logiku za obradu podataka
-    console.log("Podaci:", values);
+    const dataToSend = { ...values, active: activeChecked };
+
+    console.log("Podaci:", dataToSend);
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
     const savedDeacesed = await axios.post(
-      `/api/deacesed/${graveId}`,
-      values,
+      `/api/payer/${graveId}`,
+      dataToSend,
       config
     );
     console.log(savedDeacesed);
@@ -84,7 +90,7 @@ const AddPayer: React.FC = () => {
                     type="text"
                     name="name"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite ime pokojnika"
+                    placeholder="Unesite ime platioca"
                   />
                   <ErrorMessage
                     name="name"
@@ -100,7 +106,7 @@ const AddPayer: React.FC = () => {
                     type="text"
                     name="surname"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite polje grobnog mesta"
+                    placeholder="Unesite prezime platioca"
                   />
                   <ErrorMessage
                     name="surname"
@@ -112,42 +118,73 @@ const AddPayer: React.FC = () => {
             </Row>
             <Row>
               <Col>
-                <BootstrapForm.Group controlId="dateBirth">
-                  <BootstrapForm.Label>Datum rodjenja:</BootstrapForm.Label>
+                <BootstrapForm.Group controlId="address">
+                  <BootstrapForm.Label>Adresa:</BootstrapForm.Label>
                   <Field
-                    type="date"
-                    name="dateBirth"
+                    type="text"
+                    name="address"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite datum rodjenja pokojnika"
+                    placeholder="Unesite adresu platioca"
                   />
                   <ErrorMessage
-                    name="dateBirth"
+                    name="address"
                     component="div"
                     className="text-danger"
                   />
                 </BootstrapForm.Group>
               </Col>
               <Col>
-                <BootstrapForm.Group controlId="dateDeath">
-                  <BootstrapForm.Label>
-                    Kapacitet grobnog mesta:
-                  </BootstrapForm.Label>
+                <BootstrapForm.Group controlId="phone">
+                  <BootstrapForm.Label>Broj telefona:</BootstrapForm.Label>
                   <Field
-                    type="date"
-                    name="dateDeath"
+                    type="text"
+                    name="phone"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite datum smrti pokojnika"
+                    placeholder="Unesite broj telefona platioca"
                   />
                   <ErrorMessage
-                    name="dateDeath"
+                    name="phone"
                     component="div"
                     className="text-danger"
                   />
                 </BootstrapForm.Group>
               </Col>
             </Row>
+            <Row>
+              <Col>
+                <BootstrapForm.Group controlId="jmbg">
+                  <BootstrapForm.Label>JMBG:</BootstrapForm.Label>
+                  <Field
+                    type="text"
+                    name="jmbg"
+                    as={BootstrapForm.Control}
+                    placeholder="Unesite JMBG platioca"
+                  />
+                  <ErrorMessage
+                    name="jmbg"
+                    component="div"
+                    className="text-danger"
+                  />
+                </BootstrapForm.Group>
+              </Col>
+              <Col>
+                <BootstrapForm.Group controlId="active">
+                  <BootstrapForm.Label>Platioc aktivan:</BootstrapForm.Label>
+                  <BootstrapForm.Check
+                    type="switch"
+                    name="active"
+                    checked={activeChecked}
+                    label="Platioc aktivan:"
+                    onChange={() => {
+                      setActiveChecked(!activeChecked);
+                    }}
+                  />
+                </BootstrapForm.Group>
+              </Col>
+            </Row>
 
             <br />
+
             <Button type="submit" disabled={isSubmitting}>
               Pošalji
             </Button>

@@ -9,6 +9,20 @@ import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 import { dateFormatter } from "../utils/dateFormatter";
 import "./SingleGraveScreen.css";
 
+const getParagraphStyling = (contractTo) => {
+  let classString = "";
+  let contractDate = new Date(contractTo);
+  let contractDatePlus = new Date(contractTo);
+  contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
+  let today = new Date();
+  if (today > contractDate) {
+    classString += " contract-finished-row";
+  } else if (today > contractDatePlus)
+    classString += " contract-about-to-finish-row";
+
+  return classString;
+};
+
 const SingleGraveScreen = () => {
   const [searchParams] = useSearchParams();
   const graveId = searchParams.get("id");
@@ -32,7 +46,7 @@ const SingleGraveScreen = () => {
           alignItems: "center",
         }}
       >
-        <h2>Podaci o pojedinacnom grobnom mestu</h2>
+        <h2>Podaci o grobnom mestu</h2>
         {grave && (
           <Form>
             <Row>
@@ -66,80 +80,135 @@ const SingleGraveScreen = () => {
                 </Form.Group>
               </Col>
             </Row>
+            <Row>
+              <h2>
+                Datum isteka ugovora:{" "}
+                <span className={getParagraphStyling(grave.contractTo)}>
+                  {dateFormatter(grave.contractTo)}
+                </span>
+              </h2>
+            </Row>
           </Form>
         )}
         <br />
-        <Row
-          style={{
-            width: "500px",
-          }}
-        >
-          <Col className="button-add">
-            <Button
-              onClick={() => {
-                navigate({
-                  pathname: "/add-deceased",
-                  search: createSearchParams({
-                    id: grave._id,
-                  }).toString(),
-                });
-              }}
-            >
-              Dodaj pokojnika
-            </Button>
-          </Col>
-          <Col className="button-add">
-            <Button
-              onClick={() => {
-                navigate({
-                  pathname: "/add-payer",
-                  search: createSearchParams({
-                    id: grave._id,
-                  }).toString(),
-                });
-              }}
-            >
-              Dodaj platioca
-            </Button>
-          </Col>
-        </Row>
+        {grave && (
+          <Row
+            style={{
+              width: "500px",
+            }}
+          >
+            <Col className="button-add">
+              <Button
+                onClick={() => {
+                  navigate({
+                    pathname: "/add-deceased",
+                    search: createSearchParams({
+                      id: grave._id,
+                    }).toString(),
+                  });
+                }}
+                disabled={grave.capacity === grave.deceased.length}
+              >
+                Dodaj pokojnika
+              </Button>
+            </Col>
+            <Col className="button-add">
+              <Button
+                onClick={() => {
+                  navigate({
+                    pathname: "/add-payer",
+                    search: createSearchParams({
+                      id: grave._id,
+                    }).toString(),
+                  });
+                }}
+              >
+                Dodaj platioca
+              </Button>
+            </Col>
+          </Row>
+        )}
         <br />
         {grave && grave.deceased.length == 0 && (
           <h4>Na ovom grobnom mestu nema pokojnika</h4>
         )}
 
         {grave && grave.deceased.length !== 0 && (
-          <Table
-            striped
-            bordered
-            hover
-            size="sm"
-            style={{
-              width: "70%",
-            }}
-          >
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Ime</th>
-                <th>Prezime</th>
-                <th>Datum rodjenja</th>
-                <th>Datum smrti</th>
-              </tr>
-            </thead>
-            <tbody>
-              {grave &&
-                grave.deceased.map((dec, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{dec.name}</td>
-                    <td>{dec.surname}</td>
-                    <td>{dateFormatter(dec.dateBirth)}</td>
-                    <td>{dateFormatter(dec.dateDeath)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
+          <>
+            <h2>Lista pokojnika</h2>
+            <Table
+              striped
+              bordered
+              hover
+              size="sm"
+              style={{
+                width: "70%",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Ime</th>
+                  <th>Prezime</th>
+                  <th>Datum rodjenja</th>
+                  <th>Datum smrti</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grave &&
+                  grave.deceased.map((dec, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{dec.name}</td>
+                      <td>{dec.surname}</td>
+                      <td>{dateFormatter(dec.dateBirth)}</td>
+                      <td>{dateFormatter(dec.dateDeath)}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </>
+        )}
+        <br />
+        {grave && grave.payers.length !== 0 && (
+          <>
+            <h2>Lista platioca</h2>
+            <Table
+              striped
+              bordered
+              hover
+              size="sm"
+              style={{
+                width: "70%",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Ime</th>
+                  <th>Prezime</th>
+                  <th>Adresa</th>
+                  <th>Telefon</th>
+                  <th>JMBG</th>
+                  <th>Aktivan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grave &&
+                  grave.payers.map((payer, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{payer.name}</td>
+                      <td>{payer.surname}</td>
+                      <td>{payer.address}</td>
+                      <td>{payer.phone}</td>
+                      <td>{payer.jmbg}</td>
+                      <td>{payer.active ? "DA" : "NE"}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </>
         )}
       </div>
     </>
