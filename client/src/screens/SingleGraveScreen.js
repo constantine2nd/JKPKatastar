@@ -35,7 +35,7 @@ const SingleGraveScreen = () => {
       console.log(item.data);
       setGrave(item.data);
     });
-  }, []);
+  }, [graveId]);
 
   return (
     <>
