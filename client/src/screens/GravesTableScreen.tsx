@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+
 import axios from "axios";
 import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 
 import { dateFormatter } from "../utils/dateFormatter";
+import {
+  selectAllGraves,
+  fetchGraves,
+  getGravesStatus,
+  getGravesError,
+  deleteSingleGrave,
+} from "../features/gravesSlice";
 import "./GraveTableScreen.css";
-
-interface GraveData {
-  _id: string;
-  number: string;
-  field: string;
-  row: string;
-  capacity: string;
-  contractTo: string;
-  LAT: string;
-  LON: string;
-  numberOfDeceaseds: string;
-}
+import { GraveData } from "../interfaces/GraveIntefaces";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const getRowStyling = (
   capacity: string,
@@ -39,15 +40,51 @@ const getRowStyling = (
 };
 
 const GravesTableScreen: React.FC = () => {
-  const [graves, setGraves] = useState<GraveData[]>([]);
+  //const [graves, setGraves] = useState<GraveData[]>([]);
   let navigate = useNavigate();
+  const graves: GraveData[] = useSelector(selectAllGraves);
+  const gravesStatus = useSelector(getGravesStatus);
+  const error = useSelector(getGravesError);
+  const dispatch = useDispatch<any>();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedGraveId, setSelectedGraveId] = useState<string>();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    axios.get("/api/graves").then((item) => {
-      console.log(item.data);
-      setGraves(item.data);
-    });
-  }, []);
+    if (gravesStatus === "idle") {
+      console.log("UPAO");
+      dispatch(fetchGraves());
+    }
+  }, [gravesStatus, dispatch]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedGraveId("");
+  };
+
+  const handleShowModal = (id: string) => {
+    setSelectedGraveId(id);
+    setShowModal(true);
+  };
+
+  const handleDeleteGrave = () => {
+    if (selectedGraveId) {
+      dispatch(deleteSingleGrave(selectedGraveId));
+      setShowModal(false);
+    }
+  };
+
+  if (gravesStatus === "loading") {
+    return <Loader />;
+  }
+
+  if (gravesStatus === "failed") {
+    return (
+      <Message variant="danger">
+        <div>Error: {error}</div>
+      </Message>
+    );
+  }
 
   return (
     <>
@@ -62,6 +99,17 @@ const GravesTableScreen: React.FC = () => {
         }}
       >
         <div>GravesTableScreen</div>
+        <br />
+        <Button
+          onClick={() => {
+            navigate({
+              pathname: "/add-grave",
+            });
+          }}
+        >
+          {t("add grave")}
+        </Button>
+        <br />
         {graves.length !== 0 && (
           <Table
             striped
@@ -78,14 +126,15 @@ const GravesTableScreen: React.FC = () => {
                 }}
               >
                 <th>#</th>
-                <th>Redni broj</th>
-                <th>Polje</th>
-                <th>Red</th>
-                <th>Kapacitet</th>
-                <th>Zauzetost</th>
-                <th>Datum isteka ugovora</th>
+                <th>{t("number")}</th>
+                <th>{t("field")}</th>
+                <th>{t("row")}</th>
+                <th>{t("capacity")}</th>
+                <th>{t("occupation")}</th>
+                <th>{t("contract-expiration-date")}</th>
                 <th>LAT</th>
                 <th>LON</th>
+                <th>#</th>
                 <th>#</th>
               </tr>
             </thead>
@@ -119,7 +168,12 @@ const GravesTableScreen: React.FC = () => {
                         });
                       }}
                     >
-                      Detalji
+                      {t("details")}
+                    </Button>
+                  </td>
+                  <td>
+                    <Button onClick={() => handleShowModal(grave._id)}>
+                      {t("delete")}
                     </Button>
                   </td>
                 </tr>
@@ -128,6 +182,22 @@ const GravesTableScreen: React.FC = () => {
           </Table>
         )}
       </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Brisanje grobnog mesta</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Da li ste sigurni da zelite da izbrisete grobno mesto?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Nazad
+          </Button>
+          <Button variant="primary" onClick={handleDeleteGrave}>
+            Da
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
