@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 const savePayer = async (req, res, next) => {
   // console.log(req.body);
   const sentPayer = req.body;
-  // console.log(sentPayer);
+  console.log(sentPayer);
   const graveId = req.params.id;
   const payer = new Payer({
     name: sentPayer.name,

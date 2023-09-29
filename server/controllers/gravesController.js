@@ -12,13 +12,16 @@ const saveGrave = async (req, res, next) => {
     LAT: sentGrave.LAT1,
     LON: sentGrave.LON1,
     capacity: sentGrave.graveCapacity,
+    contractTo: sentGrave.contractTo,
   });
 
   //const createdGrave = await grave.save();
 
   try {
-    createdGrave = await grave.save();
-    res.json(createdGrave);
+    const createdGrave = await grave.save();
+
+    console.log(createdGrave);
+    res.json({ ...createdGrave._doc, numberOfDeceaseds: 0 });
   } catch (error) {
     return res.json({ message: "Cound not store data" });
   }
@@ -73,4 +76,22 @@ const getSingleGrave = async (req, res, next) => {
   }
 };
 
-export { saveGrave, getGraves, getSingleGrave };
+const deleteSingleGrave = async (req, res, next) => {
+  const graveId = req.params.id;
+  try {
+    const result = await Grave.deleteOne({ _id: graveId });
+    console.log(res);
+    if (result.deletedCount === 1) {
+      console.log("deleted count 1");
+      res.send({ id: graveId });
+    } else {
+      res.json({ message: "Nothing to delete" });
+    }
+    // res.send(objToSend);
+  } catch (error) {
+    console.log(error);
+    return res.json({ message: "Cound not get data" });
+  }
+};
+
+export { saveGrave, getGraves, getSingleGrave, deleteSingleGrave };

@@ -6,10 +6,22 @@ import {
   createSearchParams,
 } from "react-router-dom";
 import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+
 import { dateFormatter } from "../utils/dateFormatter";
 import "./SingleGraveScreen.css";
+import {
+  getGraveError,
+  getGraveStatus,
+  fetchSingleGrave,
+  selectSingleGrave,
+} from "../features/singleGraveSlice";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
-const getParagraphStyling = (contractTo) => {
+import { Grave } from "../interfaces/GraveIntefaces";
+
+const getParagraphStyling = (contractTo: string) => {
   let classString = "";
   let contractDate = new Date(contractTo);
   let contractDatePlus = new Date(contractTo);
@@ -23,19 +35,39 @@ const getParagraphStyling = (contractTo) => {
   return classString;
 };
 
-const SingleGraveScreen = () => {
+const SingleGraveScreen: React.FC = () => {
+  const dispatch = useDispatch<any>();
+  const grave = useSelector(selectSingleGrave);
+  const graveStatus = useSelector(getGraveStatus);
+  const error = useSelector(getGraveError);
+
   const [searchParams] = useSearchParams();
   const graveId = searchParams.get("id");
-  const [grave, setGrave] = useState(null);
+  // const [grave, setGrave] = useState<Grave>();
 
   let navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/graves/${graveId}`).then((item) => {
-      console.log(item.data);
-      setGrave(item.data);
-    });
-  }, [graveId]);
+    console.log(graveStatus);
+    if (graveStatus === "idle") {
+      console.log("UPAO");
+      if (graveId) {
+        dispatch(fetchSingleGrave(graveId));
+      }
+    }
+  }, [graveStatus, dispatch]);
+
+  if (graveStatus === "loading") {
+    return <Loader />;
+  }
+
+  if (graveStatus === "failed") {
+    return (
+      <Message variant="danger">
+        <div>Error: {error}</div>
+      </Message>
+    );
+  }
 
   return (
     <>
@@ -107,7 +139,7 @@ const SingleGraveScreen = () => {
                     }).toString(),
                   });
                 }}
-                disabled={grave.capacity === grave.deceased.length}
+                disabled={Number(grave.capacity) === grave.deceased.length}
               >
                 Dodaj pokojnika
               </Button>
@@ -155,16 +187,15 @@ const SingleGraveScreen = () => {
                 </tr>
               </thead>
               <tbody>
-                {grave &&
-                  grave.deceased.map((dec, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{dec.name}</td>
-                      <td>{dec.surname}</td>
-                      <td>{dateFormatter(dec.dateBirth)}</td>
-                      <td>{dateFormatter(dec.dateDeath)}</td>
-                    </tr>
-                  ))}
+                {grave.deceased.map((dec, index, niz) => (
+                  <tr key={dec._id}>
+                    <td>{index + 1}</td>
+                    <td>{dec.name}</td>
+                    <td>{dec.surname}</td>
+                    <td>{dateFormatter(dec.dateBirth)}</td>
+                    <td>{dateFormatter(dec.dateDeath)}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </>

@@ -14,6 +14,9 @@ import {
   Button,
   Form as BootstrapForm,
 } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+
+import { addPayer } from "../features/singleGraveSlice";
 
 interface FormData {
   name: string;
@@ -36,6 +39,8 @@ const AddPayer: React.FC = () => {
   const [activeChecked, setActiveChecked] = useState(true);
   const graveId = searchParams.get("id");
 
+  const dispatch = useDispatch<any>();
+
   let navigate = useNavigate();
 
   const initialValues: FormData = {
@@ -47,22 +52,10 @@ const AddPayer: React.FC = () => {
   };
 
   const handleSubmit = async (values: FormData) => {
-    // Ovdje možete postaviti logiku za obradu podataka
     const dataToSend = { ...values, active: activeChecked };
 
-    console.log("Podaci:", dataToSend);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const savedDeacesed = await axios.post(
-      `/api/payer/${graveId}`,
-      dataToSend,
-      config
-    );
-    console.log(savedDeacesed);
     if (graveId !== null) {
+      dispatch(addPayer({ dataToSend, graveId }));
       navigate({
         pathname: "/single-grave",
         search: createSearchParams({

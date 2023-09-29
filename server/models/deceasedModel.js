@@ -17,9 +17,6 @@ const deceasedSchema = mongoose.Schema({
   dateDeath: {
     type: Date,
   },
-  jmbg: {
-    type: Number,
-  },
 });
 
 const Deceased = mongoose.model("Deceased", deceasedSchema);

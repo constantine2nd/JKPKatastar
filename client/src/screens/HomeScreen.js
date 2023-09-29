@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { Modal, Form, Row, Col, Button } from "react-bootstrap";
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+
+import {
+  getGravesError,
+  getGravesStatus,
+  fetchGraves,
+  selectAllGraves,
+} from "../features/gravesSlice";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const mapStyles = {
   width: "70%",
@@ -32,20 +41,31 @@ const iconBaseFull =
   "http://maps.google.com/mapfiles/kml/paddle/red-circle-lv.png";
 
 const HomeScreen = (props) => {
-  const [graves, setGraves] = useState([]);
+  const dispatch = useDispatch();
+  const graves = useSelector(selectAllGraves);
+  const gravesStatus = useSelector(getGravesStatus);
+  const error = useSelector(getGravesError);
+
   const [currentZoom, setCurrentZoom] = useState(19);
   const [selectedGrave, setSelectedGrave] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const mapRef = useRef(null);
   let navigate = useNavigate();
-
+  const location = useLocation();
+  console.log(location.state);
+  //|| location.state?.sender === "ADDGraveSreen"
   useEffect(() => {
-    axios.get("/api/graves").then((item) => {
-      console.log(item.data);
-      setGraves(item.data);
-    });
-  }, []);
+    if (gravesStatus === "idle") {
+      console.log("UPAO");
+      dispatch(fetchGraves());
+    }
+  }, [gravesStatus, dispatch]);
+  /*   useEffect(() => {
+    if (location.state?.sender === "ADDGraveSreen") {
+      dispatch(fetchGraves());
+    }
+  }, []); */
 
   useEffect(() => {
     if (mapRef.current) {
@@ -71,6 +91,18 @@ const HomeScreen = (props) => {
     setShowModal(false);
     setSelectedGrave(null);
   };
+
+  if (gravesStatus === "loading") {
+    return <Loader />;
+  }
+
+  if (gravesStatus === "failed") {
+    return (
+      <Message variant="danger">
+        <div>Error: {error}</div>
+      </Message>
+    );
+  }
 
   return (
     <>

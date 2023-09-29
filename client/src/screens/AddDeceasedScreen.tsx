@@ -14,6 +14,8 @@ import {
   Button,
   Form as BootstrapForm,
 } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { addDeacesed } from "../features/singleGraveSlice";
 
 interface FormData {
   name: string;
@@ -34,6 +36,7 @@ const AddGrave: React.FC = () => {
   const graveId = searchParams.get("id");
 
   let navigate = useNavigate();
+  const dispatch = useDispatch<any>();
 
   const initialValues: FormData = {
     name: "",
@@ -44,7 +47,7 @@ const AddGrave: React.FC = () => {
 
   const handleSubmit = async (values: FormData) => {
     // Ovdje možete postaviti logiku za obradu podataka
-    console.log("Podaci:", values);
+    /* console.log("Podaci:", values);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -55,8 +58,9 @@ const AddGrave: React.FC = () => {
       values,
       config
     );
-    console.log(savedDeacesed);
+    console.log(savedDeacesed); */
     if (graveId !== null) {
+      dispatch(addDeacesed({ dataToSend: values, graveId }));
       navigate({
         pathname: "/single-grave",
         search: createSearchParams({
