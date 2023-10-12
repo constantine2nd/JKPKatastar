@@ -13,6 +13,7 @@ import { useNavigate, createSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { addSingleGrave } from "../features/gravesSlice";
+import { useTranslation } from "react-i18next";
 
 interface FormData {
   graveNumber: string;
@@ -24,18 +25,6 @@ interface FormData {
   contractTo: string;
 }
 
-const validationSchema = Yup.object().shape({
-  graveNumber: Yup.string().required("Broj grobnog mesta je obavezno polje"),
-  graveField: Yup.string().required("Polje grobnog mesta je obavezno polje"),
-  graveRow: Yup.string().required("Red grobnog mesta je obavezno polje"),
-  graveCapacity: Yup.string().required(
-    "Kapacitet grobnog mesta je obavezno polje"
-  ),
-  LAT1: Yup.string().required("LATITUDE grobnog mesta je obavezno polje"),
-  LON1: Yup.string().required("LONGITUDE grobnog mesta je obavezno polje"),
-  contractTo: Yup.string().required("Datum isteka ugovora je obavezno polje"),
-});
-
 const AddGrave: React.FC = () => {
   const initialValues: FormData = {
     graveNumber: "",
@@ -46,8 +35,22 @@ const AddGrave: React.FC = () => {
     LON1: "",
     contractTo: "",
   };
+
   let navigate = useNavigate();
   const dispatch = useDispatch<any>();
+  const { t, i18n } = useTranslation();
+
+  const validationSchema = Yup.object().shape({
+    graveNumber: Yup.string().required(t("occupation")),
+    graveField: Yup.string().required("Polje grobnog mesta je obavezno polje"),
+    graveRow: Yup.string().required("Red grobnog mesta je obavezno polje"),
+    graveCapacity: Yup.string().required(
+      "Kapacitet grobnog mesta je obavezno polje"
+    ),
+    LAT1: Yup.string().required("LATITUDE grobnog mesta je obavezno polje"),
+    LON1: Yup.string().required("LONGITUDE grobnog mesta je obavezno polje"),
+    contractTo: Yup.string().required("Datum isteka ugovora je obavezno polje"),
+  });
 
   const handleSubmit = async (values: FormData) => {
     // Ovdje možete postaviti logiku za obradu podataka
