@@ -8,6 +8,8 @@ import AddDeceasedScreen from "./screens/AddDeceasedScreen";
 import AddPayerScreen from "./screens/AddPayerScreen";
 import SingleGraveScreen from "./screens/SingleGraveScreen";
 import GravesTableScreen from "./screens/GravesTableScreen";
+import AddUserScreen from "./screens/AddUserScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/single-grave" element={<SingleGraveScreen />} />
           <Route path="/add-deceased" element={<AddDeceasedScreen />} />
           <Route path="/add-payer" element={<AddPayerScreen />} />
+          <Route path="/add-user" element={<AddUserScreen />} />
+          <Route path="/login-user" element={<LoginScreen />} />
           <Route path="/graves-table" element={<GravesTableScreen />} />
         </Routes>
       </main>

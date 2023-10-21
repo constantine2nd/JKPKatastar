@@ -61,7 +61,7 @@ const initialState: GraveState = {
 };
 
 const singleGraveSlice = createSlice({
-  name: "singleGgrave",
+  name: "singleGrave",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
