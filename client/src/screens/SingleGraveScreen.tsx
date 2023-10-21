@@ -20,6 +20,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 import { Grave } from "../interfaces/GraveIntefaces";
+import { useTranslation } from "react-i18next";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";
@@ -44,6 +45,8 @@ const SingleGraveScreen: React.FC = () => {
   const [searchParams] = useSearchParams();
   const graveId = searchParams.get("id");
   // const [grave, setGrave] = useState<Grave>();
+
+  const { t, i18n } = useTranslation();
 
   let navigate = useNavigate();
 
@@ -84,13 +87,13 @@ const SingleGraveScreen: React.FC = () => {
             <Row>
               <Col>
                 <Form.Group>
-                  <Form.Label>Redni broj</Form.Label>
+                  <Form.Label>{t("number")}</Form.Label>
                   <Form.Control type="text" value={grave.number}></Form.Control>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Label>Polje</Form.Label>
+                  <Form.Label>{t("field")}</Form.Label>
                   <Form.Control type="text" value={grave.field}></Form.Control>
                 </Form.Group>
               </Col>
@@ -98,13 +101,13 @@ const SingleGraveScreen: React.FC = () => {
             <Row>
               <Col>
                 <Form.Group>
-                  <Form.Label>Red</Form.Label>
+                  <Form.Label>{t("row")}</Form.Label>
                   <Form.Control type="text" value={grave.row}></Form.Control>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Label>Kapacitet</Form.Label>
+                  <Form.Label>{t("capacity")}</Form.Label>
                   <Form.Control
                     type="text"
                     value={grave.capacity}
@@ -113,8 +116,25 @@ const SingleGraveScreen: React.FC = () => {
               </Col>
             </Row>
             <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("LAT")}</Form.Label>
+                  <Form.Control type="text" value={grave.LAT}></Form.Control>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group>
+                  <Form.Label>{t("LON")}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={grave.LON}
+                  ></Form.Control>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
               <h2>
-                Datum isteka ugovora:{" "}
+              {t("contract-expiration-date")}:{" "}
                 <span className={getParagraphStyling(grave.contractTo)}>
                   {dateFormatter(grave.contractTo)}
                 </span>
