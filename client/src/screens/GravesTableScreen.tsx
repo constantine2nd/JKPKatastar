@@ -129,8 +129,8 @@ const GravesTableScreen: React.FC = () => {
     { field: 'row', headerName: t("row"), type: 'number'},
     { field: 'capacity', headerName: t("capacity"), type: 'number'},
     { field: 'numberOfDeceaseds', headerName: t("numberOfDeceaseds"), type: 'number'},
-    { field: 'LAT', headerName: t("LAT"), type: 'number'},
-    { field: 'LON', headerName: t("LON"), type: 'number'},
+    { field: 'LAT', headerName: t("LAT"), type: 'string'},
+    { field: 'LON', headerName: t("LON"), type: 'string'},
   ];
   function getRowId(row: { _id: any; }) {
     return row._id;
