@@ -32,26 +32,39 @@ import PaperMUI from '@mui/material/Paper';
 
 // MUI Data Grid
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+// MUI Chip
+import Chip from '@mui/material/Chip';
 
-const getRowStyling = (
-  capacity: string,
-  numberOfDeceaseds: string,
-  contractTo: string
-) => {
-  let classString: string = "";
+
+const capacity = (capacity: string, numberOfDeceaseds: string) => {
+  let result = null;
+  const capacityNum = Number(capacity);
+  const deceasedsNum = Number(numberOfDeceaseds);
+  if (capacityNum - deceasedsNum === 0) {
+    result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="error" />;
+  } else if (deceasedsNum / capacityNum > 0.49) {
+    result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="warning" />;
+  } else {
+    result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="success" />;
+  }
+  return result;
+}
+
+const expiredContract = (contractTo: string) => {
+  let result = null;
   let contractDate = new Date(contractTo);
   let contractDatePlus = new Date(contractTo);
   contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
   let today = new Date();
-  if (Number(capacity) - Number(numberOfDeceaseds) === 0)
-    classString += "capacity-row";
   if (today > contractDate) {
-    classString += " contract-finished-row";
-  } else if (today > contractDatePlus)
-    classString += " contract-about-to-finish-row";
-
-  return classString;
-};
+    result = <Chip label={dateFormatter(contractTo)} color="error" />;
+  } else if (today > contractDatePlus) {
+    result = <Chip label={dateFormatter(contractTo)} color="warning" />;
+  } else {
+    result = <Chip label={dateFormatter(contractTo)} color="success" />;
+  }
+  return result;
+}
 
 const GravesTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);
@@ -119,22 +132,6 @@ const GravesTableScreen: React.FC = () => {
       border: 0,
     },
   }));
-
-
-  // Data Grid MUI
-  const columns: GridColDef[] = [
-    { field: 'number', headerName: t("number"), type: 'number'},
-    { field: '_id', headerName: 'ID', type: 'number'},
-    { field: 'field', headerName: t("field"), type: 'number'},
-    { field: 'row', headerName: t("row"), type: 'number'},
-    { field: 'capacity', headerName: t("capacity"), type: 'number'},
-    { field: 'numberOfDeceaseds', headerName: t("numberOfDeceaseds"), type: 'number'},
-    { field: 'LAT', headerName: t("LAT"), type: 'number'},
-    { field: 'LON', headerName: t("LON"), type: 'number'},
-  ];
-  function getRowId(row: { _id: any; }) {
-    return row._id;
-  }
   
 
   return (
@@ -151,89 +148,19 @@ const GravesTableScreen: React.FC = () => {
       >
         <div>{t("graves-table-screen")}</div>
         <br />
-        <Button
+        <ButtonMUI variant="contained" sx={{m: 2}}
           onClick={() => {
             navigate({
               pathname: "/add-grave",
             });
           }}
-        >
-          {t("add grave")}
-        </Button>
+        >{t("add grave")}
+        </ButtonMUI>
         <br />
-        {graves.length !== 0 && (
-          <Table
-            striped
-            bordered
-            hover
-            style={{
-              width: "70%",
-            }}
-          >
-            <thead>
-              <tr
-                style={{
-                  backgroundColor: "red",
-                }}
-              >
-                <th>#</th>
-                <th>{t("number")}</th>
-                <th>{t("field")}</th>
-                <th>{t("row")}</th>
-                <th>{t("capacity")}</th>
-                <th>{t("occupation")}</th>
-                <th>{t("contract-expiration-date")}</th>
-                <th>LAT</th>
-                <th>LON</th>
-                <th>#</th>
-                <th>#</th>
-              </tr>
-            </thead>
-            <tbody>
-              {graves.map((grave, index) => (
-                <tr
-                  key={index}
-                  className={getRowStyling(
-                    grave.capacity,
-                    grave.numberOfDeceaseds,
-                    grave.contractTo
-                  )}
-                >
-                  <td>{index + 1}</td>
-                  <td>{grave.number}</td>
-                  <td>{grave.field}</td>
-                  <td>{grave.row}</td>
-                  <td>{grave.capacity}</td>
-                  <td>{grave.numberOfDeceaseds}</td>
-                  <td>{dateFormatter(grave.contractTo)}</td>
-                  <td>{grave.LAT}</td>
-                  <td>{grave.LON}</td>
-                  <td>
-                    <Button
-                      onClick={() => {
-                        navigate({
-                          pathname: "/single-grave",
-                          search: createSearchParams({
-                            id: grave._id,
-                          }).toString(),
-                        });
-                      }}
-                    >
-                      {t("details")}
-                    </Button>
-                  </td>
-                  <td>
-                    <Button onClick={() => handleShowModal(grave._id)}>
-                      {t("delete")}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
+        
 
         <div>
+        {graves.length !== 0 && (
         <TableContainerMUI component={PaperMUI}>
           <TableMUI sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHeadMUI>
@@ -242,13 +169,10 @@ const GravesTableScreen: React.FC = () => {
                 <StyledTableCell>{t("number")}</StyledTableCell>
                 <StyledTableCell align="right">{t("field")}</StyledTableCell>
                 <StyledTableCell align="right">{t("row")}</StyledTableCell>
-                <StyledTableCell align="right">{t("capacity")}</StyledTableCell>
                 <StyledTableCell align="right">{t("occupation")}</StyledTableCell>
                 <StyledTableCell align="right">{t("contract-expiration-date")}</StyledTableCell>
-                <StyledTableCell align="right">LAT</StyledTableCell>
-                <StyledTableCell align="right">LON</StyledTableCell>
-                <StyledTableCell align="right">#</StyledTableCell>
-                <StyledTableCell align="right">#</StyledTableCell>
+                <StyledTableCell align="right"></StyledTableCell>
+                <StyledTableCell align="right"></StyledTableCell>
               </TableRowMUI >
             </TableHeadMUI >
             <TableBodyMUI >
@@ -258,12 +182,8 @@ const GravesTableScreen: React.FC = () => {
                   <StyledTableCell align="right">{grave.number}</StyledTableCell>
                   <StyledTableCell align="right">{grave.field}</StyledTableCell>
                   <StyledTableCell align="right">{grave.row}</StyledTableCell>
-                  <StyledTableCell align="right">{grave.capacity}</StyledTableCell>
-
-                  <StyledTableCell align="right">{grave.numberOfDeceaseds}</StyledTableCell>
-                  <StyledTableCell align="right">{dateFormatter(grave.contractTo)}</StyledTableCell>
-                  <StyledTableCell align="right">{grave.LAT}</StyledTableCell>
-                  <StyledTableCell align="right">{grave.LON}</StyledTableCell>
+                  <StyledTableCell align="right">{capacity(grave.capacity, grave.numberOfDeceaseds)}</StyledTableCell>
+                  <StyledTableCell align="right">{expiredContract(grave.contractTo)}</StyledTableCell>
                   <StyledTableCell align="right">
                     <ButtonMUI variant="contained" 
                         onClick={() => {
@@ -288,22 +208,10 @@ const GravesTableScreen: React.FC = () => {
             </TableBodyMUI>
           </TableMUI>
         </TableContainerMUI>
+        )}
 
         </div>
         <br />
-        <div style={{ height: 400}}>
-          <DataGrid getRowId={getRowId}
-            rows={graves}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 3 },
-              },
-            }}
-            pageSizeOptions={[3, 10]}
-            checkboxSelection
-          />
-        </div>
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>

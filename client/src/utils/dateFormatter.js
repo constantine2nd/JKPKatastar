@@ -1,8 +1,15 @@
 const dateFormatter = (date) => {
   const myDate = new Date(date);
-  const formattedString = `${myDate.getDate()}.${
-    myDate.getMonth() + 1
-  }.${myDate.getFullYear()}.`;
+  let day = myDate.getDate();
+  let month = myDate.getMonth();
+  let year = myDate.getFullYear();
+  if (day < 10) {
+    day = '0' + day;
+  }
+  if (month < 10) {
+      month = `0${month}`;
+  }
+  const formattedString = `${month}.${day}.${year}`;
   return formattedString;
 };
 

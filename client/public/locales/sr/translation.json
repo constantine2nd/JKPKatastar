@@ -1,11 +1,12 @@
 {
   "add grave": "Dodaj grobno mesto",
+  "graves-table-screen": "Tabelarni prikaz",
   "deceased": "Pokojnik",
   "number": "Redni broj",
   "row": "Red",
   "field": "Polje",
-  "capacity": "kapacitet",
-  "occupation": "zauzetost",
+  "capacity": "Kapacitet",
+  "occupation": "Zauzetost",
   "contract-expiration-date": "Datum isteka ugovora",
   "details": "Detalji",
   "delete": "Izbrisi"
