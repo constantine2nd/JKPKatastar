@@ -42,9 +42,13 @@ interface UserState {
   status: string;
   error: any;
 }
+let userInfoFromStorage = null;
+if (localStorage.getItem("userInfo") !== null) {
+  userInfoFromStorage = JSON.parse(localStorage.getItem("userInfo") || "{}");
+}
 
 const initialState: UserState = {
-  user: null,
+  user: userInfoFromStorage,
   status: "idle",
   error: null,
 };
@@ -60,6 +64,7 @@ const singleUserSlice = createSlice({
       })
       .addCase(addUser.fulfilled, (state, action) => {
         state.status = "succeeded";
+        localStorage.setItem("userInfo", JSON.stringify(action.payload));
         state.user = action.payload;
       })
       .addCase(addUser.rejected, (state, action) => {
@@ -72,6 +77,7 @@ const singleUserSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
+        localStorage.setItem("userInfo", JSON.stringify(action.payload));
         state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {

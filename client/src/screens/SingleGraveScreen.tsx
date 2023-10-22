@@ -20,6 +20,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 import { Grave } from "../interfaces/GraveIntefaces";
+import { userInfo } from "os";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";
