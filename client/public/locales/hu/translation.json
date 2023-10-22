@@ -1,12 +1,13 @@
 {
   "add grave": "Adj hozzá egy sírt",
+  "graves-table-screen": "Táblázatos nézet",
   "deceased": "Az elhunytak",
   "number": "Sorozatszám",
-  "row": "sor",
-  "field": "mező",
-  "capacity": "kapacitás",
-  "occupation": "foglalt",
+  "row": "Sor",
+  "field": "Mező",
+  "capacity": "Kapacitás",
+  "occupation": "Foglalt",
   "contract-expiration-date": "Szerződés lejárati dátum",
-  "details": "részletek",
+  "details": "Részletek",
   "delete": "Töröl"
 }
