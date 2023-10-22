@@ -23,20 +23,35 @@ export const addPayer = createAsyncThunk(
 
 export const addDeacesed = createAsyncThunk(
   "grave/addDeacesed",
-  async ({ graveId, dataToSend }: any, { dispatch }) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await axios.post(
-      `/api/deacesed/${graveId}`,
-      dataToSend,
-      config
-    );
-    dispatch(updateGraves(response.data));
-    console.log(response.data);
-    return response.data;
+  async (
+    { graveId, dataToSend }: any,
+    { dispatch, getState, rejectWithValue }
+  ) => {
+    try {
+      const {
+        singleUser: { user },
+      } = getState() as any;
+      const config = user?.token
+        ? {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          }
+        : {
+            headers: {},
+          };
+      const response = await axios.post(
+        `/api/deacesed/${graveId}`,
+        dataToSend,
+        config
+      );
+      dispatch(updateGraves(response.data));
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      error.message = error.response.data;
+      throw error;
+    }
   }
 );
 
@@ -99,6 +114,7 @@ const singleGraveSlice = createSlice({
         // = action.payload;
       })
       .addCase(addDeacesed.rejected, (state, action) => {
+        console.log(action);
         state.status = "failed";
         state.error = action.error.message;
       });

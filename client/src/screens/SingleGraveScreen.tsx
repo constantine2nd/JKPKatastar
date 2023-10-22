@@ -20,6 +20,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 import { Grave } from "../interfaces/GraveIntefaces";
+import { userInfo } from "os";
 import { useTranslation } from "react-i18next";
 
 const getParagraphStyling = (contractTo: string) => {

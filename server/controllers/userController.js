@@ -51,4 +51,19 @@ const authUser = async (req, res, next) => {
   }
 };
 
-export { registerUser, authUser };
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+
+    if (users) {
+      res.send(users);
+    } else {
+      res.status(401);
+      throw new Error("Invalid email or password");
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { registerUser, authUser, getAllUsers };
