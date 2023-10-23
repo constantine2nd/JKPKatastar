@@ -4,12 +4,12 @@ const dateFormatter = (date) => {
   let month = myDate.getMonth();
   let year = myDate.getFullYear();
   if (day < 10) {
-    day = '0' + day;
+    day = "0" + day;
   }
   if (month < 10) {
-      month = `0${month}`;
+    month = `0${month}`;
   }
-  const formattedString = `${month}.${day}.${year}`;
+  const formattedString = `${day}.${month}.${year}`;
   return formattedString;
 };
 

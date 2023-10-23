@@ -16,6 +16,7 @@ import {
   fetchSingleGrave,
   selectSingleGrave,
 } from "../features/singleGraveSlice";
+import { selectUser } from "../features/userSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
@@ -42,6 +43,7 @@ const SingleGraveScreen: React.FC = () => {
   const grave = useSelector(selectSingleGrave);
   const graveStatus = useSelector(getGraveStatus);
   const error = useSelector(getGraveError);
+  const user = useSelector(selectUser);
 
   const [searchParams] = useSearchParams();
   const graveId = searchParams.get("id");
@@ -126,16 +128,13 @@ const SingleGraveScreen: React.FC = () => {
               <Col>
                 <Form.Group>
                   <Form.Label>{t("LON")}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={grave.LON}
-                  ></Form.Control>
+                  <Form.Control type="text" value={grave.LON}></Form.Control>
                 </Form.Group>
               </Col>
             </Row>
             <Row>
               <h2>
-              {t("contract-expiration-date")}:{" "}
+                {t("contract-expiration-date")}:{" "}
                 <span className={getParagraphStyling(grave.contractTo)}>
                   {dateFormatter(grave.contractTo)}
                 </span>
@@ -144,7 +143,7 @@ const SingleGraveScreen: React.FC = () => {
           </Form>
         )}
         <br />
-        {grave && (
+        {grave && (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
           <Row
             style={{
               width: "500px",

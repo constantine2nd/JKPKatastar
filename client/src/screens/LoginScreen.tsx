@@ -1,10 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  useSearchParams,
-  useNavigate,
-  createSearchParams,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -37,6 +33,12 @@ const UserLogin: React.FC = () => {
   const userStatus = useSelector(getUserStatus);
   const error = useSelector(getUserError);
 
+  useEffect(() => {
+    if (userStatus === "succeeded") {
+      navigate("/");
+    }
+  }, [navigate, userStatus]);
+
   const initialValues: FormData = {
     email: "",
     password: "",
@@ -45,7 +47,6 @@ const UserLogin: React.FC = () => {
   const handleSubmit = async (values: FormData) => {
     console.log(values);
     dispatch(loginUser(values));
-    // navigate("/");
   };
 
   if (userStatus === "loading") {
