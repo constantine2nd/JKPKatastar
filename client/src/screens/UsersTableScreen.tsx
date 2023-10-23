@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 // MUI Table
 import { styled } from "@mui/material/styles";
+import { darken } from '@mui/material';
 import TableMUI from "@mui/material/Table";
 import TableBodyMUI from "@mui/material/TableBody";
 import TableCellMUI, { tableCellClasses } from "@mui/material/TableCell";
@@ -13,6 +14,14 @@ import TableRowMUI from "@mui/material/TableRow";
 import PaperMUI from "@mui/material/Paper";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
+//Import Material React Table Translations
+import { MRT_Localization_SR_CYRL_RS } from 'material-react-table/locales/sr-Cyrl-RS';
+//Import Material React Table Translations
+import { MRT_Localization_SR_LATN_RS } from 'material-react-table/locales/sr-Latn-RS';
+//Import Material React Table Translations
+import { MRT_Localization_HU } from 'material-react-table/locales/hu';
 
 import {
   selectAllUsers,
@@ -25,6 +34,34 @@ import { User } from "../interfaces/UserInterfaces";
 
 const UsersTableScreen: React.FC = () => {
   const users: User[] | null = useSelector(selectAllUsers);
+  let xxx : User[] = [];
+  if(users) {xxx = users};
+  //should be memoized or stable
+  const columns = useMemo<MRT_ColumnDef<User>[]>(
+    () => [
+      {
+        accessorKey: '_id',
+        header: 'ID',
+      },
+      {
+        accessorKey: 'name',
+        header: 'Name',
+      },
+      {
+        accessorKey: 'email',
+        header: 'Email',
+      },
+      {
+        accessorKey: 'password',
+        header: 'Password',
+      },
+      {
+        accessorKey: 'token',
+        header: 'Token',
+      },
+    ],
+    [],
+  );
   const usersStatus = useSelector(getAllUsersStatus);
   const error = useSelector(getAllUsersError);
   const dispatch = useDispatch<any>();
@@ -46,11 +83,42 @@ const UsersTableScreen: React.FC = () => {
       </Message>
     );
   }
+
+
+  
   return (
     <>
       <h1>Users table screen</h1>
+
+      <MaterialReactTable 
+      columns={columns} 
+      data={xxx} 
+      enableRowNumbers
+      rowNumberMode="original"  
+      localization={MRT_Localization_HU}
+      muiTablePaperProps={{
+        elevation: 0,
+        sx: {
+          borderRadius: '0',
+          border: '1px dashed #e0e0e0',
+        },
+      }}
+      muiTableBodyProps={{
+        sx: (theme) => ({
+          '& tr:nth-of-type(odd) > td': {
+            backgroundColor: darken(theme.palette.background.default, 0.1),
+          },
+        }),
+      }}
+      
+      />;
     </>
   );
+  
 };
 
 export default UsersTableScreen;
+function createTheme(arg0: { palette: { mode: string; }; }) {
+  throw new Error("Function not implemented.");
+}
+
