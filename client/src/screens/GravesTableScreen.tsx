@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import axios from "axios";
 import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
-import ButtonMUI from '@mui/material/Button';
+import ButtonMUI from "@mui/material/Button";
 
 import { dateFormatter } from "../utils/dateFormatter";
 import {
@@ -15,26 +15,26 @@ import {
   getGravesError,
   deleteSingleGrave,
 } from "../features/gravesSlice";
+import { selectUser } from "../features/userSlice";
 import "./GraveTableScreen.css";
 import { GraveData } from "../interfaces/GraveIntefaces";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 // MUI Table
-import { styled } from '@mui/material/styles';
-import TableMUI from '@mui/material/Table';
-import TableBodyMUI from '@mui/material/TableBody';
-import TableCellMUI, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainerMUI from '@mui/material/TableContainer';
-import TableHeadMUI from '@mui/material/TableHead';
-import TableRowMUI from '@mui/material/TableRow';
-import PaperMUI from '@mui/material/Paper';
+import { styled } from "@mui/material/styles";
+import TableMUI from "@mui/material/Table";
+import TableBodyMUI from "@mui/material/TableBody";
+import TableCellMUI, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainerMUI from "@mui/material/TableContainer";
+import TableHeadMUI from "@mui/material/TableHead";
+import TableRowMUI from "@mui/material/TableRow";
+import PaperMUI from "@mui/material/Paper";
 
 // MUI Data Grid
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 // MUI Chip
-import Chip from '@mui/material/Chip';
-
+import Chip from "@mui/material/Chip";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -43,12 +43,16 @@ const capacity = (capacity: string, numberOfDeceaseds: string) => {
   if (capacityNum - deceasedsNum === 0) {
     result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="error" />;
   } else if (deceasedsNum / capacityNum > 0.49) {
-    result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="warning" />;
+    result = (
+      <Chip label={`${numberOfDeceaseds}/${capacity}`} color="warning" />
+    );
   } else {
-    result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="success" />;
+    result = (
+      <Chip label={`${numberOfDeceaseds}/${capacity}`} color="success" />
+    );
   }
   return result;
-}
+};
 
 const expiredContract = (contractTo: string) => {
   let result = null;
@@ -64,7 +68,7 @@ const expiredContract = (contractTo: string) => {
     result = <Chip label={dateFormatter(contractTo)} color="success" />;
   }
   return result;
-}
+};
 
 const GravesTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);
@@ -72,6 +76,7 @@ const GravesTableScreen: React.FC = () => {
   const graves: GraveData[] = useSelector(selectAllGraves);
   const gravesStatus = useSelector(getGravesStatus);
   const error = useSelector(getGravesError);
+  const user = useSelector(selectUser);
   const dispatch = useDispatch<any>();
   const [showModal, setShowModal] = useState(false);
   const [selectedGraveId, setSelectedGraveId] = useState<string>();
@@ -115,24 +120,23 @@ const GravesTableScreen: React.FC = () => {
 
   const StyledTableCell = styled(TableCellMUI)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: '#1976d2',
+      backgroundColor: "#1976d2",
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
   }));
-  
+
   const StyledTableRow = styled(TableRowMUI)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
+    "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
     // hide last border
-    '&:last-child td, &:last-child th': {
+    "&:last-child td, &:last-child th": {
       border: 0,
     },
   }));
-  
 
   return (
     <>
@@ -148,68 +152,97 @@ const GravesTableScreen: React.FC = () => {
       >
         <div>{t("graves-table-screen")}</div>
         <br />
-        <ButtonMUI variant="contained" sx={{m: 2}}
-          onClick={() => {
-            navigate({
-              pathname: "/add-grave",
-            });
-          }}
-        >{t("add grave")}
-        </ButtonMUI>
+        {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
+          <ButtonMUI
+            variant="contained"
+            sx={{ m: 2 }}
+            onClick={() => {
+              navigate({
+                pathname: "/add-grave",
+              });
+            }}
+          >
+            {t("add grave")}
+          </ButtonMUI>
+        )}
         <br />
-        
 
         <div>
-        {graves.length !== 0 && (
-        <TableContainerMUI component={PaperMUI}>
-          <TableMUI sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHeadMUI>
-              <TableRowMUI>
-                <StyledTableCell>#</StyledTableCell>
-                <StyledTableCell>{t("number")}</StyledTableCell>
-                <StyledTableCell align="right">{t("field")}</StyledTableCell>
-                <StyledTableCell align="right">{t("row")}</StyledTableCell>
-                <StyledTableCell align="right">{t("occupation")}</StyledTableCell>
-                <StyledTableCell align="right">{t("contract-expiration-date")}</StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
-                <StyledTableCell align="right"></StyledTableCell>
-              </TableRowMUI >
-            </TableHeadMUI >
-            <TableBodyMUI >
-              {graves.map((grave, index) => (
-                <StyledTableRow key={index + 1}>
-                  <StyledTableCell component="th" scope="row">{index + 1}</StyledTableCell>
-                  <StyledTableCell align="right">{grave.number}</StyledTableCell>
-                  <StyledTableCell align="right">{grave.field}</StyledTableCell>
-                  <StyledTableCell align="right">{grave.row}</StyledTableCell>
-                  <StyledTableCell align="right">{capacity(grave.capacity, grave.numberOfDeceaseds)}</StyledTableCell>
-                  <StyledTableCell align="right">{expiredContract(grave.contractTo)}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    <ButtonMUI variant="contained" 
-                        onClick={() => {
-                          navigate({
-                            pathname: "/single-grave",
-                            search: createSearchParams({
-                              id: grave._id,
-                            }).toString(),
-                          });
-                        }}
-                      >
-                        {t("details")}
-                      </ButtonMUI>
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    <ButtonMUI variant="contained" color="secondary" onClick={() => handleShowModal(grave._id)}>
-                      {t("delete")}
-                    </ButtonMUI>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBodyMUI>
-          </TableMUI>
-        </TableContainerMUI>
-        )}
-
+          {graves.length !== 0 && (
+            <TableContainerMUI component={PaperMUI}>
+              <TableMUI sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHeadMUI>
+                  <TableRowMUI>
+                    <StyledTableCell>#</StyledTableCell>
+                    <StyledTableCell>{t("number")}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {t("field")}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{t("row")}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {t("occupation")}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {t("contract-expiration-date")}
+                    </StyledTableCell>
+                    <StyledTableCell align="right"></StyledTableCell>
+                    <StyledTableCell align="right"></StyledTableCell>
+                  </TableRowMUI>
+                </TableHeadMUI>
+                <TableBodyMUI>
+                  {graves.map((grave, index) => (
+                    <StyledTableRow key={index + 1}>
+                      <StyledTableCell component="th" scope="row">
+                        {index + 1}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {grave.number}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {grave.field}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {grave.row}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {capacity(grave.capacity, grave.numberOfDeceaseds)}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {expiredContract(grave.contractTo)}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <ButtonMUI
+                          variant="contained"
+                          onClick={() => {
+                            navigate({
+                              pathname: "/single-grave",
+                              search: createSearchParams({
+                                id: grave._id,
+                              }).toString(),
+                            });
+                          }}
+                        >
+                          {t("details")}
+                        </ButtonMUI>
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {(user?.role === "ADMIN" ||
+                          user?.role === "SUPER_ADMIN") && (
+                          <ButtonMUI
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => handleShowModal(grave._id)}
+                          >
+                            {t("delete")}
+                          </ButtonMUI>
+                        )}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBodyMUI>
+              </TableMUI>
+            </TableContainerMUI>
+          )}
         </div>
         <br />
       </div>

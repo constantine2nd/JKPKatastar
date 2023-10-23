@@ -56,7 +56,14 @@ const initialState: UserState = {
 const singleUserSlice = createSlice({
   name: "singleUser",
   initialState,
-  reducers: {},
+  reducers: {
+    logoutUser: (state) => {
+      state.user = null;
+      localStorage.removeItem("userInfo");
+      state.status = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addUser.pending, (state) => {
@@ -91,5 +98,6 @@ const singleUserSlice = createSlice({
 export const selectUser = (state: RootState) => state.singleUser.user;
 export const getUserStatus = (state: RootState) => state.singleUser.status;
 export const getUserError = (state: RootState) => state.singleUser.error;
+export const { logoutUser } = singleUserSlice.actions;
 
 export default singleUserSlice.reducer;
