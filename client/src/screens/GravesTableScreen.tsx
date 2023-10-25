@@ -22,7 +22,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 // MUI Table
-import { createTheme, ThemeProvider, useTheme } from "@mui/material";
+import { Box, createTheme, ThemeProvider, useTheme } from "@mui/material";
 import { darken, styled } from "@mui/material/styles";
 
 // MUI Chip
@@ -123,56 +123,35 @@ const GravesTableScreen: React.FC = () => {
     },
     {
       accessorKey: "_id",
-      id: "details",
       header: t(""),
+      columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
       Cell: ({ renderedCellValue, row }) => (
-        <ButtonMUI
-          variant="contained"
-          onClick={() => {
-            navigate({
-              pathname: "/single-grave",
-              search: createSearchParams({
-                id: row.getValue<string>("_id"),
-              }).toString(),
-            });
-          }}
-        >
-          {t("details")}
-        </ButtonMUI>
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+            <ButtonMUI variant="contained"
+              onClick={() => {
+                navigate({
+                  pathname: "/single-grave",
+                  search: createSearchParams({
+                    id: row.getValue<string>("_id"),
+                  }).toString(),
+                });
+              }} 
+              >
+              {t("details")}
+            </ButtonMUI>
+            {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
+              <ButtonMUI variant="contained" color="secondary"
+                onClick={() => handleShowModal(row.original._id)}
+              >
+                {t("delete")}
+              </ButtonMUI>
+            )}
+        </Box>
+        
+        
       ),
     },
-    /*     {
-      accessorKey: "_id",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) =>
-        (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
-          <ButtonMUI
-            variant="contained"
-            color="secondary"
-            onClick={() => handleShowModal(row.getValue<string>("_id"))}
-          >
-            {t("delete")}
-          </ButtonMUI>
-        ),
-    }, */
   ];
-
-  if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") {
-    columns.push({
-      accessorKey: "_id",
-      id: "delete",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) => (
-        <ButtonMUI
-          variant="contained"
-          color="secondary"
-          onClick={() => handleShowModal(row.getValue<string>("_id"))}
-        >
-          {t("delete")}
-        </ButtonMUI>
-      ),
-    });
-  }
 
   const theme = useTheme(); //replace with your theme/createTheme
 
