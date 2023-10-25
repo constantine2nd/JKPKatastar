@@ -15,7 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use("/api/graves", gravesRoutes);
-app.use("/api/deacesed", deceasedRoutes);
+app.use("/api/deceased", deceasedRoutes);
 app.use("/api/payer", payerRoutes);
 app.use("/api/users", userRoutes);
 

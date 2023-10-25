@@ -1,9 +1,13 @@
 import express from "express";
-import { saveDeacesed } from "../controllers/deceasedController.js";
+import {
+  getDeceased,
+  saveDeceased,
+} from "../controllers/deceasedController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/:id").post(protect, saveDeacesed);
+router.route("/").get(getDeceased);
+router.route("/:id").post(protect, saveDeceased);
 
 export default router;

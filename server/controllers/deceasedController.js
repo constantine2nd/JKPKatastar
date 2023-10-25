@@ -1,6 +1,6 @@
 import Deceased from "../models/deceasedModel.js";
 
-const saveDeacesed = async (req, res, next) => {
+const saveDeceased = async (req, res, next) => {
   const sentDeacesed = req.body;
   console.log(sentDeacesed);
 
@@ -30,4 +30,19 @@ const saveDeacesed = async (req, res, next) => {
   console.log("POST request");
 };
 
-export { saveDeacesed };
+const getDeceased = async (req, res, next) => {
+  try {
+    const deceased = await Deceased.find().populate("grave");
+
+    if (deceased) {
+      res.send(deceased);
+    } else {
+      res.status(401);
+      throw new Error("Invalid email or password");
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { saveDeceased, getDeceased };

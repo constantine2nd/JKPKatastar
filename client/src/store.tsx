@@ -3,6 +3,7 @@ import gravesReducer from "./features/gravesSlice";
 import singleGraveReducer from "./features/singleGraveSlice";
 import singleUserReducer from "./features/userSlice";
 import allUsersSliceReducer from "./features/allUsersSlice";
+import allDeceasedSliceReducer from "./features/deceasedSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     singleGrave: singleGraveReducer,
     singleUser: singleUserReducer,
     allUsers: allUsersSliceReducer,
+    allDeceased: allDeceasedSliceReducer,
   },
 });
 

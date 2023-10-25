@@ -14,7 +14,7 @@ export interface Deceased {
   _id: string;
   name: string;
   surname: string;
-  grave: string;
+  grave: GraveData;
   dateBirth: string;
   dateDeath: string;
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal, Form, Row, Col, Button } from "react-bootstrap";
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
 
 import {
   getGravesError,
@@ -137,6 +137,13 @@ const HomeScreen = (props) => {
           initialCenter={{ lat: 45.406017693851055, lng: 19.902106518542315 }}
           mapType="satellite"
         >
+          {/* <Polygon
+            path={[
+              { lat: 45.406017693851055, lng: 19.902106518542315 },
+              { lat: 46.406017693851055, lng: 20.902106518542315 },
+              { lat: 47.406017693851055, lng: 18.902106518542315 },
+            ]}
+          ></Polygon> */}
           {graves.map((grave) => {
             const iconUrl =
               grave.capacity - grave.numberOfDeceaseds > 0

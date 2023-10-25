@@ -32,6 +32,9 @@ const Header = () => {
           </LinkContainer>
 
           <Nav className="ml-auto">
+            <LinkContainer to="/deceased-table">
+              <Nav.Link>Pregled pokojnika</Nav.Link>
+            </LinkContainer>
             <LinkContainer to="/graves-table">
               <Nav.Link>Pregled grobnih mesta</Nav.Link>
             </LinkContainer>

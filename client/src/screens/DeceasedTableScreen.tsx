@@ -9,15 +9,14 @@ import ButtonMUI from "@mui/material/Button";
 
 import { dateFormatter } from "../utils/dateFormatter";
 import {
-  selectAllGraves,
-  fetchGraves,
-  getGravesStatus,
-  getGravesError,
-  deleteSingleGrave,
-} from "../features/gravesSlice";
+  fetchDeceased,
+  selectAllDeceased,
+  getDeceasedStatus,
+  getDeceasedError,
+} from "../features/deceasedSlice";
 import { selectUser } from "../features/userSlice";
 import "./GraveTableScreen.css";
-import { Grave, GraveData } from "../interfaces/GraveIntefaces";
+import { Grave, GraveData, Deceased } from "../interfaces/GraveIntefaces";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
@@ -75,40 +74,71 @@ const capacityExt = (renderedValue: string) => {
   return capacity(renderedValue.split("/")[0], renderedValue.split("/")[1]);
 };
 
-const GravesTableScreen: React.FC = () => {
+const DeceasedTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);
   let navigate = useNavigate();
-  const graves: GraveData[] = useSelector(selectAllGraves);
-  const gravesStatus = useSelector(getGravesStatus);
-  const error = useSelector(getGravesError);
+  const deceased: Deceased[] | null = useSelector(selectAllDeceased);
+  const gravesStatus = useSelector(getDeceasedStatus);
+  const error = useSelector(getDeceasedError);
   const user = useSelector(selectUser);
   const dispatch = useDispatch<any>();
   const [showModal, setShowModal] = useState(false);
   const [selectedGraveId, setSelectedGraveId] = useState<string>();
   const { t, i18n } = useTranslation();
-  const getLanguage = () => {
-    if (i18n.language.toUpperCase() === "SR") {
-      return MRT_Localization_SR_LATN_RS;
-    } else if (i18n.language.toUpperCase() === "HU") {
-      return MRT_Localization_HU;
-    } else {
-      return MRT_Localization_SR_CYRL_RS;
-    }
-  };
-  const columns: MRT_ColumnDef<GraveData>[] = [
+
+  const columns: MRT_ColumnDef<Deceased>[] = [
     {
-      accessorKey: "number",
-      header: t("number"),
+      accessorKey: "name",
+      header: t("name"),
     },
     {
-      accessorKey: "field",
+      accessorKey: "surname",
+      header: t("surname"),
+    },
+    {
+      accessorFn: (row) => new Date(row.dateBirth),
+      id: "dateBirth",
+      header: t("dateBirth"),
+      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+    },
+    {
+      accessorFn: (row) => new Date(row.dateDeath),
+      id: "dateDeath",
+      header: t("dateDeath"),
+      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+    },
+    {
+      accessorKey: "grave.field",
       header: t("field"),
     },
     {
-      accessorKey: "row",
+      accessorKey: "grave.row",
       header: t("row"),
     },
     {
+      accessorKey: "grave.number",
+      header: t("number"),
+    },
+    {
+      accessorKey: "grave._id",
+      header: t(""),
+      Cell: ({ renderedCellValue, row }) => (
+        <ButtonMUI
+          variant="contained"
+          onClick={() => {
+            navigate({
+              pathname: "/single-grave",
+              search: createSearchParams({
+                id: row.getValue<string>("grave._id"),
+              }).toString(),
+            });
+          }}
+        >
+          {t("details")}
+        </ButtonMUI>
+      ),
+    },
+    /*   {
       accessorFn: (row) => `${row.numberOfDeceaseds}/${row.capacity}`, //accessorFn used to join multiple data into a single cell
       id: "occupation",
       header: t("occupation"),
@@ -120,10 +150,9 @@ const GravesTableScreen: React.FC = () => {
       id: "contractTo",
       header: t("contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
-    },
-    {
+    }, */
+    /*   {
       accessorKey: "_id",
-      id: "details",
       header: t(""),
       Cell: ({ renderedCellValue, row }) => (
         <ButtonMUI
@@ -141,7 +170,7 @@ const GravesTableScreen: React.FC = () => {
         </ButtonMUI>
       ),
     },
-    /*     {
+    {
       accessorKey: "_id",
       header: t(""),
       Cell: ({ renderedCellValue, row }) =>
@@ -156,30 +185,12 @@ const GravesTableScreen: React.FC = () => {
         ),
     }, */
   ];
-
-  if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") {
-    columns.push({
-      accessorKey: "_id",
-      id: "delete",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) => (
-        <ButtonMUI
-          variant="contained"
-          color="secondary"
-          onClick={() => handleShowModal(row.getValue<string>("_id"))}
-        >
-          {t("delete")}
-        </ButtonMUI>
-      ),
-    });
-  }
-
   const theme = useTheme(); //replace with your theme/createTheme
 
   useEffect(() => {
     if (gravesStatus === "idle") {
       console.log("UPAO");
-      dispatch(fetchGraves());
+      dispatch(fetchDeceased());
     }
   }, [gravesStatus, dispatch]);
 
@@ -195,7 +206,7 @@ const GravesTableScreen: React.FC = () => {
 
   const handleDeleteGrave = () => {
     if (selectedGraveId) {
-      dispatch(deleteSingleGrave(selectedGraveId));
+      //  dispatch(deleteSingleGrave(selectedGraveId));
       setShowModal(false);
     }
   };
@@ -216,7 +227,6 @@ const GravesTableScreen: React.FC = () => {
     <>
       <div
         style={{
-          height: "50vw",
           width: "100%",
           position: "absolute",
           display: "flex",
@@ -244,10 +254,10 @@ const GravesTableScreen: React.FC = () => {
         <ThemeProvider theme={createTheme(theme, srRS)}>
           <MaterialReactTable
             columns={columns}
-            data={graves}
+            data={deceased === null ? [] : deceased}
             enableRowNumbers
             rowNumberMode="original"
-            localization={getLanguage()}
+            localization={MRT_Localization_SR_LATN_RS}
             muiTablePaperProps={{
               elevation: 0,
               sx: {
@@ -295,4 +305,4 @@ const GravesTableScreen: React.FC = () => {
   );
 };
 
-export default GravesTableScreen;
+export default DeceasedTableScreen;
