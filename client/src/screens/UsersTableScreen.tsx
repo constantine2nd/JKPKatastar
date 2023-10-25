@@ -33,9 +33,7 @@ import {
 import { User } from "../interfaces/UserInterfaces";
 
 const UsersTableScreen: React.FC = () => {
-  const users: User[] | null = useSelector(selectAllUsers);
-  let xxx : User[] = [];
-  if(users) {xxx = users};
+  const users: User[] = useSelector(selectAllUsers);
   //should be memoized or stable
   const columns = useMemo<MRT_ColumnDef<User>[]>(
     () => [
@@ -92,7 +90,7 @@ const UsersTableScreen: React.FC = () => {
 
       <MaterialReactTable 
       columns={columns} 
-      data={xxx} 
+      data={users} 
       enableRowNumbers
       rowNumberMode="original"  
       localization={MRT_Localization_HU}

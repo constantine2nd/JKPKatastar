@@ -9,12 +9,12 @@ export const fetchDeceased = createAsyncThunk("allDeceased/get", async () => {
 });
 
 interface AllDeceasedState {
-  deceased: Deceased[] | null;
+  deceased: Deceased[];
   status: string;
   error: any;
 }
 const initialState: AllDeceasedState = {
-  deceased: null,
+  deceased: [],
   status: "idle",
   error: null,
 };
@@ -33,7 +33,7 @@ const allDeceasedSlice = createSlice({
         state.deceased = action.payload;
       })
       .addCase(fetchDeceased.rejected, (state, action) => {
-        state.deceased = null;
+        state.deceased = [];
         state.status = "failed";
         state.error = action.error.message;
       });

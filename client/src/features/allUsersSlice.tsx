@@ -9,12 +9,12 @@ export const getAllUsers = createAsyncThunk("allUsers/get", async () => {
 });
 
 interface AllUsersState {
-  users: User[] | null;
+  users: User[];
   status: string;
   error: any;
 }
 const initialState: AllUsersState = {
-  users: null,
+  users: [],
   status: "idle",
   error: null,
 };
@@ -34,7 +34,7 @@ const allUsersSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
-        state.users = null;
+        state.users = [];
         state.status = "failed";
         state.error = action.error.message;
       });
