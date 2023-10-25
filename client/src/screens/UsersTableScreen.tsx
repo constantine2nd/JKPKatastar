@@ -108,6 +108,11 @@ const UsersTableScreen: React.FC = () => {
           },
         }),
       }}
+      muiTableHeadCellProps={{
+        sx: (theme) => ({
+          backgroundColor: darken(theme.palette.background.default, 0.3),
+        }),
+      }}
       
       />;
     </>

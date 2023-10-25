@@ -28,13 +28,8 @@ import { darken, styled } from "@mui/material/styles";
 // MUI Chip
 import Chip from "@mui/material/Chip";
 import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
-import { User } from "../interfaces/UserInterfaces";
-import { MRT_Localization_HU } from "material-react-table/locales/hu";
-//Import Material React Table Translations
-import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyrl-RS";
-//Import Material React Table Translations
-import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
 import { srRS } from "@mui/material/locale";
+import { getLanguage } from "../utils/languageSelector";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -86,15 +81,7 @@ const GravesTableScreen: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedGraveId, setSelectedGraveId] = useState<string>();
   const { t, i18n } = useTranslation();
-  const getLanguage = () => {
-    if (i18n.language.toUpperCase() === "SR") {
-      return MRT_Localization_SR_LATN_RS;
-    } else if (i18n.language.toUpperCase() === "HU") {
-      return MRT_Localization_HU;
-    } else {
-      return MRT_Localization_SR_CYRL_RS;
-    }
-  };
+
   const columns: MRT_ColumnDef<GraveData>[] = [
     {
       accessorKey: "number",
@@ -226,7 +213,7 @@ const GravesTableScreen: React.FC = () => {
             data={graves}
             enableRowNumbers
             rowNumberMode="original"
-            localization={getLanguage()}
+            localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,
               sx: {

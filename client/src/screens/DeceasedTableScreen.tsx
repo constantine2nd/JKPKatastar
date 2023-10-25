@@ -27,12 +27,7 @@ import { darken, styled } from "@mui/material/styles";
 // MUI Chip
 import Chip from "@mui/material/Chip";
 import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
-import { User } from "../interfaces/UserInterfaces";
-import { MRT_Localization_HU } from "material-react-table/locales/hu";
-//Import Material React Table Translations
-import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyrl-RS";
-//Import Material React Table Translations
-import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
+import { getLanguage } from "../utils/languageSelector";
 import { srRS } from "@mui/material/locale";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
@@ -69,15 +64,10 @@ const expiredContract = (contractTo: string) => {
   return result;
 };
 
-const capacityExt = (renderedValue: string) => {
-  console.log(renderedValue);
-  return capacity(renderedValue.split("/")[0], renderedValue.split("/")[1]);
-};
-
 const DeceasedTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);
   let navigate = useNavigate();
-  const deceased: Deceased[] | null = useSelector(selectAllDeceased);
+  const deceased: Deceased[] = useSelector(selectAllDeceased);
   const gravesStatus = useSelector(getDeceasedStatus);
   const error = useSelector(getDeceasedError);
   const user = useSelector(selectUser);
@@ -122,6 +112,7 @@ const DeceasedTableScreen: React.FC = () => {
     {
       accessorKey: "grave._id",
       header: t(""),
+      columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
       Cell: ({ renderedCellValue, row }) => (
         <ButtonMUI
           variant="contained"
@@ -254,10 +245,10 @@ const DeceasedTableScreen: React.FC = () => {
         <ThemeProvider theme={createTheme(theme, srRS)}>
           <MaterialReactTable
             columns={columns}
-            data={deceased === null ? [] : deceased}
+            data={deceased}
             enableRowNumbers
             rowNumberMode="original"
-            localization={MRT_Localization_SR_LATN_RS}
+            localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,
               sx: {
