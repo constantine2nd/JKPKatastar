@@ -1,27 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 // MUI Table
-import { styled } from "@mui/material/styles";
 import { darken } from '@mui/material';
-import TableMUI from "@mui/material/Table";
-import TableBodyMUI from "@mui/material/TableBody";
-import TableCellMUI, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainerMUI from "@mui/material/TableContainer";
-import TableHeadMUI from "@mui/material/TableHead";
-import TableRowMUI from "@mui/material/TableRow";
-import PaperMUI from "@mui/material/Paper";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-//Import Material React Table Translations
-import { MRT_Localization_SR_CYRL_RS } from 'material-react-table/locales/sr-Cyrl-RS';
-//Import Material React Table Translations
-import { MRT_Localization_SR_LATN_RS } from 'material-react-table/locales/sr-Latn-RS';
-//Import Material React Table Translations
-import { MRT_Localization_HU } from 'material-react-table/locales/hu';
 
 import {
   selectAllUsers,
@@ -31,6 +16,8 @@ import {
 } from "../features/allUsersSlice";
 
 import { User } from "../interfaces/UserInterfaces";
+import { getLanguage } from "../utils/languageSelector";
+import i18n from "../i18n";
 
 const UsersTableScreen: React.FC = () => {
   const users: User[] = useSelector(selectAllUsers);
@@ -93,7 +80,7 @@ const UsersTableScreen: React.FC = () => {
       data={users} 
       enableRowNumbers
       rowNumberMode="original"  
-      localization={MRT_Localization_HU}
+      localization={getLanguage(i18n)}
       muiTablePaperProps={{
         elevation: 0,
         sx: {
