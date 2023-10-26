@@ -27,9 +27,16 @@ import { darken, styled } from "@mui/material/styles";
 
 // MUI Chip
 import Chip from "@mui/material/Chip";
-import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
 import { srRS } from "@mui/material/locale";
 import { getLanguage } from "../utils/languageSelector";
+
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
+} from 'material-react-table';
+
+
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -105,6 +112,9 @@ const GravesTableScreen: React.FC = () => {
     {
       accessorFn: (row) => new Date(row.contractTo),
       id: "contractTo",
+      filterFn: 'between',
+      filterVariant: 'date',
+      sortingFn: 'datetime',
       header: t("contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
     },

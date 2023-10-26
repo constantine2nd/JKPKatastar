@@ -12,7 +12,10 @@
   "delete": "Töröl",
   "id": "ID",
   "name": "Név",
+  "surname": "Vezetéknév",
   "email": "E-mail",
   "password": "Jelszó",
-  "token": "Token"
+  "token": "Token",
+  "dateBirth": "Születési dátum",
+  "dateDeath": "Halál dátuma"
 }

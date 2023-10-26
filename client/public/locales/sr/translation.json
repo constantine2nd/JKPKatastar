@@ -10,8 +10,11 @@
   "contract-expiration-date": "Datum isteka ugovora",
   "details": "Detalji",
   "id": "ID",
-  "name": "Name",
+  "name": "Ime",
+  "surname": "Prezime",
   "email": "Email",
   "password": "Password",
-  "token": "Token"
+  "token": "Token",
+  "dateBirth": "Datum rođenja",
+  "dateDeath": "Datum smrti"
 }

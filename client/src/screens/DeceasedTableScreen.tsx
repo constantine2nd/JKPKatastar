@@ -47,21 +47,12 @@ const capacity = (capacity: string, numberOfDeceaseds: string) => {
   }
   return result;
 };
+const dateOfBirth = (date: string) => {
+  return <Chip label={dateFormatter(date)} color="success" />;;
+};
 
-const expiredContract = (contractTo: string) => {
-  let result = null;
-  let contractDate = new Date(contractTo);
-  let contractDatePlus = new Date(contractTo);
-  contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
-  let today = new Date();
-  if (today > contractDate) {
-    result = <Chip label={dateFormatter(contractTo)} color="error" />;
-  } else if (today > contractDatePlus) {
-    result = <Chip label={dateFormatter(contractTo)} color="warning" />;
-  } else {
-    result = <Chip label={dateFormatter(contractTo)} color="success" />;
-  }
-  return result;
+const dateDeath = (date: string) => {
+  return <Chip label={dateFormatter(date)} color="error" />;;
 };
 
 const DeceasedTableScreen: React.FC = () => {
@@ -89,13 +80,19 @@ const DeceasedTableScreen: React.FC = () => {
       accessorFn: (row) => new Date(row.dateBirth),
       id: "dateBirth",
       header: t("dateBirth"),
-      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+      filterFn: 'between',
+      filterVariant: 'date',
+      sortingFn: 'datetime',
+      Cell: ({ cell }) => dateOfBirth(cell.getValue<string>()),
     },
     {
       accessorFn: (row) => new Date(row.dateDeath),
       id: "dateDeath",
       header: t("dateDeath"),
-      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+      filterFn: 'between',
+      filterVariant: 'date',
+      sortingFn: 'datetime',
+      Cell: ({ cell }) => dateDeath(cell.getValue<string>()),
     },
     {
       accessorKey: "grave.field",
