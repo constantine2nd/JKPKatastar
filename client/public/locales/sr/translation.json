@@ -9,5 +9,9 @@
   "occupation": "Zauzetost",
   "contract-expiration-date": "Datum isteka ugovora",
   "details": "Detalji",
-  "delete": "Izbrisi"
+  "id": "ID",
+  "name": "Name",
+  "email": "Email",
+  "password": "Password",
+  "token": "Token"
 }

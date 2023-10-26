@@ -17,36 +17,34 @@ import {
 
 import { User } from "../interfaces/UserInterfaces";
 import { getLanguage } from "../utils/languageSelector";
-import i18n from "../i18n";
+
 
 const UsersTableScreen: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const users: User[] = useSelector(selectAllUsers);
   //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<User>[]>(
-    () => [
+  const columns: MRT_ColumnDef<User>[] = [
       {
         accessorKey: '_id',
-        header: 'ID',
+        header: t('id'),
       },
       {
         accessorKey: 'name',
-        header: 'Name',
+        header: t('name'),
       },
       {
         accessorKey: 'email',
-        header: 'Email',
+        header: t('email'),
       },
       {
         accessorKey: 'password',
-        header: 'Password',
+        header: t('password'),
       },
       {
         accessorKey: 'token',
-        header: 'Token',
+        header: t('token'),
       },
-    ],
-    [],
-  );
+  ];
   const usersStatus = useSelector(getAllUsersStatus);
   const error = useSelector(getAllUsersError);
   const dispatch = useDispatch<any>();

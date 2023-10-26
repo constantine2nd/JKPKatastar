@@ -9,5 +9,10 @@
   "occupation": "Foglalt",
   "contract-expiration-date": "Szerződés lejárati dátum",
   "details": "Részletek",
-  "delete": "Töröl"
+  "delete": "Töröl",
+  "id": "ID",
+  "name": "Név",
+  "email": "E-mail",
+  "password": "Jelszó",
+  "token": "Token"
 }
