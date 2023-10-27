@@ -29,6 +29,7 @@ import { darken, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import { srRS } from "@mui/material/locale";
 import { getLanguage } from "../utils/languageSelector";
+import { DeleteAndMaybeRemoveButton }  from "../components/DetailAndMaybeRemoveButton";
 
 import {
   MaterialReactTable,
@@ -122,30 +123,8 @@ const GravesTableScreen: React.FC = () => {
       accessorKey: "_id",
       header: t(""),
       columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
-      Cell: ({ renderedCellValue, row }) => (
-        <Box sx={{ display: 'flex', gap: '1rem' }}>
-            <ButtonMUI variant="contained"
-              onClick={() => {
-                navigate({
-                  pathname: "/single-grave",
-                  search: createSearchParams({
-                    id: row.getValue<string>("_id"),
-                  }).toString(),
-                });
-              }} 
-              >
-              {t("details")}
-            </ButtonMUI>
-            {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
-              <ButtonMUI variant="contained" color="secondary"
-                onClick={() => handleShowModal(row.original._id)}
-              >
-                {t("delete")}
-              </ButtonMUI>
-            )}
-        </Box>
-        
-        
+      Cell: ({ row }) => (
+        DeleteAndMaybeRemoveButton(row.original._id)
       ),
     },
   ];
