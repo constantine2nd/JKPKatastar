@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
 import { useState } from "react";
 
-const DeleteAndMaybeRemoveButton: React.FC  = (id) => {
+const DeleteAndMaybeRemoveButton: React.FC  = (id, relativePathOfTheAction) => {
     let navigate = useNavigate();
     const user = useSelector(selectUser);
     const [showModal, setShowModal] = useState(false);
@@ -20,7 +20,7 @@ const DeleteAndMaybeRemoveButton: React.FC  = (id) => {
             <ButtonMUI variant="contained"
                 onClick={() => {
                 navigate({
-                    pathname: "/single-grave",
+                    pathname: relativePathOfTheAction,
                     search: createSearchParams({
                     id: id.toString(),
                     }).toString(),
