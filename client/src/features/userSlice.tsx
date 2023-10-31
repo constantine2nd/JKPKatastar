@@ -29,6 +29,14 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const deleteUser = createAsyncThunk(
+  "users/deleteUser",
+  async (id: string) => {
+    const response = await axios.delete(`/api/users/${id}`);
+    return response.data;
+  }
+);
+
 export const loginUser = createAsyncThunk(
   "users/userLogin",
   async (dataToSend: any, { rejectWithValue }) => {
@@ -104,6 +112,17 @@ const singleUserSlice = createSlice({
         state.user = null;
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
       })
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";
