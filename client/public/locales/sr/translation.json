@@ -20,5 +20,8 @@
   "yes": "DA",
   "no": "NE",
   "role": "Uloga",
-  "Active": "Aktivan"
+  "Active": "Aktivan",
+  "Edit": "Uredi",
+  "Delete": "Izbriši",
+  "Create New User": "Kreiraj novog korisnika"
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -28,12 +28,14 @@ import {
 import { User } from "../interfaces/UserInterfaces";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { updateUser, deleteUser } from '../features/userSlice';
+import { updateUser, deleteUser, getAllUsers, getAllUsersStatus, getAllUsersError, selectAllUsers } from '../features/allUsersSlice';
 import axios from 'axios';
 import { getLanguage } from "../utils/languageSelector";
 import { isActiveUser } from "../components/IsActiveUser"
+//Import Material React Table Translations
+import { MRT_Localization_ES } from 'material-react-table/locales/es';
 
 const UsersTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -41,7 +43,16 @@ const UsersTableScreenCrud = () => {
   >({});
 
   const { t, i18n } = useTranslation();
+  const users: User[] = useSelector(selectAllUsers);
   const dispatch = useDispatch<any>();
+  const usersStatus = useSelector(getAllUsersStatus);
+  const error = useSelector(getAllUsersError);
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      console.log("UPAO");
+      dispatch(getAllUsers());
+    }
+  }, [usersStatus, dispatch]);
 
   const roles = [
     'ADMIN',
@@ -123,7 +134,7 @@ const UsersTableScreenCrud = () => {
     isError: isLoadingUsersError,
     isFetching: isFetchingUsers,
     isLoading: isLoadingUsers,
-  } = useGetUsers();
+  } = useGetUsers(users);
   //call UPDATE hook
   const { mutateAsync: updateUser, isPending: isUpdatingUser } =
     useUpdateUser(dispatch);
@@ -170,7 +181,7 @@ const UsersTableScreenCrud = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: fetchedUsers,
+    data: users,
     localization: getLanguage(i18n),
     createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
     editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
@@ -200,7 +211,7 @@ const UsersTableScreenCrud = () => {
         >
           {internalEditComponents} {/* or render custom edit components here */}
         </DialogContent>
-        <DialogActions>
+        <DialogActions >
           <MRT_EditActionButtons variant="text" table={table} row={row} />
         </DialogActions>
       </>
@@ -221,12 +232,12 @@ const UsersTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <Tooltip title="Edit">
+        <Tooltip title={t("Edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Delete">
+        <Tooltip title={t("Delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>
@@ -246,7 +257,7 @@ const UsersTableScreenCrud = () => {
           // );
         }}
       >
-        Create New User
+        {t("Create New User")}
       </Button>
     ),
     state: {
@@ -288,18 +299,18 @@ function useCreateUser() {
 }
 
 //READ hook (get users from api)
-function useGetUsers() {
+function useGetUsers(users: User[]) {
   return useQuery<User[]>({
     queryKey: ['users-all'],
     queryFn: async () => {
       //send api request here 
-      await new Promise((resolve) => setTimeout(resolve, 0)); //fake api call
-      // return Promise.resolve(users1);
-      const response = await axios.get(`/api/users`);
-      console.log(response)
-      return Promise.resolve(response.data);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
+      return Promise.resolve(users);
+      // const response = await axios.get(`/api/users`);
+      // console.log(response)
+      // return Promise.resolve(response.data);
     },
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -331,7 +342,7 @@ function useUpdateUser(dispatch: any) {
           ),
       );
     },
-    onSettled: () => queryClient.refetchQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
+    // onSettled: () => queryClient.refetchQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
   });
 }
 

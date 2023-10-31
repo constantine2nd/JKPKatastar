@@ -33,11 +33,13 @@ const registerUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { name, email, role, isActive } = req.body;
+
+  console.log(isActive)
   
   const filter = { email: email }; // Criteria to find a row
   const update = { name: name, isActive: isActive, role: role }; // Fields to update
 
-  const updatedUser = await User.findOneAndUpdate(filter, update);
+  const updatedUser = await User.findOneAndUpdate(filter, update, {new: true});
 
   console.log(updatedUser);
   
@@ -47,7 +49,7 @@ const updateUser = async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
-      token: generateToken(updatedUser._id),
+      isActive: updatedUser.isActive,
     });
   } else {
     res.status(400);

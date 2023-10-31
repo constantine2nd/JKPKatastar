@@ -23,6 +23,7 @@ import { isActiveUser } from "../components/IsActiveUser"
 const UsersTableScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
   const users: User[] = useSelector(selectAllUsers);
+  console.log(users);
   //should be memoized or stable
   const columns: MRT_ColumnDef<User>[] = [
       {

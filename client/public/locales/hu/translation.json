@@ -21,5 +21,8 @@
   "yes": "Igen",
   "no": "Nem",
   "role": "Szerep",
-  "Active": "Aktív"
+  "Active": "Aktív",
+  "Edit": "Szerkesztés",
+  "Delete": "Töröl",
+  "Create New User": "Új felhasználó létrehozása"
 }
