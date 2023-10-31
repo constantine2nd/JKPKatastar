@@ -16,6 +16,19 @@ export const addUser = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  "users/updateUser",
+  async (dataToSend: any) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.put(`/api/users/updateuser`, dataToSend, config);
+    return response.data;
+  }
+);
+
 export const loginUser = createAsyncThunk(
   "users/userLogin",
   async (dataToSend: any, { rejectWithValue }) => {
@@ -75,6 +88,19 @@ const singleUserSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(addUser.rejected, (state, action) => {
+        state.user = null;
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        localStorage.setItem("userInfo", JSON.stringify(action.payload));
+        state.user = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.user = null;
         state.status = "failed";
         state.error = action.error.message;
