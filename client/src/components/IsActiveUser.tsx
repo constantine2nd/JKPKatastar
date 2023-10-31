@@ -1,11 +1,12 @@
 import { Chip } from "@mui/material";
 
-const isActiveUser = (isActive: boolean) => {
+
+const isActiveUser = (isActive: boolean, t: any) => {
     let result = null;
     if (isActive) {
-      result = <Chip label={'DA'} color="success" />;
+      result = <Chip label={t('yes')} color="success" />;
     } else {
-      result = <Chip label={'NE'} color="error" />;
+      result = <Chip label={t('no')} color="error" />;
     }
     return result;
   };

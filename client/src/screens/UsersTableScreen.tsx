@@ -45,7 +45,7 @@ const UsersTableScreen: React.FC = () => {
         accessorKey: 'isActive',
         header: t('Active'),
         Cell: ({ row }) => (
-          isActiveUser(row.original.isActive)
+          isActiveUser(row.original.isActive, t)
         ),
       }
   ];

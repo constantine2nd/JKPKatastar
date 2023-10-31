@@ -16,5 +16,9 @@
   "password": "Password",
   "token": "Token",
   "dateBirth": "Datum rođenja",
-  "dateDeath": "Datum smrti"
+  "dateDeath": "Datum smrti",
+  "yes": "DA",
+  "no": "NE",
+  "role": "Uloga",
+  "Active": "Aktivan"
 }

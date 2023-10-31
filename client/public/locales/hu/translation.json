@@ -17,5 +17,9 @@
   "password": "Jelszó",
   "token": "Token",
   "dateBirth": "Születési dátum",
-  "dateDeath": "Halál dátuma"
+  "dateDeath": "Halál dátuma",
+  "yes": "Igen",
+  "no": "Nem",
+  "role": "Szerep",
+  "Active": "Aktív"
 }

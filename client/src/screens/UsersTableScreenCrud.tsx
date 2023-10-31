@@ -32,6 +32,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { updateUser, deleteUser } from '../features/userSlice';
 import axios from 'axios';
+import { getLanguage } from "../utils/languageSelector";
 import { isActiveUser } from "../components/IsActiveUser"
 
 const UsersTableScreenCrud = () => {
@@ -48,8 +49,8 @@ const UsersTableScreenCrud = () => {
     'USER',
   ] 
   const active = [
-    { label: 'DA', value: true },
-    { label: 'NE', value: false },
+    { label: t('yes'), value: true },
+    { label: t('no'), value: false },
   ]
 
   const columns: MRT_ColumnDef<User>[] = [
@@ -61,7 +62,7 @@ const UsersTableScreenCrud = () => {
       },
       {
         accessorKey: 'name',
-        header: 'Name',
+        header: t('name'),
         muiEditTextFieldProps: {
           type: 'email',
           required: true,
@@ -78,7 +79,7 @@ const UsersTableScreenCrud = () => {
       },
       {
         accessorKey: 'email',
-        header: 'Email',
+        header: t('email'),
         enableEditing: false,
         muiEditTextFieldProps: {
           type: 'email',
@@ -95,20 +96,20 @@ const UsersTableScreenCrud = () => {
       },
       {
         accessorKey: 'role',
-        header: 'Role',
+        header: t('role'),
         editVariant: 'select',
         editSelectOptions: roles,
       },
       {
         accessorKey: 'isActive',
-        header: 'Active',
+        header: t('Active'),
         editVariant: 'select',
         editSelectOptions: active,
         muiEditTextFieldProps: {
           select: true,
         },
         Cell: ({ row }) => (
-          isActiveUser(row.original.isActive)
+          isActiveUser(row.original.isActive, t)
         ),
       },
     ];
@@ -170,6 +171,7 @@ const UsersTableScreenCrud = () => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedUsers,
+    localization: getLanguage(i18n),
     createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
     editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
