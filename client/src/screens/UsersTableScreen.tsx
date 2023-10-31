@@ -17,6 +17,7 @@ import {
 
 import { User } from "../interfaces/UserInterfaces";
 import { getLanguage } from "../utils/languageSelector";
+import { isActiveUser } from "../components/IsActiveUser"
 
 
 const UsersTableScreen: React.FC = () => {
@@ -37,13 +38,16 @@ const UsersTableScreen: React.FC = () => {
         header: t('email'),
       },
       {
-        accessorKey: 'password',
-        header: t('password'),
+        accessorKey: 'role',
+        header: t('role'),
       },
       {
-        accessorKey: 'token',
-        header: t('token'),
-      },
+        accessorKey: 'isActive',
+        header: t('Active'),
+        Cell: ({ row }) => (
+          isActiveUser(row.original.isActive)
+        ),
+      }
   ];
   const usersStatus = useSelector(getAllUsersStatus);
   const error = useSelector(getAllUsersError);
