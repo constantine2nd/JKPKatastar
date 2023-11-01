@@ -75,7 +75,7 @@ const UsersTableScreenCrud = () => {
         accessorKey: 'name',
         header: t('name'),
         muiEditTextFieldProps: {
-          type: 'email',
+          type: 'text',
           required: true,
           error: !!validationErrors?.name,
           helperText: validationErrors?.name,
@@ -205,7 +205,7 @@ const UsersTableScreenCrud = () => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">Create New User</DialogTitle>
+        <DialogTitle variant="h3">{t("Create New User")}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
         >
@@ -219,7 +219,7 @@ const UsersTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">Edit User</DialogTitle>
+        <DialogTitle variant="h3">{t("Edit User")}</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
         >
@@ -304,11 +304,7 @@ function useGetUsers(users: User[]) {
     queryKey: ['users-all'],
     queryFn: async () => {
       //send api request here 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
       return Promise.resolve(users);
-      // const response = await axios.get(`/api/users`);
-      // console.log(response)
-      // return Promise.resolve(response.data);
     },
     refetchOnWindowFocus: false,
   });
@@ -320,8 +316,6 @@ function useUpdateUser(dispatch: any) {
   return useMutation({
     mutationFn: async (user: User) => {
       //send api update request here
-      // await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-      // return Promise.resolve();
       const handleSubmit = async (values: Object) => {
         dispatch(updateUser(values));
       };
