@@ -35,7 +35,7 @@ const UserLogin: React.FC = () => {
 
   useEffect(() => {
     if (userStatus === "succeeded") {
-      navigate("/");
+      navigate("/landing");
     }
   }, [navigate, userStatus]);
 

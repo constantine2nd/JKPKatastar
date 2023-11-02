@@ -22,55 +22,41 @@ import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyr
 import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
 //Import Material React Table Translations
 import { MRT_Localization_HU } from "material-react-table/locales/hu";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import {
-  selectAllUsers,
-  getAllUsersError,
-  getAllUsersStatus,
-  getAllUsers,
-} from "../features/allUsersSlice";
+  fetchCemeteries,
+  selectAllCemeteries,
+  getAllCemeteriesError,
+  getAllCemeteriesStatus,
+} from "../features/cemeteriesSlice";
 
-import { User } from "../interfaces/UserInterfaces";
+import { Cemetery } from "../interfaces/CemeteryInterfaces";
 
-const UsersTableScreen: React.FC = () => {
-  const users: User[] | null = useSelector(selectAllUsers);
-  let xxx: User[] = [];
-  if (users) {
-    xxx = users;
-  }
-  //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<User>[]>(
-    () => [
-      {
-        accessorKey: "_id",
-        header: "ID",
-      },
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "email",
-        header: "Email",
-      },
-      {
-        accessorKey: "password",
-        header: "Password",
-      },
-      {
-        accessorKey: "token",
-        header: "Token",
-      },
-    ],
-    []
-  );
-  const usersStatus = useSelector(getAllUsersStatus);
-  const error = useSelector(getAllUsersError);
+const LandingScreen: React.FC = () => {
+  const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
+  const [cemeteryId, setCemeteryId] = React.useState("");
+  let navigate = useNavigate();
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const selectedCemetery = cemeteries?.find(
+      (cem) => cem._id === event.target.value
+    );
+    navigate("/", { state: { cemetery: selectedCemetery } });
+    // setCemeteryId(event.target.value as string);
+  };
+
+  const usersStatus = useSelector(getAllCemeteriesStatus);
+  const error = useSelector(getAllCemeteriesError);
   const dispatch = useDispatch<any>();
   useEffect(() => {
     if (usersStatus === "idle") {
       console.log("UPAO");
-      dispatch(getAllUsers());
+      dispatch(fetchCemeteries());
     }
   }, [usersStatus, dispatch]);
 
@@ -88,34 +74,28 @@ const UsersTableScreen: React.FC = () => {
 
   return (
     <>
-      <h1>Users table screen</h1>
-      <MaterialReactTable
-        columns={columns}
-        data={xxx}
-        enableRowNumbers
-        rowNumberMode="original"
-        localization={MRT_Localization_HU}
-        muiTablePaperProps={{
-          elevation: 0,
-          sx: {
-            borderRadius: "0",
-            border: "1px dashed #e0e0e0",
-          },
-        }}
-        muiTableBodyProps={{
-          sx: (theme) => ({
-            "& tr:nth-of-type(odd) > td": {
-              backgroundColor: darken(theme.palette.background.default, 0.1),
-            },
-          }),
-        }}
-      />
-      ;
+      <h1>Landing page screen</h1>
+      <Box sx={{ minWidth: 120 }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Groblje</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={cemeteryId}
+            label="Age"
+            onChange={handleChange}
+          >
+            {cemeteries?.map((cemetery) => (
+              <MenuItem value={cemetery._id}>{cemetery.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
     </>
   );
 };
 
-export default UsersTableScreen;
+export default LandingScreen;
 function createTheme(arg0: { palette: { mode: string } }) {
   throw new Error("Function not implemented.");
 }

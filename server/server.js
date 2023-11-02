@@ -7,6 +7,7 @@ import gravesRoutes from "./routes/graves-routes.js";
 import deceasedRoutes from "./routes/deceased-routes.js";
 import payerRoutes from "./routes/payer-routes.js";
 import userRoutes from "./routes/user-routes.js";
+import cemeteriesRoutes from "./routes/cemeteries-routes.js";
 
 dotenv.config();
 connectDB();
@@ -18,6 +19,7 @@ app.use("/api/graves", gravesRoutes);
 app.use("/api/deceased", deceasedRoutes);
 app.use("/api/payer", payerRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/cemeteries", cemeteriesRoutes);
 
 app.use((err, req, res, next) => {
   console.log(err.message);

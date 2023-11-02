@@ -12,6 +12,7 @@ import AddUserScreen from "./screens/AddUserScreen";
 import LoginScreen from "./screens/LoginScreen";
 import UsersTableScreen from "./screens/UsersTableScreen";
 import DeceasedTableScreen from "./screens/DeceasedTableScreen";
+import LandingScreen from "./screens/LandingScreen";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomeScreen />} />
+          <Route path="/landing" element={<LandingScreen />} />
           <Route path="/add-grave" element={<AddGraveScreen />} />
           <Route path="/single-grave" element={<SingleGraveScreen />} />
           <Route path="/add-deceased" element={<AddDeceasedScreen />} />

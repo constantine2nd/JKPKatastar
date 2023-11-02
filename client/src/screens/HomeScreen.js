@@ -7,7 +7,7 @@ import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
 import {
   getGravesError,
   getGravesStatus,
-  fetchGraves,
+  fetchGravesForCemetary,
   selectAllGraves,
 } from "../features/gravesSlice";
 import Loader from "../components/Loader";
@@ -54,11 +54,12 @@ const HomeScreen = (props) => {
   let navigate = useNavigate();
   const location = useLocation();
   console.log(location.state);
+  const selectedCemetery = location.state?.cemetery;
   //|| location.state?.sender === "ADDGraveSreen"
   useEffect(() => {
     if (gravesStatus === "idle") {
       console.log("UPAO");
-      dispatch(fetchGraves());
+      dispatch(fetchGravesForCemetary(selectedCemetery._id));
     }
   }, [gravesStatus, dispatch]);
   /*   useEffect(() => {
@@ -128,22 +129,19 @@ const HomeScreen = (props) => {
           Idi na tabelarni prikaz
         </Button>
         <br />
+        <h3>Naziv: {selectedCemetery.name}</h3>
 
         <Map
           containerStyle={mapStyles}
           ref={mapRef}
-          zoom={19}
+          zoom={selectedCemetery.zoom}
           google={props.google}
-          initialCenter={{ lat: 45.406017693851055, lng: 19.902106518542315 }}
+          initialCenter={{
+            lat: selectedCemetery.LAT,
+            lng: selectedCemetery.LON,
+          }}
           mapType="satellite"
         >
-          {/* <Polygon
-            path={[
-              { lat: 45.406017693851055, lng: 19.902106518542315 },
-              { lat: 46.406017693851055, lng: 20.902106518542315 },
-              { lat: 47.406017693851055, lng: 18.902106518542315 },
-            ]}
-          ></Polygon> */}
           {graves.map((grave) => {
             const iconUrl =
               grave.capacity - grave.numberOfDeceaseds > 0

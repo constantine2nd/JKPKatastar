@@ -10,7 +10,7 @@ import ButtonMUI from "@mui/material/Button";
 import { dateFormatter } from "../utils/dateFormatter";
 import {
   selectAllGraves,
-  fetchGraves,
+  fetchAllGraves,
   getGravesStatus,
   getGravesError,
   deleteSingleGrave,
@@ -179,7 +179,7 @@ const GravesTableScreen: React.FC = () => {
   useEffect(() => {
     if (gravesStatus === "idle") {
       console.log("UPAO");
-      dispatch(fetchGraves());
+      dispatch(fetchAllGraves());
     }
   }, [gravesStatus, dispatch]);
 

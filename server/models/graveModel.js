@@ -22,6 +22,10 @@ const graveSchema = mongoose.Schema({
   contractTo: {
     type: Date,
   },
+  cemetery: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cemetery",
+  },
 });
 
 const Grave = mongoose.model("Grave", graveSchema);
