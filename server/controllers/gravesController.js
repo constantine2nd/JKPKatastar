@@ -1,6 +1,8 @@
 import Grave from "../models/graveModel.js";
 import Deceased from "../models/deceasedModel.js";
 import Payer from "../models/payerModel.js";
+//import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
 const saveGrave = async (req, res, next) => {
   console.log(req.body);
@@ -62,6 +64,45 @@ const getGraves = async (req, res, next) => {
   }
 };
 
+const getGravesForCemetery = async (req, res, next) => {
+  console.log("getGravesForCemetery");
+  console.log(req.params.id);
+  let cemeteryId = new mongoose.Types.ObjectId(req.params.id);
+  // let cemeteryId = new ObjectId(req.params.id);
+  try {
+    //let cemeteryId = ObjectId(req.params.id);
+    //const foundGraves = await Grave.find();
+    const foundGraves = await Grave.aggregate([
+      { $match: { cemetery: cemeteryId } },
+      {
+        $lookup: {
+          from: "deceaseds", // Ime kolekcije sa preminulima
+          localField: "_id", // Polje u grobu koje odgovara ID-ju groba
+          foreignField: "grave", // Polje u preminulima koje odgovara ID-ju groba
+          as: "deceaseds", // Naziv polja koje sadrži niz preminulih
+        },
+      },
+      {
+        $project: {
+          _id: 1, // Sačuvajte ID groba
+          number: 1, // Sačuvajte ime groba
+          row: 1, // Sačuvajte ime groba
+          field: 1, // Sačuvajte ime groba
+          capacity: 1, // Sačuvajte ime groba
+          contractTo: 1, // Sačuvajte ime groba
+          LAT: 1, // Sačuvajte ime groba
+          LON: 1, // Sačuvajte ime groba
+          numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
+        },
+      },
+    ]);
+    res.json(foundGraves);
+  } catch (error) {
+    console.log(error);
+    return res.json({ message: "Cound not get data" });
+  }
+};
+
 const getSingleGrave = async (req, res, next) => {
   const graveId = req.params.id;
   try {
@@ -94,4 +135,10 @@ const deleteSingleGrave = async (req, res, next) => {
   }
 };
 
-export { saveGrave, getGraves, getSingleGrave, deleteSingleGrave };
+export {
+  saveGrave,
+  getGraves,
+  getSingleGrave,
+  deleteSingleGrave,
+  getGravesForCemetery,
+};

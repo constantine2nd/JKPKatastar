@@ -5,15 +5,26 @@ import { RootState } from "../store";
 
 //const GRAVE_URL = 'https://api.spacexdata.com/v3/rockets';
 
-export const fetchGraves = createAsyncThunk("graves/fetchGraves", async () => {
-  const response = await axios.get("/api/graves");
-  return response.data;
-});
+export const fetchGravesForCemetary = createAsyncThunk(
+  "graves/fetchGravesForCemetary",
+  async (id: string) => {
+    const response = await axios.get(`/api/graves/all/${id}`);
+    return response.data;
+  }
+);
+
+export const fetchAllGraves = createAsyncThunk(
+  "graves/fetchGraves",
+  async () => {
+    const response = await axios.get(`/api/graves/all`);
+    return response.data;
+  }
+);
 
 export const deleteSingleGrave: any = createAsyncThunk(
   "graves/deleteSingleGrave",
   async (id: string) => {
-    const response = await axios.delete(`/api/graves/${id}`);
+    const response = await axios.delete(`/api/graves/single/${id}`);
     console.log(response);
     return response.data.id;
   }
@@ -27,7 +38,7 @@ export const addSingleGrave = createAsyncThunk(
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(`/api/graves`, dataToSend, config);
+    const response = await axios.post(`/api/graves/single`, dataToSend, config);
     // console.log(response.data);
     return response.data;
   }
@@ -63,14 +74,25 @@ const gravesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGraves.pending, (state) => {
+      .addCase(fetchGravesForCemetary.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchGraves.fulfilled, (state, action) => {
+      .addCase(fetchGravesForCemetary.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.graves = action.payload;
       })
-      .addCase(fetchGraves.rejected, (state, action) => {
+      .addCase(fetchGravesForCemetary.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchAllGraves.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchAllGraves.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.graves = action.payload;
+      })
+      .addCase(fetchAllGraves.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

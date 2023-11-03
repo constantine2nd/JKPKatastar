@@ -13,6 +13,7 @@ import LoginScreen from "./screens/LoginScreen";
 import UsersTableScreen from "./screens/UsersTableScreen";
 import UsersTableScreenCrudWithProviders from "./screens/UsersTableScreenCrud";
 import DeceasedTableScreen from "./screens/DeceasedTableScreen";
+import LandingScreen from "./screens/LandingScreen";
 //Date Picker Imports - these should just be in your Context Provider
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -26,6 +27,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomeScreen />} />
+          <Route path="/landing" element={<LandingScreen />} />
           <Route path="/add-grave" element={<AddGraveScreen />} />
           <Route path="/single-grave" element={<SingleGraveScreen />} />
           <Route path="/add-deceased" element={<AddDeceasedScreen />} />

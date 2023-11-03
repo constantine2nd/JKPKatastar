@@ -72,8 +72,6 @@ const UsersTableScreen: React.FC = () => {
     );
   }
 
-
-  
   return (
     <>
       <h1>Users table screen</h1>
@@ -107,11 +105,9 @@ const UsersTableScreen: React.FC = () => {
       />;
     </>
   );
-  
 };
 
 export default UsersTableScreen;
-function createTheme(arg0: { palette: { mode: string; }; }) {
+function createTheme(arg0: { palette: { mode: string } }) {
   throw new Error("Function not implemented.");
 }
-
