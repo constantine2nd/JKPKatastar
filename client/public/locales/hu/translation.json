@@ -25,5 +25,8 @@
   "Edit": "Szerkesztés",
   "Delete": "Töröl",
   "Create New User": "Új felhasználó létrehozása",
-  "Edit User": "Felhasználó szerkesztése"
+  "Edit User": "Felhasználó szerkesztése",
+  "Create New Cemetery": "Új temető létrehozása",
+  "Edit Cemetery": "Temető szerkesztése",
+  "Zoom": "Zoomolás"
 }

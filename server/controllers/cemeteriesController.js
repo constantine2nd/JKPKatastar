@@ -17,4 +17,29 @@ const getAllCemeteries = async (req, res, next) => {
   }
 };
 
-export { getAllCemeteries };
+
+const updateCemetery = async (req, res) => {
+  const { id, name, LAT, LON, zoom } = req.body;
+  
+  const filter = { _id: id }; // Criteria to find a row
+  const update = { name: name, LAT: LAT, LON: LON, zoom: zoom }; // Fields to update
+
+  const updatedCemetery = await Cemetery.findOneAndUpdate(filter, update, {new: true});
+
+  console.log(updatedCemetery);
+  
+  if (updatedCemetery) {
+    res.status(200).json({
+      _id: updatedCemetery._id,
+      name: updatedCemetery.name,
+      LAT: updatedCemetery.LAT,
+      LON: updatedCemetery.LON,
+      zoom: updatedCemetery.zoom,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Cannot update the cemetery");
+  }
+};
+
+export { getAllCemeteries, updateCemetery };
