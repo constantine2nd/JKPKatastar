@@ -14,6 +14,6 @@ router.route("/all/:id").get(getGravesForCemetery);
 router.route("/single/:id").get(getSingleGrave);
 router.route("/single/:id").delete(deleteSingleGrave);
 
-router.route("/").post(saveGrave);
+router.route("/single").post(saveGrave);
 
 export default router;
