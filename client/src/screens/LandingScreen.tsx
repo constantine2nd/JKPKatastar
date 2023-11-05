@@ -31,7 +31,7 @@ const LandingScreen: React.FC = () => {
       (cem) => cem._id === event.target.value
     );
     navigate("/", { state: { cemetery: selectedCemetery } });
-    setCemeteryId(event.target.value as string);
+    // setCemeteryId(event.target.value as string);
   };
 
   const usersStatus = useSelector(getAllCemeteriesStatus);
