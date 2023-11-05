@@ -124,7 +124,7 @@ const GravesTableScreen: React.FC = () => {
       header: t(""),
       columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
       Cell: ({ row }) => (
-        DeleteAndMaybeRemoveButton(row.original._id, "/single-grave")
+        DeleteAndMaybeRemoveButton(row.original._id, "/single-grave", handleShowModal)
       ),
     },
   ];
