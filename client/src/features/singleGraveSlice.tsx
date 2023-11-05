@@ -58,7 +58,7 @@ export const addDeacesed = createAsyncThunk(
 export const fetchSingleGrave = createAsyncThunk(
   "grave/fetchSingleGrave",
   async (graveId: string) => {
-    const response = await axios.get(`/api/graves/${graveId}`);
+    const response = await axios.get(`/api/graves/single/${graveId}`);
     return response.data;
   }
 );
