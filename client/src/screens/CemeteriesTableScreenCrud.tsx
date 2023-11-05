@@ -31,9 +31,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../utils/languageSelector";
 import { Cemetery } from '../interfaces/CemeteryInterfaces';
-import { fetchCemeteries, getAllCemeteriesError, getAllCemeteriesStatus, selectAllCemeteries, updateCemetery } from '../features/cemeteriesSlice';
-import { deleteUser } from '../features/allUsersSlice';
-import { Console } from 'console';
+import { addCemetery, deleteCemetery, fetchCemeteries, getAllCemeteriesError, getAllCemeteriesStatus, selectAllCemeteries, updateCemetery } from '../features/cemeteriesSlice';
+import { selectUser } from '../features/userSlice';
 
 const CemeteriesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -45,6 +44,7 @@ const CemeteriesTableScreenCrud = () => {
   const dispatch = useDispatch<any>();
   const cemeteriesStatus = useSelector(getAllCemeteriesStatus);
   const error = useSelector(getAllCemeteriesError);
+  const user = useSelector(selectUser);
   useEffect(() => {
     if (cemeteriesStatus === "idle") {
       console.log("UPAO");
@@ -131,20 +131,20 @@ const CemeteriesTableScreenCrud = () => {
 
   //call CREATE hook
   const { mutateAsync: createUser, isPending: isCreatingUser } =
-    useCreateUser();
+    useCreateCemetery(dispatch);
   //call READ hook
   const {
     data: fetchedCemeteries = [],
-    isError: isLoadingUsersError,
-    isFetching: isFetchingUsers,
-    isLoading: isLoadingUsers,
+    isError: isLoadingCemeteriesError,
+    isFetching: isFetchingCemeteries,
+    isLoading: isLoadingCemeteries,
   } = useGetCemeteries(cemeteries);
   //call UPDATE hook
-  const { mutateAsync: updateUser, isPending: isUpdatingUser } =
+  const { mutateAsync: updateCemetery, isPending: isUpdatingCemetery } =
     useUpdateCemetery(dispatch);
   //call DELETE hook
-  const { mutateAsync: deleteUser, isPending: isDeletingUser } =
-    useDeleteUser(dispatch);
+  const { mutateAsync: deleteCemetery, isPending: isDeletingCemetery } =
+    useDeleteCemetery(dispatch);
 
   //CREATE action
   const handleCreateUser: MRT_TableOptions<Cemetery>['onCreatingRowSave'] = async ({
@@ -162,7 +162,7 @@ const CemeteriesTableScreenCrud = () => {
   };
 
   //UPDATE action
-  const handleSaveUser: MRT_TableOptions<Cemetery>['onEditingRowSave'] = async ({
+  const handleSaveCemetery: MRT_TableOptions<Cemetery>['onEditingRowSave'] = async ({
     values,
     table,
   }) => {
@@ -173,14 +173,14 @@ const CemeteriesTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await updateUser(values);
+    await updateCemetery(values);
     table.setEditingRow(null); //exit editing mode
   };
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Cemetery>) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteUser(row.original._id);
+      deleteCemetery(row.original._id);
     }
   };
 
@@ -192,7 +192,7 @@ const CemeteriesTableScreenCrud = () => {
     editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row._id,
-    muiToolbarAlertBannerProps: isLoadingUsersError
+    muiToolbarAlertBannerProps: isLoadingCemeteriesError
       ? {
           color: 'error',
           children: 'Error loading data',
@@ -206,7 +206,7 @@ const CemeteriesTableScreenCrud = () => {
     onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: handleCreateUser,
     onEditingRowCancel: () => setValidationErrors({}),
-    onEditingRowSave: handleSaveUser,
+    onEditingRowSave: handleSaveCemetery,
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
@@ -242,6 +242,13 @@ const CemeteriesTableScreenCrud = () => {
             <EditIcon />
           </IconButton>
         </Tooltip>
+        {(user?.role === "SUPER_ADMIN") && (
+            <Tooltip title={t("Delete")}>
+              <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+        )}
       </Box>
     ),
     renderTopToolbarCustomActions: ({ table }) => (
@@ -261,10 +268,10 @@ const CemeteriesTableScreenCrud = () => {
       </Button>
     ),
     state: {
-      isLoading: isLoadingUsers,
-      isSaving: isCreatingUser || isUpdatingUser || isDeletingUser,
-      showAlertBanner: isLoadingUsersError,
-      showProgressBars: isFetchingUsers,
+      isLoading: isLoadingCemeteries,
+      isSaving: isCreatingUser || isUpdatingCemetery || isDeletingCemetery,
+      showAlertBanner: isLoadingCemeteriesError,
+      showProgressBars: isFetchingCemeteries,
     },
   });
 
@@ -272,23 +279,30 @@ const CemeteriesTableScreenCrud = () => {
 };
 
 //CREATE hook (post new user to api)
-function useCreateUser() {
+function useCreateCemetery(dispatch: any) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (user: Cemetery) => {
+    mutationFn: async (cemetery: Cemetery) => {
       //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-      return Promise.resolve();
+      const handleSubmit = async (values: Object) => {
+        dispatch(addCemetery(values));
+      };
+      return handleSubmit({
+        name: cemetery.name,
+        LAT: cemetery.LAT,
+        LON: cemetery.LON,
+        zoom: cemetery.zoom,
+      });
     },
     //client side optimistic update
-    onMutate: (newUserInfo: Cemetery) => {
+    onMutate: (newCemeteryInfo: Cemetery) => {
       queryClient.setQueryData(
-        ['users-all'],
+        ['cemetery-all'],
         (prevCemeteries: any) =>
           [
             ...prevCemeteries,
             {
-              ...newUserInfo,
+              ...newCemeteryInfo,
               id: (Math.random() + 1).toString(36).substring(7),
             },
           ] as Cemetery[],
@@ -342,7 +356,7 @@ function useUpdateCemetery(dispatch: any) {
 }
 
 //DELETE hook (delete Cemetery in api)
-function useDeleteUser(dispatch: any) {
+function useDeleteCemetery(dispatch: any) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (userId: string) => {
@@ -350,7 +364,7 @@ function useDeleteUser(dispatch: any) {
       await new Promise((resolve) => setTimeout(resolve, 0)); //fake api call
       // return Promise.resolve();
       const handleSubmit = async (id: string) => {
-        dispatch(deleteUser(id));
+        dispatch(deleteCemetery(id));
       };
       return handleSubmit(userId);
     },

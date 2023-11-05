@@ -11,6 +11,19 @@ export const fetchCemeteries = createAsyncThunk(
   }
 );
 
+export const addCemetery = createAsyncThunk(
+  "users/addCemetery",
+  async (dataToSend: any) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(`/api/cemeteries/addcemetery`, dataToSend, config);
+    return response.data;
+  }
+);
+
 export const updateCemetery = createAsyncThunk(
   "users/updateCemetery",
   async (dataToSend: any, { dispatch, getState, rejectWithValue }) => {
@@ -31,6 +44,14 @@ export const updateCemetery = createAsyncThunk(
       console.log(error)
     }
     return newCemeteries;
+  }
+);
+
+export const deleteCemetery= createAsyncThunk(
+  "users/deleteCemetery",
+  async (id: string) => {
+    const response = await axios.delete(`/api/cemeteries/${id}`);
+    return response.data;
   }
 );
 
@@ -64,6 +85,18 @@ const allCemeteriesSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
+      .addCase(addCemetery.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(addCemetery.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.cemeteries.push(action.payload);
+      })
+      .addCase(addCemetery.rejected, (state, action) => {
+        state.cemeteries = [];
+        state.status = "failed";
+        state.error = action.error.message;
+      })
       .addCase(updateCemetery.pending, (state) => {
         state.status = "loading";
       })
@@ -74,6 +107,17 @@ const allCemeteriesSlice = createSlice({
       .addCase(updateCemetery.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(deleteCemetery.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(deleteCemetery.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteCemetery.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.cemeteries = state.cemeteries.filter((cemeteries) => cemeteries._id !== action.payload.id)
       });
   },
 });
