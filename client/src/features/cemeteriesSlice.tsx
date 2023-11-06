@@ -78,6 +78,7 @@ const allCemeteriesSlice = createSlice({
       .addCase(fetchCemeteries.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.cemeteries = action.payload;
+        localStorage.setItem("all-cemeteries", JSON.stringify(state.cemeteries));
       })
       .addCase(fetchCemeteries.rejected, (state, action) => {
         state.cemeteries = [];
@@ -90,6 +91,7 @@ const allCemeteriesSlice = createSlice({
       .addCase(addCemetery.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.cemeteries.push(action.payload);
+        localStorage.setItem("all-cemeteries", JSON.stringify(state.cemeteries));
       })
       .addCase(addCemetery.rejected, (state, action) => {
         state.cemeteries = [];
@@ -102,6 +104,7 @@ const allCemeteriesSlice = createSlice({
       .addCase(updateCemetery.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.cemeteries = action.payload;
+        localStorage.setItem("all-cemeteries", JSON.stringify(state.cemeteries));
       })
       .addCase(updateCemetery.rejected, (state, action) => {
         state.status = "failed";
@@ -117,6 +120,7 @@ const allCemeteriesSlice = createSlice({
       .addCase(deleteCemetery.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.cemeteries = state.cemeteries.filter((cemeteries) => cemeteries._id !== action.payload.id)
+        localStorage.setItem("all-cemeteries", JSON.stringify(state.cemeteries));
       });
   },
 });

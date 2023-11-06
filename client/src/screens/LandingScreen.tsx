@@ -18,12 +18,13 @@ import {
 } from "../features/cemeteriesSlice";
 
 import { Cemetery } from "../interfaces/CemeteryInterfaces";
+import { getSelectedCemetery } from "../utils/cemeterySelector";
 
 const LandingScreen: React.FC = () => {
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
-  const [cemeteryId, setCemeteryId] = React.useState("");
+  const [cemeteryId, setCemeteryId] = React.useState(getSelectedCemetery());
   let navigate = useNavigate();
-
+  console.log(cemeteryId);
   const { t, i18n } = useTranslation();
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -31,7 +32,8 @@ const LandingScreen: React.FC = () => {
       (cem) => cem._id === event.target.value
     );
     navigate("/", { state: { cemetery: selectedCemetery } });
-    // setCemeteryId(event.target.value as string);
+    setCemeteryId(event.target.value);
+    localStorage.setItem("selected-cemetery", JSON.stringify(selectedCemetery));
   };
 
   const usersStatus = useSelector(getAllCemeteriesStatus);

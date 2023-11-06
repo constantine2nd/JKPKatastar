@@ -9,11 +9,12 @@ import {
   Button,
   Form as BootstrapForm,
 } from "react-bootstrap";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { addSingleGrave } from "../features/gravesSlice";
 import { useTranslation } from "react-i18next";
+import { getSelectedCemetery } from "../utils/cemeterySelector";
 
 interface FormData {
   graveNumber: string;
@@ -23,9 +24,13 @@ interface FormData {
   LAT1: string;
   LON1: string;
   contractTo: string;
+  cemeteryId: string;
 }
 
 const AddGrave: React.FC = () => {
+
+  const [selectedCemetery, setSelectedCemetery] = React.useState(getSelectedCemetery());
+console.log(selectedCemetery._id)
   const initialValues: FormData = {
     graveNumber: "",
     graveField: "",
@@ -34,6 +39,7 @@ const AddGrave: React.FC = () => {
     LAT1: "",
     LON1: "",
     contractTo: "",
+    cemeteryId: selectedCemetery._id,
   };
 
   let navigate = useNavigate();

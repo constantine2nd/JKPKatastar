@@ -74,7 +74,6 @@ const expiredContract = (contractTo: string) => {
 };
 
 const capacityExt = (renderedValue: string) => {
-  console.log(renderedValue);
   return capacity(renderedValue.split("/")[0], renderedValue.split("/")[1]);
 };
 

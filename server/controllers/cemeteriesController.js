@@ -1,4 +1,6 @@
 import Cemetery from "../models/cemeteryModel.js";
+import Grave from "../models/graveModel.js";
+import mongoose from "mongoose";
 
 const getAllCemeteries = async (req, res, next) => {
   try {
@@ -70,6 +72,20 @@ const updateCemetery = async (req, res) => {
 const deleteCemetery = async (req, res, next) => {
   const id = req.params.id;
   try {
+    const gravesCount = await Grave.aggregate([
+      { $match: { cemetery: new mongoose.Types.ObjectId(id) } },
+      { $count: "totalCount" }
+    ]);
+    console.log(gravesCount)
+    if (gravesCount.length > 0) {
+      const [{totalCount}] = gravesCount
+      if (totalCount > 0) {
+        res.status(400);
+        throw new Error("Cannot delete the cemetery");
+      }
+    }
+    
+
     const result = await Cemetery.deleteOne({ _id: id });
     console.log(res);
     if (result.deletedCount === 1) {
@@ -81,7 +97,7 @@ const deleteCemetery = async (req, res, next) => {
     // res.send(objToSend);
   } catch (error) {
     console.log(error);
-    return res.json({ message: "Cound not get data" });
+    return res.json({ message: "Cannot delete the cemetery" });
   }
 };
 
