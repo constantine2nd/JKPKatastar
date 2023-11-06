@@ -77,7 +77,6 @@ const allCemeteriesSlice = createSlice({
       })
       .addCase(fetchCemeteries.fulfilled, (state, action) => {
         state.status = "succeeded";
-        localStorage.setItem("userInfo", JSON.stringify(action.payload));
         state.cemeteries = action.payload;
       })
       .addCase(fetchCemeteries.rejected, (state, action) => {
