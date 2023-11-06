@@ -12,6 +12,7 @@ import {
 } from "../features/gravesSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { getSelectedCemetery } from "../utils/cemeterySelector";
 
 const mapStyles = {
   width: "70%",
@@ -54,7 +55,8 @@ const HomeScreen = (props) => {
   let navigate = useNavigate();
   const location = useLocation();
   console.log(location.state);
-  const selectedCemetery = location.state?.cemetery;
+  // const selectedCemetery = location.state?.cemetery;
+  const [selectedCemetery, setCemeteryId] = React.useState(getSelectedCemetery());
   //|| location.state?.sender === "ADDGraveSreen"
   useEffect(() => {
     if (gravesStatus === "idle") {
