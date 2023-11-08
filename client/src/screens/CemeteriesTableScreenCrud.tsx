@@ -33,8 +33,31 @@ import { getLanguage } from "../utils/languageSelector";
 import { Cemetery } from '../interfaces/CemeteryInterfaces';
 import { addCemetery, deleteCemetery, fetchCemeteries, getAllCemeteriesError, getAllCemeteriesStatus, selectAllCemeteries, updateCemetery } from '../features/cemeteriesSlice';
 import { selectUser } from '../features/userSlice';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { jsPDF } from 'jspdf'; //or use your library of choice here
+import autoTable from 'jspdf-autotable';
+import '../fonts/Roboto-Regular-normal'
 
 const CemeteriesTableScreenCrud = () => {
+
+  const handleExportRows = (rows: MRT_Row<Cemetery>[]) => {
+    const doc = new jsPDF();
+    doc.setFont("Roboto-Regular", "normal");
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = columns.map((c) => c.header);
+
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: tableData,
+      styles: {
+        font: 'Roboto-Regular',
+        fontStyle: 'normal',
+      }
+    });
+
+    doc.save('cemeteries.pdf');
+  };
+
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
@@ -252,6 +275,41 @@ const CemeteriesTableScreenCrud = () => {
       </Box>
     ),
     renderTopToolbarCustomActions: ({ table }) => (
+      <>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '16px',
+          padding: '8px',
+          flexWrap: 'wrap',
+        }}
+
+      >
+        <Button
+          disabled={table.getPrePaginationRowModel().rows.length === 0}
+          //export all rows, including from the next page, (still respects filtering and sorting)
+          onClick={() => handleExportRows(table.getPrePaginationRowModel().rows)}
+          startIcon={<FileDownloadIcon />}
+        >
+          Export All Rows
+        </Button>
+        <Button
+          disabled={table.getRowModel().rows.length === 0}
+          //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
+          onClick={() => handleExportRows(table.getRowModel().rows)}
+          startIcon={<FileDownloadIcon />}
+        >
+          Export Page Rows
+        </Button>
+        <Button
+          disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()}
+          //only export selected rows
+          onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
+          startIcon={<FileDownloadIcon />}
+        >
+          Export Selected Rows
+        </Button>
+      </Box>
       <Button
         variant="contained"
         onClick={() => {
@@ -262,10 +320,11 @@ const CemeteriesTableScreenCrud = () => {
           //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
           //   }),
           // );
-        }}
+        } }
       >
-        {t("Create New Cemetery")}
-      </Button>
+          {t("Create New Cemetery")}
+        </Button>
+      </>
     ),
     state: {
       isLoading: isLoadingCemeteries,
