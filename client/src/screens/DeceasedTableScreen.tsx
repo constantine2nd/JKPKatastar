@@ -244,6 +244,8 @@ const DeceasedTableScreen: React.FC = () => {
             columns={columns}
             data={deceased}
             enableRowNumbers
+            enablePagination={false}
+            enableRowVirtualization
             rowNumberMode="original"
             localization={getLanguage(i18n)}
             muiTablePaperProps={{
