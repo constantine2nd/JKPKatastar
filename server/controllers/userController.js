@@ -31,6 +31,51 @@ const registerUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { name, email, role, isActive } = req.body;
+
+  console.log(isActive)
+  
+  const filter = { email: email }; // Criteria to find a row
+  const update = { name: name, isActive: isActive, role: role }; // Fields to update
+
+  const updatedUser = await User.findOneAndUpdate(filter, update, {new: true});
+
+  console.log(updatedUser);
+  
+  if (updatedUser) {
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      isActive: updatedUser.isActive,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Cannot update the user");
+  }
+};
+
+
+const deleteUser = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const result = await User.deleteOne({ _id: id });
+    console.log(res);
+    if (result.deletedCount === 1) {
+      console.log("deleted count 1");
+      res.send({ id: id });
+    } else {
+      res.json({ message: "Nothing to delete" });
+    }
+    // res.send(objToSend);
+  } catch (error) {
+    console.log(error);
+    return res.json({ message: "Cound not get data" });
+  }
+};
+
 const authUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
@@ -68,4 +113,4 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-export { registerUser, authUser, getAllUsers };
+export { registerUser, updateUser, deleteUser, authUser, getAllUsers };

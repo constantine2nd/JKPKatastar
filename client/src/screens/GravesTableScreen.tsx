@@ -22,19 +22,22 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 // MUI Table
-import { createTheme, ThemeProvider, useTheme } from "@mui/material";
+import { Box, createTheme, ThemeProvider, useTheme } from "@mui/material";
 import { darken, styled } from "@mui/material/styles";
 
 // MUI Chip
 import Chip from "@mui/material/Chip";
-import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
-import { User } from "../interfaces/UserInterfaces";
-import { MRT_Localization_HU } from "material-react-table/locales/hu";
-//Import Material React Table Translations
-import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyrl-RS";
-//Import Material React Table Translations
-import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
 import { srRS } from "@mui/material/locale";
+import { getLanguage } from "../utils/languageSelector";
+import { DeleteAndMaybeRemoveButton }  from "../components/DetailAndMaybeRemoveButton";
+
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
+} from 'material-react-table';
+
+
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -71,7 +74,6 @@ const expiredContract = (contractTo: string) => {
 };
 
 const capacityExt = (renderedValue: string) => {
-  console.log(renderedValue);
   return capacity(renderedValue.split("/")[0], renderedValue.split("/")[1]);
 };
 
@@ -86,15 +88,7 @@ const GravesTableScreen: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedGraveId, setSelectedGraveId] = useState<string>();
   const { t, i18n } = useTranslation();
-  const getLanguage = () => {
-    if (i18n.language.toUpperCase() === "SR") {
-      return MRT_Localization_SR_LATN_RS;
-    } else if (i18n.language.toUpperCase() === "HU") {
-      return MRT_Localization_HU;
-    } else {
-      return MRT_Localization_SR_CYRL_RS;
-    }
-  };
+
   const columns: MRT_ColumnDef<GraveData>[] = [
     {
       accessorKey: "number",
@@ -118,61 +112,21 @@ const GravesTableScreen: React.FC = () => {
     {
       accessorFn: (row) => new Date(row.contractTo),
       id: "contractTo",
+      filterFn: 'between',
+      filterVariant: 'date',
+      sortingFn: 'datetime',
       header: t("contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
     },
     {
       accessorKey: "_id",
-      id: "details",
       header: t(""),
-      Cell: ({ renderedCellValue, row }) => (
-        <ButtonMUI
-          variant="contained"
-          onClick={() => {
-            navigate({
-              pathname: "/single-grave",
-              search: createSearchParams({
-                id: row.getValue<string>("_id"),
-              }).toString(),
-            });
-          }}
-        >
-          {t("details")}
-        </ButtonMUI>
+      columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
+      Cell: ({ row }) => (
+        DeleteAndMaybeRemoveButton(row.original._id, "/single-grave", handleShowModal)
       ),
     },
-    /*     {
-      accessorKey: "_id",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) =>
-        (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
-          <ButtonMUI
-            variant="contained"
-            color="secondary"
-            onClick={() => handleShowModal(row.getValue<string>("_id"))}
-          >
-            {t("delete")}
-          </ButtonMUI>
-        ),
-    }, */
   ];
-
-  if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") {
-    columns.push({
-      accessorKey: "_id",
-      id: "delete",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) => (
-        <ButtonMUI
-          variant="contained"
-          color="secondary"
-          onClick={() => handleShowModal(row.getValue<string>("_id"))}
-        >
-          {t("delete")}
-        </ButtonMUI>
-      ),
-    });
-  }
 
   const theme = useTheme(); //replace with your theme/createTheme
 
@@ -247,7 +201,7 @@ const GravesTableScreen: React.FC = () => {
             data={graves}
             enableRowNumbers
             rowNumberMode="original"
-            localization={getLanguage()}
+            localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,
               sx: {

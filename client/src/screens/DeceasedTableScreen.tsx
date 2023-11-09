@@ -27,12 +27,7 @@ import { darken, styled } from "@mui/material/styles";
 // MUI Chip
 import Chip from "@mui/material/Chip";
 import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
-import { User } from "../interfaces/UserInterfaces";
-import { MRT_Localization_HU } from "material-react-table/locales/hu";
-//Import Material React Table Translations
-import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyrl-RS";
-//Import Material React Table Translations
-import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
+import { getLanguage } from "../utils/languageSelector";
 import { srRS } from "@mui/material/locale";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
@@ -52,32 +47,18 @@ const capacity = (capacity: string, numberOfDeceaseds: string) => {
   }
   return result;
 };
-
-const expiredContract = (contractTo: string) => {
-  let result = null;
-  let contractDate = new Date(contractTo);
-  let contractDatePlus = new Date(contractTo);
-  contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
-  let today = new Date();
-  if (today > contractDate) {
-    result = <Chip label={dateFormatter(contractTo)} color="error" />;
-  } else if (today > contractDatePlus) {
-    result = <Chip label={dateFormatter(contractTo)} color="warning" />;
-  } else {
-    result = <Chip label={dateFormatter(contractTo)} color="success" />;
-  }
-  return result;
+const dateOfBirth = (date: string) => {
+  return <Chip label={dateFormatter(date)} color="success" />;;
 };
 
-const capacityExt = (renderedValue: string) => {
-  console.log(renderedValue);
-  return capacity(renderedValue.split("/")[0], renderedValue.split("/")[1]);
+const dateDeath = (date: string) => {
+  return <Chip label={dateFormatter(date)} color="error" />;;
 };
 
 const DeceasedTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);
   let navigate = useNavigate();
-  const deceased: Deceased[] | null = useSelector(selectAllDeceased);
+  const deceased: Deceased[] = useSelector(selectAllDeceased);
   const gravesStatus = useSelector(getDeceasedStatus);
   const error = useSelector(getDeceasedError);
   const user = useSelector(selectUser);
@@ -99,13 +80,19 @@ const DeceasedTableScreen: React.FC = () => {
       accessorFn: (row) => new Date(row.dateBirth),
       id: "dateBirth",
       header: t("dateBirth"),
-      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+      filterFn: 'between',
+      filterVariant: 'date',
+      sortingFn: 'datetime',
+      Cell: ({ cell }) => dateOfBirth(cell.getValue<string>()),
     },
     {
       accessorFn: (row) => new Date(row.dateDeath),
       id: "dateDeath",
       header: t("dateDeath"),
-      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+      filterFn: 'between',
+      filterVariant: 'date',
+      sortingFn: 'datetime',
+      Cell: ({ cell }) => dateDeath(cell.getValue<string>()),
     },
     {
       accessorKey: "grave.field",
@@ -122,6 +109,7 @@ const DeceasedTableScreen: React.FC = () => {
     {
       accessorKey: "grave._id",
       header: t(""),
+      columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
       Cell: ({ renderedCellValue, row }) => (
         <ButtonMUI
           variant="contained"
@@ -254,10 +242,12 @@ const DeceasedTableScreen: React.FC = () => {
         <ThemeProvider theme={createTheme(theme, srRS)}>
           <MaterialReactTable
             columns={columns}
-            data={deceased === null ? [] : deceased}
+            data={deceased}
             enableRowNumbers
+            enablePagination={false}
+            enableRowVirtualization
             rowNumberMode="original"
-            localization={MRT_Localization_SR_LATN_RS}
+            localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,
               sx: {
