@@ -15,6 +15,7 @@ const saveGrave = async (req, res, next) => {
     LON: sentGrave.LON1,
     capacity: sentGrave.graveCapacity,
     contractTo: sentGrave.contractTo,
+    cemetery: new mongoose.Types.ObjectId(sentGrave.cemeteryId),
   });
 
   //const createdGrave = await grave.save();

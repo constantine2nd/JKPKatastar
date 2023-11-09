@@ -1,27 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 // MUI Table
-import { styled } from "@mui/material/styles";
-import { darken } from "@mui/material";
-import TableMUI from "@mui/material/Table";
-import TableBodyMUI from "@mui/material/TableBody";
-import TableCellMUI, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainerMUI from "@mui/material/TableContainer";
-import TableHeadMUI from "@mui/material/TableHead";
-import TableRowMUI from "@mui/material/TableRow";
-import PaperMUI from "@mui/material/Paper";
+import { darken } from '@mui/material';
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
-import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
-//Import Material React Table Translations
-import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyrl-RS";
-//Import Material React Table Translations
-import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
-//Import Material React Table Translations
-import { MRT_Localization_HU } from "material-react-table/locales/hu";
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 
 import {
   selectAllUsers,
@@ -31,39 +16,40 @@ import {
 } from "../features/allUsersSlice";
 
 import { User } from "../interfaces/UserInterfaces";
+import { getLanguage } from "../utils/languageSelector";
+import { isActiveUser } from "../components/IsActiveUser"
+
 
 const UsersTableScreen: React.FC = () => {
-  const users: User[] | null = useSelector(selectAllUsers);
-  let xxx: User[] = [];
-  if (users) {
-    xxx = users;
-  }
+  const { t, i18n } = useTranslation();
+  const users: User[] = useSelector(selectAllUsers);
+  console.log(users);
   //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<User>[]>(
-    () => [
+  const columns: MRT_ColumnDef<User>[] = [
       {
-        accessorKey: "_id",
-        header: "ID",
+        accessorKey: '_id',
+        header: t('id'),
       },
       {
-        accessorKey: "name",
-        header: "Name",
+        accessorKey: 'name',
+        header: t('name'),
       },
       {
-        accessorKey: "email",
-        header: "Email",
+        accessorKey: 'email',
+        header: t('email'),
       },
       {
-        accessorKey: "password",
-        header: "Password",
+        accessorKey: 'role',
+        header: t('role'),
       },
       {
-        accessorKey: "token",
-        header: "Token",
-      },
-    ],
-    []
-  );
+        accessorKey: 'isActive',
+        header: t('Active'),
+        Cell: ({ row }) => (
+          isActiveUser(row.original.isActive, t)
+        ),
+      }
+  ];
   const usersStatus = useSelector(getAllUsersStatus);
   const error = useSelector(getAllUsersError);
   const dispatch = useDispatch<any>();
@@ -89,28 +75,34 @@ const UsersTableScreen: React.FC = () => {
   return (
     <>
       <h1>Users table screen</h1>
-      <MaterialReactTable
-        columns={columns}
-        data={xxx}
-        enableRowNumbers
-        rowNumberMode="original"
-        localization={MRT_Localization_HU}
-        muiTablePaperProps={{
-          elevation: 0,
-          sx: {
-            borderRadius: "0",
-            border: "1px dashed #e0e0e0",
+
+      <MaterialReactTable 
+      columns={columns} 
+      data={users} 
+      enableRowNumbers
+      rowNumberMode="original"  
+      localization={getLanguage(i18n)}
+      muiTablePaperProps={{
+        elevation: 0,
+        sx: {
+          borderRadius: '0',
+          border: '1px dashed #e0e0e0',
+        },
+      }}
+      muiTableBodyProps={{
+        sx: (theme) => ({
+          '& tr:nth-of-type(odd) > td': {
+            backgroundColor: darken(theme.palette.background.default, 0.1),
           },
-        }}
-        muiTableBodyProps={{
-          sx: (theme) => ({
-            "& tr:nth-of-type(odd) > td": {
-              backgroundColor: darken(theme.palette.background.default, 0.1),
-            },
-          }),
-        }}
-      />
-      ;
+        }),
+      }}
+      muiTableHeadCellProps={{
+        sx: (theme) => ({
+          backgroundColor: darken(theme.palette.background.default, 0.3),
+        }),
+      }}
+      
+      />;
     </>
   );
 };
