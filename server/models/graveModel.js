@@ -26,6 +26,10 @@ const graveSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Cemetery",
   },
+  graveType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "GraveType",
+  },
 });
 
 const Grave = mongoose.model("Grave", graveSchema);

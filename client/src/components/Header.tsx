@@ -39,9 +39,14 @@ const Header = () => {
               <Nav.Link>Pregled grobnih mesta</Nav.Link>
             </LinkContainer>
             {user && user.role === "SUPER_ADMIN" && (
-              <LinkContainer to="/users-table">
-                <Nav.Link>User management</Nav.Link>
-              </LinkContainer>
+              <>
+                <LinkContainer to="/users-table">
+                  <Nav.Link>User management</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/grave-types-table">
+                  <Nav.Link>Grave Types MGM</Nav.Link>
+                </LinkContainer>
+              </>
             )}
             {user && (
               <NavDropdown title={user.name} id="profile">
