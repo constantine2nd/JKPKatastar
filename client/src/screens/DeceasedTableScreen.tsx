@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 import ButtonMUI from "@mui/material/Button";
+import Tooltip from "@mui/material";
 
 import { dateFormatter } from "../utils/dateFormatter";
 import {
@@ -48,11 +49,11 @@ const capacity = (capacity: string, numberOfDeceaseds: string) => {
   return result;
 };
 const dateOfBirth = (date: string) => {
-  return <Chip label={dateFormatter(date)} color="success" />;;
+  return <Chip label={dateFormatter(date)} color="success" />;
 };
 
 const dateDeath = (date: string) => {
-  return <Chip label={dateFormatter(date)} color="error" />;;
+  return <Chip label={dateFormatter(date)} color="error" />;
 };
 
 const DeceasedTableScreen: React.FC = () => {
@@ -80,18 +81,18 @@ const DeceasedTableScreen: React.FC = () => {
       accessorFn: (row) => new Date(row.dateBirth),
       id: "dateBirth",
       header: t("dateBirth"),
-      filterFn: 'between',
-      filterVariant: 'date',
-      sortingFn: 'datetime',
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
       Cell: ({ cell }) => dateOfBirth(cell.getValue<string>()),
     },
     {
       accessorFn: (row) => new Date(row.dateDeath),
       id: "dateDeath",
       header: t("dateDeath"),
-      filterFn: 'between',
-      filterVariant: 'date',
-      sortingFn: 'datetime',
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
       Cell: ({ cell }) => dateDeath(cell.getValue<string>()),
     },
     {
@@ -107,9 +108,17 @@ const DeceasedTableScreen: React.FC = () => {
       header: t("number"),
     },
     {
+      accessorKey: "grave.cemetery.name",
+      header: t("cemetery"),
+    },
+    {
+      accessorKey: "grave.graveType.name",
+      header: t("grave type"),
+    },
+    {
       accessorKey: "grave._id",
       header: t(""),
-      columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
+      columnDefType: "display", //turns off data column features like sorting, filtering, etc.
       Cell: ({ renderedCellValue, row }) => (
         <ButtonMUI
           variant="contained"
@@ -126,52 +135,6 @@ const DeceasedTableScreen: React.FC = () => {
         </ButtonMUI>
       ),
     },
-    /*   {
-      accessorFn: (row) => `${row.numberOfDeceaseds}/${row.capacity}`, //accessorFn used to join multiple data into a single cell
-      id: "occupation",
-      header: t("occupation"),
-      Cell: ({ renderedCellValue, row }) =>
-        capacityExt(row.getValue("occupation")),
-    },
-    {
-      accessorFn: (row) => new Date(row.contractTo),
-      id: "contractTo",
-      header: t("contract-expiration-date"),
-      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
-    }, */
-    /*   {
-      accessorKey: "_id",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) => (
-        <ButtonMUI
-          variant="contained"
-          onClick={() => {
-            navigate({
-              pathname: "/single-grave",
-              search: createSearchParams({
-                id: row.getValue<string>("_id"),
-              }).toString(),
-            });
-          }}
-        >
-          {t("details")}
-        </ButtonMUI>
-      ),
-    },
-    {
-      accessorKey: "_id",
-      header: t(""),
-      Cell: ({ renderedCellValue, row }) =>
-        (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
-          <ButtonMUI
-            variant="contained"
-            color="secondary"
-            onClick={() => handleShowModal(row.getValue<string>("_id"))}
-          >
-            {t("delete")}
-          </ButtonMUI>
-        ),
-    }, */
   ];
   const theme = useTheme(); //replace with your theme/createTheme
 
@@ -246,7 +209,7 @@ const DeceasedTableScreen: React.FC = () => {
             enableRowNumbers
             enablePagination={false}
             enableRowVirtualization
-            rowNumberMode="original"
+            //   rowNumberMode="original"
             localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,

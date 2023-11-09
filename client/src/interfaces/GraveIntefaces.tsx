@@ -1,3 +1,5 @@
+import { GraveType } from "./GraveTypeInterfaces";
+
 export interface GraveData {
   _id: string;
   number: string;
@@ -8,6 +10,7 @@ export interface GraveData {
   LAT: string;
   LON: string;
   numberOfDeceaseds: string;
+  graveType: GraveType;
 }
 
 export interface Deceased {
@@ -35,10 +38,10 @@ export interface Grave {
   number: string;
   field: string;
   row: string;
-  capacity: string;
   contractTo: string;
   LAT: string;
   LON: string;
   deceased: Deceased[];
   payers: Payer[];
+  graveType: GraveType;
 }

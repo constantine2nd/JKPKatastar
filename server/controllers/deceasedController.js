@@ -32,7 +32,19 @@ const saveDeceased = async (req, res, next) => {
 
 const getDeceased = async (req, res, next) => {
   try {
-    const deceased = await Deceased.find().populate("grave");
+    const deceased = await Deceased.find()
+      .populate({
+        path: "grave",
+        populate: {
+          path: "cemetery",
+        },
+      })
+      .populate({
+        path: "grave",
+        populate: {
+          path: "graveType",
+        },
+      });
 
     if (deceased) {
       res.send(deceased);

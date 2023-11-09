@@ -29,15 +29,13 @@ import { darken, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import { srRS } from "@mui/material/locale";
 import { getLanguage } from "../utils/languageSelector";
-import { DeleteAndMaybeRemoveButton }  from "../components/DetailAndMaybeRemoveButton";
+import { DeleteAndMaybeRemoveButton } from "../components/DetailAndMaybeRemoveButton";
 
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
-} from 'material-react-table';
-
-
+} from "material-react-table";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -74,7 +72,7 @@ const expiredContract = (contractTo: string) => {
 };
 
 const capacityExt = (renderedValue: string) => {
-  return capacity(renderedValue.split("/")[0], renderedValue.split("/")[1]);
+  return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
 };
 
 const GravesTableScreen: React.FC = () => {
@@ -103,7 +101,15 @@ const GravesTableScreen: React.FC = () => {
       header: t("row"),
     },
     {
-      accessorFn: (row) => `${row.numberOfDeceaseds}/${row.capacity}`, //accessorFn used to join multiple data into a single cell
+      accessorKey: "graveType.name",
+      header: t("grave type"),
+    },
+    {
+      accessorKey: "cemetery.name",
+      header: t("cemetery"),
+    },
+    {
+      accessorFn: (row) => `${row.numberOfDeceaseds}/${row.graveType.capacity}`, //accessorFn used to join multiple data into a single cell
       id: "occupation",
       header: t("occupation"),
       Cell: ({ renderedCellValue, row }) =>
@@ -112,19 +118,22 @@ const GravesTableScreen: React.FC = () => {
     {
       accessorFn: (row) => new Date(row.contractTo),
       id: "contractTo",
-      filterFn: 'between',
-      filterVariant: 'date',
-      sortingFn: 'datetime',
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
       header: t("contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
     },
     {
       accessorKey: "_id",
       header: t(""),
-      columnDefType: 'display', //turns off data column features like sorting, filtering, etc.
-      Cell: ({ row }) => (
-        DeleteAndMaybeRemoveButton(row.original._id, "/single-grave", handleShowModal)
-      ),
+      columnDefType: "display", //turns off data column features like sorting, filtering, etc.
+      Cell: ({ row }) =>
+        DeleteAndMaybeRemoveButton(
+          row.original._id,
+          "/single-grave",
+          handleShowModal
+        ),
     },
   ];
 
@@ -200,7 +209,7 @@ const GravesTableScreen: React.FC = () => {
             columns={columns}
             data={graves}
             enableRowNumbers
-            rowNumberMode="original"
+            //     rowNumberMode="original"
             localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,

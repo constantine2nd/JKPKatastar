@@ -54,6 +54,20 @@ const getGraves = async (req, res, next) => {
         },
       },
       {
+        $unwind: "$graveType", // Razmicati drugi povezani objekat
+      },
+      {
+        $lookup: {
+          from: "cemeteries", // Ime druge kolekcije
+          localField: "cemetery", // Drugo polje sa ObjectId referencom u prvoj kolekciji
+          foreignField: "_id", // Polje u drugoj kolekciji koje želite da povežete sa
+          as: "cemetery", // Ime polja u rezultatu koje će sadržati druge povezane objekte
+        },
+      },
+      {
+        $unwind: "$cemetery", // Razmicati drugi povezani objekat
+      },
+      {
         $project: {
           _id: 1, // Sačuvajte ID groba
           number: 1, // Sačuvajte ime groba
@@ -65,6 +79,7 @@ const getGraves = async (req, res, next) => {
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
           graveType: 1,
+          cemetery: 1,
         },
       },
     ]);
@@ -93,6 +108,17 @@ const getGravesForCemetery = async (req, res, next) => {
         },
       },
       {
+        $lookup: {
+          from: "gravetypes", // Ime druge kolekcije
+          localField: "graveType", // Drugo polje sa ObjectId referencom u prvoj kolekciji
+          foreignField: "_id", // Polje u drugoj kolekciji koje želite da povežete sa
+          as: "graveType", // Ime polja u rezultatu koje će sadržati druge povezane objekte
+        },
+      },
+      {
+        $unwind: "$graveType", // Razmicati drugi povezani objekat
+      },
+      {
         $project: {
           _id: 1, // Sačuvajte ID groba
           number: 1, // Sačuvajte ime groba
@@ -103,6 +129,7 @@ const getGravesForCemetery = async (req, res, next) => {
           LAT: 1, // Sačuvajte ime groba
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
+          graveType: 1,
         },
       },
     ]);
@@ -116,7 +143,7 @@ const getGravesForCemetery = async (req, res, next) => {
 const getSingleGrave = async (req, res, next) => {
   const graveId = req.params.id;
   try {
-    const foundGrave = await Grave.findById(graveId);
+    const foundGrave = await Grave.findById(graveId).populate("graveType");
     const deceased = await Deceased.find({ grave: graveId });
     const payers = await Payer.find({ grave: graveId });
     let objToSend = { ...foundGrave._doc, deceased: deceased, payers: payers };

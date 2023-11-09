@@ -86,7 +86,7 @@ const GraveTypesTableScreen: React.FC = () => {
         columns={columns}
         data={graveTypes ? graveTypes : []}
         enableRowNumbers
-        rowNumberMode="original"
+        //  rowNumberMode="original"
         localization={MRT_Localization_HU}
         muiTablePaperProps={{
           elevation: 0,

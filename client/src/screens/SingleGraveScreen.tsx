@@ -112,7 +112,7 @@ const SingleGraveScreen: React.FC = () => {
                   <Form.Label>{t("capacity")}</Form.Label>
                   <Form.Control
                     type="text"
-                    value={grave.capacity}
+                    value={grave.graveType.capacity}
                   ></Form.Control>
                 </Form.Group>
               </Col>
@@ -158,7 +158,9 @@ const SingleGraveScreen: React.FC = () => {
                     }).toString(),
                   });
                 }}
-                disabled={Number(grave.capacity) === grave.deceased.length}
+                disabled={
+                  Number(grave.graveType.capacity) === grave.deceased.length
+                }
               >
                 Dodaj pokojnika
               </Button>

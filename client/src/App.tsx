@@ -47,11 +47,11 @@ function App() {
               path="/cemeteries-table-crud"
               element={<CemeteriesTableScreenCrud />}
             />
+            <Route
+              path="/grave-types-table"
+              element={<GraveTypesTableScreen />}
+            />
           </Routes>
-          <Route
-            path="/grave-types-table"
-            element={<GraveTypesTableScreen />}
-          />
         </main>
       </LocalizationProvider>
     </>
