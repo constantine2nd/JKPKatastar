@@ -119,6 +119,17 @@ const getGravesForCemetery = async (req, res, next) => {
         $unwind: "$graveType", // Razmicati drugi povezani objekat
       },
       {
+        $lookup: {
+          from: "cemeteries", // Ime druge kolekcije
+          localField: "cemetery", // Drugo polje sa ObjectId referencom u prvoj kolekciji
+          foreignField: "_id", // Polje u drugoj kolekciji koje želite da povežete sa
+          as: "cemetery", // Ime polja u rezultatu koje će sadržati druge povezane objekte
+        },
+      },
+      {
+        $unwind: "$cemetery", // Razmicati drugi povezani objekat
+      },
+      {
         $project: {
           _id: 1, // Sačuvajte ID groba
           number: 1, // Sačuvajte ime groba
@@ -130,6 +141,7 @@ const getGravesForCemetery = async (req, res, next) => {
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
           graveType: 1,
+          cemetery: 1,
         },
       },
     ]);

@@ -209,7 +209,7 @@ const GravesTableScreen: React.FC = () => {
             columns={columns}
             data={graves}
             enableRowNumbers
-            //     rowNumberMode="original"
+            //  rowNumberMode="original"
             localization={getLanguage(i18n)}
             muiTablePaperProps={{
               elevation: 0,

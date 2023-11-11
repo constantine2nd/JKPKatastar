@@ -53,14 +53,10 @@ const SingleGraveScreen: React.FC = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    console.log(graveStatus);
-    if (graveStatus === "idle") {
-      console.log("UPAO");
-      if (graveId) {
-        dispatch(fetchSingleGrave(graveId));
-      }
+    if (graveId) {
+      dispatch(fetchSingleGrave(graveId));
     }
-  }, [graveStatus, dispatch]);
+  }, [graveId, dispatch]);
 
   if (graveStatus === "loading") {
     return <Loader />;
