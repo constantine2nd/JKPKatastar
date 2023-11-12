@@ -19,6 +19,8 @@ import {
 import { selectUser } from "../features/userSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import MapComponent from "../components/MapComponent";
+import OpenMapComponent from "../components/OpenMapComponent";
 
 import { Grave } from "../interfaces/GraveIntefaces";
 import { useTranslation } from "react-i18next";
@@ -46,6 +48,7 @@ const SingleGraveScreen: React.FC = () => {
 
   const [searchParams] = useSearchParams();
   const graveId = searchParams.get("id");
+
   // const [grave, setGrave] = useState<Grave>();
 
   const { t, i18n } = useTranslation();
@@ -79,7 +82,18 @@ const SingleGraveScreen: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <h2>Podaci o grobnom mestu</h2>
+        {grave && (
+          <>
+            <h2>Podaci o grobnom mestu</h2>
+            <div className="map-container">
+              <OpenMapComponent
+                LAT={Number(grave?.LAT)}
+                LON={Number(grave?.LON)}
+              />
+              <MapComponent LAT={grave?.LAT} LON={grave?.LON} />
+            </div>
+          </>
+        )}
         {grave && (
           <Form>
             <Row>

@@ -9,3 +9,10 @@
 .contract-finished-row {
   background-color: rgb(244, 166, 166);
 }
+
+.map-container {
+  position: relative;
+  width: 50%;
+  height: 400px;
+  margin: 30px;
+}

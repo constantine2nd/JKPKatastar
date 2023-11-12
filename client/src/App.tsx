@@ -22,6 +22,7 @@ import CemeteriesTableScreenCrud from "./screens/CemeteriesTableScreenCrud";
 import GraveTypesTableScreen from "./screens/GraveTypesTableScreen";
 import TestScreen from "./screens/TestScreen";
 import Test2Screen from "./screens/Test2Screen";
+import Test3Screen from "./screens/Test3Screen";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
             />
             <Route path="/test" element={<TestScreen />} />
             <Route path="/test2" element={<Test2Screen />} />
+            <Route path="/test3" element={<Test3Screen />} />
           </Routes>
         </main>
       </LocalizationProvider>
