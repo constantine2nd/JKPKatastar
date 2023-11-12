@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
@@ -14,10 +14,24 @@ const Header = () => {
   const dispatch = useDispatch<any>();
   let navigate = useNavigate();
 
+  // Change language and store it in local storage.
+  // Please note that the Header component is visible at any page i.e. globaly
+  // and this affects the whole app.
   const selectLangugeHandler = (lang: string) => {
     setLanguage(lang);
     i18n.changeLanguage(lang);
+    localStorage.setItem("selected-language", lang);
   };
+
+  // Get language from a local storage and set it for a whole app.
+  // Please note that the Header component is visible at any page i.e. globaly
+  // and this affects the whole app.
+  useEffect(() => {
+    const languageFromStorage = localStorage.getItem("selected-language");
+    const selectedLanguage = languageFromStorage ? languageFromStorage : "sr";
+    setLanguage(selectedLanguage);
+    i18n.changeLanguage(selectedLanguage);
+  }, []);
 
   const logoutHandler = () => {
     dispatch(logoutUser());
