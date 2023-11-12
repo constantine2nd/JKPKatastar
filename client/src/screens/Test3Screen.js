@@ -16,7 +16,7 @@ const Test3Screen = () => {
           margin: "50px",
         }}
       >
-        <OpenMapComponent LAT={45} LON={45} />
+        <OpenMapComponent LAT={45.395802265758846} LON={19.888156247897395} />
       </div>
     </div>
   );
