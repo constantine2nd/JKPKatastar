@@ -35,4 +35,57 @@ const savePayer = async (req, res, next) => {
   console.log("POST request");
 };
 
-export { savePayer };
+const deleteSinglePayer = async (req, res, next) => {
+  const payerId = req.params.id;
+  try {
+    const result = await Payer.deleteOne({ _id: payerId });
+    console.log(res);
+    if (result.deletedCount === 1) {
+      console.log("deleted count 1");
+      res.send({ id: payerId });
+    } else {
+      res.json({ message: "Nothing to delete" });
+    }
+    // res.send(objToSend);
+  } catch (error) {
+    console.log(error);
+    return res.json({ message: "Cound not get data" });
+  }
+};
+
+const updatePayer = async (req, res) => {
+  const { id, name, surname, address, phone, jmbg, active } = req.body;
+
+  const filter = { _id: id }; // Criteria to find a row
+  const update = {
+    name: name,
+    surname: surname,
+    address: address,
+    phone: phone,
+    jmbg: jmbg,
+    active: active,
+  }; // Fields to update
+
+  const updatedPayer = await Payer.findOneAndUpdate(filter, update, {
+    new: true,
+  });
+
+  console.log(updatedPayer);
+
+  if (updatedPayer) {
+    res.status(200).json({
+      _id: updatedPayer._id,
+      name: updatedPayer.name,
+      surname: updatedPayer.surname,
+      address: updatedPayer.address,
+      phone: updatedPayer.phone,
+      jmbg: updatedPayer.jmbg,
+      active: updatedPayer.active,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Cannot update the payer");
+  }
+};
+
+export { savePayer, deleteSinglePayer, updatePayer };

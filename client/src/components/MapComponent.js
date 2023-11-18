@@ -22,6 +22,15 @@ const MapComponent = (props) => {
           lng: props.LON,
         }}
         mapType="satellite"
+        onLoad={() => {
+          props.captureMap();
+          console.log("Map loaded!");
+        }}
+        onDragend={() => {
+          props.captureMap();
+          console.log("Map Dragend!");
+        }}
+        on
       >
         <Marker position={{ lat: props.LAT, lng: props.LON }} />
       </Map>

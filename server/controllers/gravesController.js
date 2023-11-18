@@ -155,7 +155,9 @@ const getGravesForCemetery = async (req, res, next) => {
 const getSingleGrave = async (req, res, next) => {
   const graveId = req.params.id;
   try {
-    const foundGrave = await Grave.findById(graveId).populate("graveType");
+    const foundGrave = await Grave.findById(graveId)
+      .populate("graveType")
+      .populate("cemetery");
     const deceased = await Deceased.find({ grave: graveId });
     const payers = await Payer.find({ grave: graveId });
     let objToSend = { ...foundGrave._doc, deceased: deceased, payers: payers };

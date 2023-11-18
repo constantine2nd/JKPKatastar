@@ -122,4 +122,59 @@ const getDeceasedPaginate = async (req, res, next) => {
   }
 };
 
-export { saveDeceased, getDeceased, getDeceasedPaginate };
+const deleteSingleDeceased = async (req, res, next) => {
+  const deceasedId = req.params.id;
+  try {
+    const result = await Deceased.deleteOne({ _id: deceasedId });
+    console.log(res);
+    if (result.deletedCount === 1) {
+      console.log("deleted count 1");
+      res.send({ id: deceasedId });
+    } else {
+      res.json({ message: "Nothing to delete" });
+    }
+    // res.send(objToSend);
+  } catch (error) {
+    console.log(error);
+    return res.json({ message: "Cound not get data" });
+  }
+};
+
+const updateDeceased = async (req, res) => {
+  const { id, name, surname, dateBirth, dateDeath } = req.body;
+
+  const filter = { _id: id }; // Criteria to find a row
+  const update = {
+    name: name,
+    surname: surname,
+    dateBirth: dateBirth,
+    dateDeath: dateDeath,
+  }; // Fields to update
+
+  const updatedDeceased = await Deceased.findOneAndUpdate(filter, update, {
+    new: true,
+  });
+
+  console.log(updatedDeceased);
+
+  if (updatedDeceased) {
+    res.status(200).json({
+      _id: updatedDeceased._id,
+      name: updatedDeceased.name,
+      surname: updatedDeceased.surname,
+      dateBirth: updatedDeceased.dateBirth,
+      dateDeath: updatedDeceased.dateDeath,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Cannot update the deceased");
+  }
+};
+
+export {
+  saveDeceased,
+  getDeceased,
+  getDeceasedPaginate,
+  deleteSingleDeceased,
+  updateDeceased,
+};
