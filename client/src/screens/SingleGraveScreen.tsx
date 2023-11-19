@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+import { PDFDownloadLink, usePDF } from "@react-pdf/renderer";
+import PDFRenderer from "./../components/PDFRenderer";
 
 import { dateFormatter } from "../utils/dateFormatter";
 import "./SingleGraveScreen.css";
@@ -15,6 +17,8 @@ import {
   getGraveStatus,
   fetchSingleGrave,
   selectSingleGrave,
+  deletePayer,
+  deleteDeceased,
 } from "../features/singleGraveSlice";
 import { selectUser } from "../features/userSlice";
 import Loader from "../components/Loader";
@@ -24,6 +28,7 @@ import OpenMapComponent from "../components/OpenMapComponent";
 
 import { Grave } from "../interfaces/GraveIntefaces";
 import { useTranslation } from "react-i18next";
+import html2canvas from "html2canvas";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";
@@ -40,6 +45,9 @@ const getParagraphStyling = (contractTo: string) => {
 };
 
 const SingleGraveScreen: React.FC = () => {
+  const [mapImageUrl, setMapImageUrl] = useState("");
+  const [showButton, setShowButton] = useState(false);
+  // const [instance, updateInstance] = usePDF({document: PDFRenderer});
   const dispatch = useDispatch<any>();
   const grave = useSelector(selectSingleGrave);
   const graveStatus = useSelector(getGraveStatus);
@@ -54,6 +62,28 @@ const SingleGraveScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
 
   let navigate = useNavigate();
+
+  const captureMapImage = () => {
+    const mapElement = document.getElementById("map-cont");
+    //  console.log(mapElement);
+
+    if (mapElement) {
+      setShowButton(false);
+      html2canvas(mapElement, { useCORS: true }).then((canvas) => {
+        const mapImageUrl = canvas.toDataURL("image/png");
+        setMapImageUrl(mapImageUrl);
+        // Ovde možete dalje koristiti mapImageUrl
+        // console.log(mapImageUrl);
+        setShowButton(true);
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (grave) {
+      captureMapImage();
+    }
+  }, [grave]);
 
   useEffect(() => {
     if (graveId) {
@@ -85,12 +115,44 @@ const SingleGraveScreen: React.FC = () => {
         {grave && (
           <>
             <h2>Podaci o grobnom mestu</h2>
-            <div className="map-container">
+
+            <PDFDownloadLink
+              document={<PDFRenderer grave={grave} mapImageUrl={mapImageUrl} />}
+              fileName="FORM"
+            >
+              <Button variant="success" disabled={!showButton}>
+                PDF
+              </Button>
+              {/*  {({ loading }) =>
+                loading ? (
+                  <Button>PDF erstellen...</Button>
+                ) : (
+                  <Button variant="success" disabled={disableButton}>
+                    PDF herunterladen
+                  </Button>
+                )
+              } */}
+            </PDFDownloadLink>
+            {/* <Button
+              variant="success"
+              onClick={() => {
+                captureMapImage();
+              }}
+            >
+              Capture map
+            </Button> */}
+
+            <div className="map-container" id="map-cont">
               <OpenMapComponent
                 LAT={Number(grave?.LAT)}
                 LON={Number(grave?.LON)}
+                captureMap={captureMapImage}
               />
-              <MapComponent LAT={grave?.LAT} LON={grave?.LON} />
+              {/*    <MapComponent
+                LAT={grave?.LAT}
+                LON={grave?.LON}
+                captureMap={captureMapImage}
+              /> */}
             </div>
           </>
         )}
@@ -225,6 +287,15 @@ const SingleGraveScreen: React.FC = () => {
                     <td>{dec.surname}</td>
                     <td>{dateFormatter(dec.dateBirth)}</td>
                     <td>{dateFormatter(dec.dateDeath)}</td>
+                    <td>
+                      <Button
+                        onClick={() => {
+                          dispatch(deleteDeceased(dec._id));
+                        }}
+                      >
+                        izbrisi pokojnika
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -253,6 +324,7 @@ const SingleGraveScreen: React.FC = () => {
                   <th>Telefon</th>
                   <th>JMBG</th>
                   <th>Aktivan</th>
+                  <th>#</th>
                 </tr>
               </thead>
               <tbody>
@@ -266,6 +338,15 @@ const SingleGraveScreen: React.FC = () => {
                       <td>{payer.phone}</td>
                       <td>{payer.jmbg}</td>
                       <td>{payer.active ? "DA" : "NE"}</td>
+                      <td>
+                        <Button
+                          onClick={() => {
+                            dispatch(deletePayer(payer._id));
+                          }}
+                        >
+                          izbrisi platioca
+                        </Button>
+                      </td>
                     </tr>
                   ))}
               </tbody>

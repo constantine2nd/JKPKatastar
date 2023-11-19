@@ -60,7 +60,7 @@ const gravesSlice = createSlice({
   name: "graves",
   initialState,
   reducers: {
-    updateGraves: (state, action) => {
+    updateGravesInc: (state, action) => {
       const index = state.graves.findIndex(
         (item) => item._id === action.payload.grave
       );
@@ -126,6 +126,6 @@ const gravesSlice = createSlice({
 export const selectAllGraves = (state: RootState) => state.graves.graves;
 export const getGravesStatus = (state: RootState) => state.graves.status;
 export const getGravesError = (state: RootState) => state.graves.error;
-export const { updateGraves } = gravesSlice.actions;
+export const { updateGravesInc } = gravesSlice.actions;
 
 export default gravesSlice.reducer;

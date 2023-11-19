@@ -1,3 +1,4 @@
+import { Cemetery } from "./CemeteryInterfaces";
 import { GraveType } from "./GraveTypeInterfaces";
 
 export interface GraveData {
@@ -44,4 +45,5 @@ export interface Grave {
   deceased: Deceased[];
   payers: Payer[];
   graveType: GraveType;
+  cemetery: Cemetery;
 }

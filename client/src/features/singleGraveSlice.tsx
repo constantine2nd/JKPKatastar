@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Grave } from "../interfaces/GraveIntefaces";
 import { RootState } from "../store";
-import { updateGraves } from "./gravesSlice";
+import { updateGravesInc } from "./gravesSlice";
 
 export const addPayer = createAsyncThunk(
   "grave/addPayer",
@@ -18,6 +18,21 @@ export const addPayer = createAsyncThunk(
       config
     );
     return response.data;
+  }
+);
+
+export const deletePayer = createAsyncThunk(
+  "grave/deletePayer",
+  async (payerId: any) => {
+    console.log(payerId);
+    try {
+      const response = await axios.delete(`/api/payer/single/${payerId}`);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      error.message = error.response.data;
+      throw error;
+    }
   }
 );
 
@@ -45,7 +60,22 @@ export const addDeacesed = createAsyncThunk(
         dataToSend,
         config
       );
-      dispatch(updateGraves(response.data));
+      dispatch(updateGravesInc(response.data));
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      error.message = error.response.data;
+      throw error;
+    }
+  }
+);
+
+export const deleteDeceased = createAsyncThunk(
+  "grave/deleteDeceased",
+  async (deceasedId: any) => {
+    console.log(deceasedId);
+    try {
+      const response = await axios.delete(`/api/deceased/single/${deceasedId}`);
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -105,6 +135,23 @@ const singleGraveSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
+      .addCase(deletePayer.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deletePayer.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log(action.payload);
+        const filteredPayers = state.grave?.payers.filter(
+          (payer) => payer._id !== action.payload.id
+        );
+        if (filteredPayers && state.grave) {
+          state.grave.payers = filteredPayers;
+        }
+      })
+      .addCase(deletePayer.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
       .addCase(addDeacesed.pending, (state) => {
         state.status = "loading";
       })
@@ -115,6 +162,23 @@ const singleGraveSlice = createSlice({
       })
       .addCase(addDeacesed.rejected, (state, action) => {
         console.log(action);
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(deleteDeceased.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteDeceased.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log(action.payload);
+        const filteredDeceased = state.grave?.deceased.filter(
+          (dec) => dec._id !== action.payload.id
+        );
+        if (filteredDeceased && state.grave) {
+          state.grave.deceased = filteredDeceased;
+        }
+      })
+      .addCase(deleteDeceased.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
