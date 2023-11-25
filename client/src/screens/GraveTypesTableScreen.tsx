@@ -31,32 +31,31 @@ import {
 } from "../features/graveTypesSlice";
 
 import { GraveType } from "../interfaces/GraveTypeInterfaces";
+import { getLanguage } from "../utils/languageSelector";
+import { t } from "i18next";
 
 const GraveTypesTableScreen: React.FC = () => {
   const graveTypes: GraveType[] | null = useSelector(selectAllGraveTypes);
-
+  const { t, i18n } = useTranslation();
   //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<GraveType>[]>(
-    () => [
+  const columns: MRT_ColumnDef<GraveType>[] = [
       {
         accessorKey: "_id",
         header: "ID",
       },
       {
         accessorKey: "name",
-        header: "Name",
+        header: t("name"),
       },
       {
         accessorKey: "capacity",
-        header: "Capacity",
+        header: t("capacity"),
       },
       {
         accessorKey: "description",
-        header: "Description",
+        header: t("description"),
       },
-    ],
-    []
-  );
+    ];
   const graveTypesStatus = useSelector(getAllGraveTypesStatus);
   const error = useSelector(getAllGraveTypesError);
   const dispatch = useDispatch<any>();
@@ -87,7 +86,7 @@ const GraveTypesTableScreen: React.FC = () => {
         data={graveTypes ? graveTypes : []}
         enableRowNumbers
         //  rowNumberMode="original"
-        localization={MRT_Localization_HU}
+        localization={getLanguage(i18n)}
         muiTablePaperProps={{
           elevation: 0,
           sx: {
