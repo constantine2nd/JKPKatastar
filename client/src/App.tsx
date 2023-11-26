@@ -20,6 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import CemeteriesTableScreenCrud from "./screens/CemeteriesTableScreenCrud";
 import GraveTypesTableScreen from "./screens/GraveTypesTableScreen";
+import GraveTypesTableScreenCrud from "./screens/GraveTypesTableScreenCrud";
 import TestScreen from "./screens/TestScreen";
 import Test2Screen from "./screens/Test2Screen";
 import Test3Screen from "./screens/Test3Screen";
@@ -54,6 +55,7 @@ function App() {
               path="/grave-types-table"
               element={<GraveTypesTableScreen />}
             />
+            <Route path="/grave-types-crud" element={<GraveTypesTableScreenCrud />} />
             <Route path="/test" element={<TestScreen />} />
             <Route path="/test2" element={<Test2Screen />} />
             <Route path="/test3" element={<Test3Screen />} />
