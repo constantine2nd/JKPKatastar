@@ -5,9 +5,15 @@ import { RootState } from "../store";
 
 export const getAllGraveTypes = createAsyncThunk(
   "allGraveTypes/get",
-  async () => {
-    const response = await axios.get(`/api/grave-types/all`);
-    return response.data;
+  async (_, { rejectWithValue }) => {
+    
+    try {
+      const response = await axios.get(`/api/grave-types/all`);
+      return response.data;
+    } catch (error: any) {
+      // Use `error.response.data` as `action.payload` for a `rejected` action
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -57,9 +63,15 @@ export const updateGraveType = createAsyncThunk(
 
 export const deleteGraveType= createAsyncThunk(
   "users/deleteGraveType",
-  async (id: string) => {
-    const response = await axios.delete(`/api/grave-types/${id}`);
-    return response.data;
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`/api/grave-types/${id}`);
+      return response.data;
+    } catch (error: any) {
+      // Use `error.response.data` as `action.payload` for a `rejected` action
+      return rejectWithValue(error.response.data);
+    }
+    
   }
 );
 

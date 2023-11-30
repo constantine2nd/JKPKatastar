@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -11,7 +11,6 @@ import {
 import {
   Box,
   Button,
-  Chip,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -19,28 +18,16 @@ import {
   Tooltip,
 } from '@mui/material';
 import {
-  QueryClient,
-  QueryClientProvider,
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
 import { getLanguage } from "../utils/languageSelector";
 import { GraveType } from '../interfaces/GraveTypeInterfaces';
-import { 
-  addGraveType,
-  deleteGraveType,
-  getAllGraveTypes, 
-  getAllGraveTypesError, 
-  getAllGraveTypesStatus, 
-  selectAllGraveTypes, 
-  updateGraveType 
-} from '../features/graveTypesSlice';
 
 const GraveTypesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -48,16 +35,6 @@ const GraveTypesTableScreenCrud = () => {
   >({});
 
   const { t, i18n } = useTranslation();
-  const graveTypes: GraveType[] = useSelector(selectAllGraveTypes);
-  const dispatch = useDispatch<any>();
-  const graveTypesStatus = useSelector(getAllGraveTypesStatus);
-  const error = useSelector(getAllGraveTypesError);
-  useEffect(() => {
-    if (graveTypesStatus === "idle") {
-      console.log("UPAO");
-      dispatch(getAllGraveTypes());
-    }
-  }, [graveTypesStatus, dispatch]);
 
   const columns: MRT_ColumnDef<GraveType>[] = [
       {
@@ -94,21 +71,21 @@ const GraveTypesTableScreenCrud = () => {
     ];
 
   //call CREATE hook
-  const { mutateAsync: createGraveType, isPending: isCreatingGraveType } =
-    useGraveType(dispatch);
+  const { mutateAsync: createRow, isPending: isCreatingRow } =
+    useGraveType();
   //call READ hook
   const {
-    data: fetchedUsers = [],
-    isError: isLoadingGraveTypesError,
-    isFetching: isFetchingGraveTypes,
-    isLoading: isLoadingGraveTypes,
-  } = useGetGraveTypes(graveTypes);
+    data: fetchedData = [],
+    isError: isLoadingDataError,
+    isFetching: isFetchingData,
+    isLoading: isLoadingData,
+  } = useGetGraveTypes();
   //call UPDATE hook
-  const { mutateAsync: updateGraveType, isPending: isUpdatingGraveType } =
-    useUpdateGraveType(dispatch);
+  const { mutateAsync: updateRow, isPending: isUpdatingRow } =
+    useUpdateGraveType();
   //call DELETE hook
-  const { mutateAsync: deleteGraveType, isPending: isDeletingGraveType } =
-    useDeleteGraveType(dispatch);
+  const { mutateAsync: deleteRow, isPending: isDeletingRow } =
+    useDeleteGraveType();
 
   //CREATE action
   const handleCreateGraveType: MRT_TableOptions<GraveType>['onCreatingRowSave'] = async ({
@@ -121,7 +98,7 @@ const GraveTypesTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await createGraveType(values);
+    await createRow(values);
     table.setCreatingRow(null); //exit creating mode
   };
 
@@ -136,26 +113,26 @@ const GraveTypesTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await updateGraveType(values);
+    await updateRow(values);
     table.setEditingRow(null); //exit editing mode
   };
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<GraveType>) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteGraveType(row.original._id);
+      deleteRow(row.original._id);
     }
   };
 
   const table = useMaterialReactTable({
     columns,
-    data: graveTypes,
+    data: fetchedData,
     localization: getLanguage(i18n),
     createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
     editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row._id,
-    muiToolbarAlertBannerProps: isLoadingGraveTypesError
+    muiToolbarAlertBannerProps: isLoadingDataError
       ? {
           color: 'error',
           children: 'Error loading data',
@@ -229,10 +206,10 @@ const GraveTypesTableScreenCrud = () => {
       </Button>
     ),
     state: {
-      isLoading: isLoadingGraveTypes,
-      isSaving: isCreatingGraveType || isUpdatingGraveType || isDeletingGraveType,
-      showAlertBanner: isLoadingGraveTypesError,
-      showProgressBars: isFetchingGraveTypes,
+      isLoading: isLoadingData,
+      isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
+      showAlertBanner: isLoadingDataError,
+      showProgressBars: isFetchingData,
     },
   });
 
@@ -240,29 +217,33 @@ const GraveTypesTableScreenCrud = () => {
 };
 
 //CREATE hook (post new user to api)
-function useGraveType(dispatch: any) {
+function useGraveType() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (graveType: GraveType) => {
       //send api update request here
-      const handleSubmit = async (values: Object) => {
-        dispatch(addGraveType(values));
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
       };
-      return handleSubmit({
+      const dataToSend = { 
         name: graveType.name,
         capacity: graveType.capacity,
         description: graveType.description,
-      });
+      }
+      const response = await axios.post(`/api/grave-types/addgravetype`, dataToSend, config);
+      return response.data;
     },
     //client side optimistic update
-    onMutate: (newGraveTypeInfo: GraveType) => {
+    onMutate: (newRowInfo: GraveType) => {
       queryClient.setQueryData(
         ['grave-types-all'],
-        (prevGraveType: any) =>
+        (prevRow: any) =>
           [
-            ...prevGraveType,
+            ...prevRow,
             {
-              ...newGraveTypeInfo,
+              ...newRowInfo,
               id: (Math.random() + 1).toString(36).substring(7),
             },
           ] as GraveType[],
@@ -273,32 +254,37 @@ function useGraveType(dispatch: any) {
 }
 
 //READ hook (get grave types from api)
-function useGetGraveTypes(graveTypes: GraveType[]) {
+function useGetGraveTypes() {
   return useQuery<GraveType[]>({
     queryKey: ['grave-types-all'],
     queryFn: async () => {
-      //send api request here 
-      return Promise.resolve(graveTypes);
+      // send api request here 
+      const response = await axios.get(`/api/grave-types/all`);
+      return response.data;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   });
 }
 
 //UPDATE hook (put user in api)
-function useUpdateGraveType(dispatch: any) {
+function useUpdateGraveType() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (graveType: GraveType) => {
       //send api update request here
-      const handleSubmit = async (values: Object) => {
-        dispatch(updateGraveType(values));
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
       };
-      return handleSubmit({
+      const dataToSend = {
         id: graveType._id,
         name: graveType.name,
         description: graveType.description,
         capacity: graveType.capacity,
-      });
+      }
+      const response = await axios.put(`/api/grave-types/updategravetype`, dataToSend, config);
+      return response.data;
     },
     //client side optimistic update
     onMutate: (newGraveTypeInfo: GraveType) => {
@@ -315,37 +301,28 @@ function useUpdateGraveType(dispatch: any) {
 }
 
 //DELETE hook (delete grave type in api)
-function useDeleteGraveType(dispatch: any) {
+function useDeleteGraveType() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (graveTypeId: string) => {
+    mutationFn: async (id: string) => {
       //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 0)); //fake api call
-      // return Promise.resolve();
-      const handleSubmit = async (id: string) => {
-        dispatch(deleteGraveType(id));
-      };
-      return handleSubmit(graveTypeId);
+      const response = await axios.delete(`/api/grave-types/${id}`);
+      return response.data;
     },
     //client side optimistic update
-    onMutate: (graveTypeId: string) => {
+    onMutate: (id: string) => {
       queryClient.setQueryData(
         ['grave-types-all'],
         (prevRows: any) =>
-          prevRows?.filter((row: GraveType) => row._id !== graveTypeId),
+          prevRows?.filter((row: GraveType) => row._id !== id),
       );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
   });
 }
 
-const queryClient = new QueryClient();
-
 const GraveTypesTableScreenCrudWithProviders = () => (
-  //Put this with your other react-query providers near root of your app
-  <QueryClientProvider client={queryClient}>
-    <GraveTypesTableScreenCrud />
-  </QueryClientProvider>
+  <GraveTypesTableScreenCrud />
 );
 
 export default GraveTypesTableScreenCrudWithProviders;
