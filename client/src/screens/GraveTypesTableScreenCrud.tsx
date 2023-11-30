@@ -103,7 +103,7 @@ const GraveTypesTableScreenCrud = () => {
   };
 
   //UPDATE action
-  const handleSaveUser: MRT_TableOptions<GraveType>['onEditingRowSave'] = async ({
+  const handleSaveRow: MRT_TableOptions<GraveType>['onEditingRowSave'] = async ({
     values,
     table,
   }) => {
@@ -146,7 +146,7 @@ const GraveTypesTableScreenCrud = () => {
     onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: handleCreateGraveType,
     onEditingRowCancel: () => setValidationErrors({}),
-    onEditingRowSave: handleSaveUser,
+    onEditingRowSave: handleSaveRow,
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
