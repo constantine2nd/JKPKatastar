@@ -236,17 +236,10 @@ function useGraveType() {
       return response.data;
     },
     //client side optimistic update
-    onMutate: (newRowInfo: GraveType) => {
+    onSuccess: (newRowInfo: GraveType) => {
       queryClient.setQueryData(
         ['grave-types-all'],
-        (prevRow: any) =>
-          [
-            ...prevRow,
-            {
-              ...newRowInfo,
-              id: (Math.random() + 1).toString(36).substring(7),
-            },
-          ] as GraveType[],
+        (prevRows: any) => [...prevRows, {...newRowInfo,},] as GraveType[],
       );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
