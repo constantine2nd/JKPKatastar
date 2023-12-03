@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -11,32 +11,37 @@ import {
 import {
   Box,
   Button,
-  Chip,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
   Tooltip,
 } from '@mui/material';
-import {
-  QueryClient,
-  QueryClientProvider,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../utils/languageSelector";
 import { Cemetery } from '../interfaces/CemeteryInterfaces';
-import { addCemetery, deleteCemetery, fetchCemeteries, getAllCemeteriesError, getAllCemeteriesStatus, selectAllCemeteries, updateCemetery } from '../features/cemeteriesSlice';
 import { selectUser } from '../features/userSlice';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { jsPDF } from 'jspdf'; //or use your library of choice here
 import autoTable from 'jspdf-autotable';
 import '../fonts/Roboto-Regular-normal'
+import {
+  useCreateRow,
+  useDeleteRow,
+  useGetRows,
+  useUpdateRow,
+} from "../hooks/useCrudHooks";
+
+// Defines the name of the react query
+const queryFunction = "grave-types-all";
+// Defines CRUD paths
+const getPath = "/api/cemeteries";
+const createPath = `/api/cemeteries/addcemetery`;
+const updatePath = "/api/cemeteries/updatecemetery";
+const deletePath = "/api/cemeteries";
 
 const CemeteriesTableScreenCrud = () => {
 
@@ -63,17 +68,7 @@ const CemeteriesTableScreenCrud = () => {
   >({});
 
   const { t, i18n } = useTranslation();
-  const cemeteries: Cemetery[] = useSelector(selectAllCemeteries);
-  const dispatch = useDispatch<any>();
-  const cemeteriesStatus = useSelector(getAllCemeteriesStatus);
-  const error = useSelector(getAllCemeteriesError);
   const user = useSelector(selectUser);
-  useEffect(() => {
-    if (cemeteriesStatus === "idle") {
-      console.log("UPAO");
-      dispatch(fetchCemeteries());
-    }
-  }, [cemeteriesStatus, dispatch]);
 
   const columns: MRT_ColumnDef<Cemetery>[] = [
       {
@@ -152,22 +147,53 @@ const CemeteriesTableScreenCrud = () => {
       }
     ];
 
-  //call CREATE hook
-  const { mutateAsync: createUser, isPending: isCreatingUser } =
-    useCreateCemetery(dispatch);
-  //call READ hook
-  const {
-    data: fetchedCemeteries = [],
-    isError: isLoadingCemeteriesError,
-    isFetching: isFetchingCemeteries,
-    isLoading: isLoadingCemeteries,
-  } = useGetCemeteries(cemeteries);
-  //call UPDATE hook
-  const { mutateAsync: updateCemetery, isPending: isUpdatingCemetery } =
-    useUpdateCemetery(dispatch);
-  //call DELETE hook
-  const { mutateAsync: deleteCemetery, isPending: isDeletingCemetery } =
-    useDeleteCemetery(dispatch);
+ // call CREATE hook
+ const {
+  mutateAsync: createRow,
+  isPending: isCreatingRow,
+  isError: isCreatingDataError,
+  error: creatingDataError,
+} = useCreateRow(queryFunction, createPath);
+// call READ hook
+const {
+  data: fetchedData = [],
+  isError: isLoadingDataError,
+  error: loadingDataError,
+  isFetching: isFetchingData,
+  isLoading: isLoadingData,
+} = useGetRows(queryFunction, getPath);
+// call UPDATE hook
+const {
+  mutateAsync: updateRow,
+  isPending: isUpdatingRow,
+  isError: isUpdatingDataError,
+  error: updatingDataError,
+} = useUpdateRow(queryFunction, updatePath);
+// call DELETE hook
+const {
+  mutateAsync: deleteRow,
+  isPending: isDeletingRow,
+  isError: isUDeletingDataError,
+  error: deletingDataError,
+} = useDeleteRow(queryFunction, deletePath);
+
+function errorOccuried() {
+  return (
+    isLoadingDataError ||
+    isCreatingDataError ||
+    isUpdatingDataError ||
+    isUDeletingDataError
+  );
+}
+
+function errorMessage() {
+  return (
+    loadingDataError?.message ||
+    creatingDataError?.message ||
+    updatingDataError?.message ||
+    deletingDataError?.message
+  );
+}
 
   //CREATE action
   const handleCreateUser: MRT_TableOptions<Cemetery>['onCreatingRowSave'] = async ({
@@ -180,7 +206,7 @@ const CemeteriesTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await createUser(values);
+    await createRow(values).catch((error) => console.log(error));
     table.setCreatingRow(null); //exit creating mode
   };
 
@@ -196,29 +222,29 @@ const CemeteriesTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await updateCemetery(values);
+    await updateRow(values).catch((error) => console.log(error));
     table.setEditingRow(null); //exit editing mode
   };
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Cemetery>) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteCemetery(row.original._id);
+      deleteRow(row.original._id);
     }
   };
 
   const table = useMaterialReactTable({
     columns,
-    data: cemeteries,
+    data: fetchedData,
     localization: getLanguage(i18n),
     createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
     editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row._id,
-    muiToolbarAlertBannerProps: isLoadingCemeteriesError
+    muiToolbarAlertBannerProps: errorOccuried()
       ? {
           color: 'error',
-          children: 'Error loading data',
+          children: errorMessage(),
         }
       : undefined,
     muiTableContainerProps: {
@@ -327,125 +353,18 @@ const CemeteriesTableScreenCrud = () => {
       </>
     ),
     state: {
-      isLoading: isLoadingCemeteries,
-      isSaving: isCreatingUser || isUpdatingCemetery || isDeletingCemetery,
-      showAlertBanner: isLoadingCemeteriesError,
-      showProgressBars: isFetchingCemeteries,
+      isLoading: isLoadingData,
+      isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
+      showAlertBanner: errorOccuried(),
+      showProgressBars: isFetchingData,
     },
   });
 
   return <MaterialReactTable table={table} />;
 };
 
-//CREATE hook (post new user to api)
-function useCreateCemetery(dispatch: any) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (cemetery: Cemetery) => {
-      //send api update request here
-      const handleSubmit = async (values: Object) => {
-        dispatch(addCemetery(values));
-      };
-      return handleSubmit({
-        name: cemetery.name,
-        LAT: cemetery.LAT,
-        LON: cemetery.LON,
-        zoom: cemetery.zoom,
-      });
-    },
-    //client side optimistic update
-    onMutate: (newCemeteryInfo: Cemetery) => {
-      queryClient.setQueryData(
-        ['cemetery-all'],
-        (prevCemeteries: any) =>
-          [
-            ...prevCemeteries,
-            {
-              ...newCemeteryInfo,
-              id: (Math.random() + 1).toString(36).substring(7),
-            },
-          ] as Cemetery[],
-      );
-    },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
-  });
-}
-
-//READ hook (get cemeteries from api)
-function useGetCemeteries(cemeteries: Cemetery[]) {
-  return useQuery<Cemetery[]>({
-    queryKey: ['cemetery-all'],
-    queryFn: async () => {
-      //send api request here 
-      return Promise.resolve(cemeteries);
-    },
-    refetchOnWindowFocus: false,
-  });
-}
-
-//UPDATE hook (put cemetery in api)
-function useUpdateCemetery(dispatch: any) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (cemetery: Cemetery) => {
-      //send api update request here
-      const handleSubmit = async (values: Object) => {
-        dispatch(updateCemetery(values));
-      };
-      return handleSubmit({
-        id: cemetery._id,
-        name: cemetery.name,
-        LAT: cemetery.LAT,
-        LON: cemetery.LON,
-        zoom: cemetery.zoom,
-      });
-    },
-    //client side optimistic update
-    onMutate: (newCemeteryInfo: Cemetery) => {
-      queryClient.setQueryData(
-        ['cemetery-all'],
-        (prevCemeteries: any) =>
-          prevCemeteries?.map((prevCemetery: Cemetery) =>
-            prevCemetery._id === newCemeteryInfo._id ? newCemeteryInfo : prevCemetery,
-          ),
-      );
-    },
-    // onSettled: () => queryClient.refetchQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
-  });
-}
-
-//DELETE hook (delete Cemetery in api)
-function useDeleteCemetery(dispatch: any) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (userId: string) => {
-      //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 0)); //fake api call
-      // return Promise.resolve();
-      const handleSubmit = async (id: string) => {
-        dispatch(deleteCemetery(id));
-      };
-      return handleSubmit(userId);
-    },
-    //client side optimistic update
-    onMutate: (id: string) => {
-      queryClient.setQueryData(
-        ['cemetery-all'],
-        (prevCemetery: any) =>
-          prevCemetery?.filter((cemetery: Cemetery) => cemetery._id !== id),
-      );
-    },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
-  });
-}
-
-const queryClient = new QueryClient();
-
 const CemeteriesTableScreenCrudWithProviders = () => (
-  //Put this with your other react-query providers near root of your app
-  <QueryClientProvider client={queryClient}>
-    <CemeteriesTableScreenCrud />
-  </QueryClientProvider>
+  <CemeteriesTableScreenCrud />
 );
 
 export default CemeteriesTableScreenCrudWithProviders;
