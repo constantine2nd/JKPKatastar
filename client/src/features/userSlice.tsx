@@ -45,8 +45,8 @@ interface UserState {
   error: any;
 }
 let userInfoFromStorage = null;
-if (localStorage.getItem("userInfo") !== null) {
-  userInfoFromStorage = JSON.parse(localStorage.getItem("userInfo") || "{}");
+if (sessionStorage.getItem("userInfo") !== null) {
+  userInfoFromStorage = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
 }
 
 const initialState: UserState = {
@@ -61,7 +61,7 @@ const singleUserSlice = createSlice({
   reducers: {
     logoutUser: (state) => {
       state.user = null;
-      localStorage.removeItem("userInfo");
+      sessionStorage.removeItem("userInfo");
       state.status = "idle";
       state.error = null;
     },
@@ -73,7 +73,7 @@ const singleUserSlice = createSlice({
       })
       .addCase(addUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        localStorage.setItem("userInfo", JSON.stringify(action.payload));
+        sessionStorage.setItem("userInfo", JSON.stringify(action.payload));
         state.user = action.payload;
       })
       .addCase(addUser.rejected, (state, action) => {
@@ -86,7 +86,7 @@ const singleUserSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        localStorage.setItem("userInfo", JSON.stringify(action.payload));
+        sessionStorage.setItem("userInfo", JSON.stringify(action.payload));
         state.user = action.payload;
       })
       .addCase(loginUser.rejected, (state, action) => {
