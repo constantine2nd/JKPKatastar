@@ -1,13 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { GraveType } from "../interfaces/GraveTypeInterfaces";
 import { RootState } from "../store";
 
 export const getAllGraveTypes = createAsyncThunk(
   "allGraveTypes/get",
-  async () => {
-    const response = await axios.get(`/api/grave-types/all`);
-    return response.data;
+  async (_, { rejectWithValue }) => {
+    
+    try {
+      const response = await axios.get(`/api/grave-types/all`);
+      return response.data;
+    } catch (error: any) {
+      // Use `error.response.data` as `action.payload` for a `rejected` action
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -34,26 +40,38 @@ export const updateGraveType = createAsyncThunk(
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.put(`/api/grave-types/updategravetype`, dataToSend, config);
+      
+     
     const {
       allGraveTypes: { graveTypes },
     } = getState() as any;
     const newgraveTypes= [...graveTypes]
-    const index = newgraveTypes.findIndex((graveType: any) => graveType._id === response.data._id)
+
     try {
+      let response = await axios.put(`/api/grave-types/updategravetype`, dataToSend, config);
+      
+      const index = newgraveTypes.findIndex((graveType: any) => graveType._id === response.data._id)
       newgraveTypes[index] = response.data;
-    } catch (error) {
-      console.log(error)
+      return newgraveTypes;
+    } catch (error: any) {
+      // Use `error.response.data` as `action.payload` for a `rejected` action
+      return rejectWithValue(error.response.data);
     }
-    return newgraveTypes;
+    
   }
 );
 
 export const deleteGraveType= createAsyncThunk(
   "users/deleteGraveType",
-  async (id: string) => {
-    const response = await axios.delete(`/api/grave-types/${id}`);
-    return response.data;
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`/api/grave-types/${id}`);
+      return response.data;
+    } catch (error: any) {
+      // Use `error.response.data` as `action.payload` for a `rejected` action
+      return rejectWithValue(error.response.data);
+    }
+    
   }
 );
 
@@ -85,7 +103,9 @@ const allGraveTypesSlice = createSlice({
       .addCase(getAllGraveTypes.rejected, (state, action) => {
         state.graveTypes = [];
         state.status = "failed";
-        state.error = action.error.message;
+        const { message } = action.payload as any;
+        console.log("Error message: " + message);
+        state.error = message;
       })
       .addCase(addGraveType.pending, (state) => {
         state.status = "loading";
@@ -96,9 +116,10 @@ const allGraveTypesSlice = createSlice({
         localStorage.setItem("all-grave-types", JSON.stringify(state.graveTypes));
       })
       .addCase(addGraveType.rejected, (state, action) => {
-        state.graveTypes = [];
         state.status = "failed";
-        state.error = action.error.message;
+        const { message } = action.payload as any;
+        console.log("Error message: " + message);
+        state.error = message;
       })
       .addCase(updateGraveType.pending, (state) => {
         state.status = "loading";
@@ -110,11 +131,15 @@ const allGraveTypesSlice = createSlice({
       })
       .addCase(updateGraveType.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        const { message } = action.payload as any;
+        console.log("Error message: " + message);
+        state.error = message;
       })
       .addCase(deleteGraveType.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        const { message } = action.payload as any;
+        console.log("Error message: " + message);
+        state.error = message;
       })
       .addCase(deleteGraveType.pending, (state) => {
         state.status = "loading";
