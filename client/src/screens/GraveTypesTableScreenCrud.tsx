@@ -23,8 +23,20 @@ import { useTranslation } from "react-i18next";
 import { getLanguage } from "../utils/languageSelector";
 import { GraveType } from "../interfaces/GraveTypeInterfaces";
 import { t } from "i18next";
-import { useCreateRow, useDeleteRow, useGetRows, useUpdateRow } from "../hooks/useGraveTypesData";
+import {
+  useCreateRow,
+  useDeleteRow,
+  useGetRows,
+  useUpdateRow,
+} from "../hooks/useCrudHooks";
 
+// Defines the name of the react query
+const queryFunction = "grave-types-all";
+// Defines CRUD paths
+const getPath = "/api/grave-types/all";
+const createPath = "/api/grave-types/addgravetype";
+const updatePath = "/api/grave-types/updategravetype";
+const deletePath = "/api/grave-types";
 
 const GraveTypesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -68,18 +80,54 @@ const GraveTypesTableScreenCrud = () => {
   ];
 
   // call CREATE hook
-  const { mutateAsync: createRow, isPending: isCreatingRow } = useCreateRow();
+  const {
+    mutateAsync: createRow,
+    isPending: isCreatingRow,
+    isError: isCreatingDataError,
+    error: creatingDataError,
+  } = useCreateRow(queryFunction, createPath);
   // call READ hook
   const {
     data: fetchedData = [],
     isError: isLoadingDataError,
+    error: loadingDataError,
     isFetching: isFetchingData,
     isLoading: isLoadingData,
-  } = useGetRows();
+  } = useGetRows(queryFunction, getPath);
   // call UPDATE hook
-  const { mutateAsync: updateRow, isPending: isUpdatingRow } = useUpdateRow();
+  const {
+    mutateAsync: updateRow,
+    isPending: isUpdatingRow,
+    isError: isUpdatingDataError,
+    error: updatingDataError,
+  } = useUpdateRow(queryFunction, updatePath);
   // call DELETE hook
-  const { mutateAsync: deleteRow, isPending: isDeletingRow } = useDeleteRow();
+  const {
+    mutateAsync: deleteRow,
+    isPending: isDeletingRow,
+    isError: isUDeletingDataError,
+    error: deletingDataError,
+  } = useDeleteRow(queryFunction, deletePath);
+
+  function errorOccuried() {
+    console.log("isUpdatingDataError" + isUpdatingDataError);
+    return (
+      isLoadingDataError ||
+      isCreatingDataError ||
+      isUpdatingDataError ||
+      isUDeletingDataError
+    );
+  }
+
+  function errorMessage() {
+    console.log(updatingDataError);
+    return (
+      loadingDataError?.message ||
+      creatingDataError?.message ||
+      updatingDataError?.message ||
+      deletingDataError?.message
+    );
+  }
 
   // CREATE action
   const handleCreateGraveType: MRT_TableOptions<GraveType>["onCreatingRowSave"] =
@@ -90,7 +138,7 @@ const GraveTypesTableScreenCrud = () => {
         return;
       }
       setValidationErrors({});
-      await createRow(values);
+      await createRow(values).catch((error) => console.log(error));
       table.setCreatingRow(null); //exit creating mode
     };
 
@@ -103,7 +151,7 @@ const GraveTypesTableScreenCrud = () => {
         return;
       }
       setValidationErrors({});
-      await updateRow(values);
+      await updateRow(values).catch((error) => console.log(error));
       table.setEditingRow(null); //exit editing mode
     };
 
@@ -122,10 +170,10 @@ const GraveTypesTableScreenCrud = () => {
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row._id,
-    muiToolbarAlertBannerProps: isLoadingDataError
+    muiToolbarAlertBannerProps: errorOccuried()
       ? {
           color: "error",
-          children: "Error loading data",
+          children: errorMessage(),
         }
       : undefined,
     muiTableContainerProps: {
@@ -198,14 +246,13 @@ const GraveTypesTableScreenCrud = () => {
     state: {
       isLoading: isLoadingData,
       isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
-      showAlertBanner: isLoadingDataError,
+      showAlertBanner: errorOccuried(),
       showProgressBars: isFetchingData,
     },
   });
 
   return <MaterialReactTable table={table} />;
 };
-
 
 const GraveTypesTableScreenCrudWithProviders = () => (
   <GraveTypesTableScreenCrud />
