@@ -4,15 +4,13 @@ import mongoose from "mongoose";
 
 const getAllCemeteries = async (req, res, next) => {
   try {
-    console.log("get all cemeteries");
-
     const cemeteries = await Cemetery.find();
-
     if (cemeteries) {
       res.send(cemeteries);
     } else {
-      res.status(401);
-      throw new Error("Invalid email or password");
+      res.status(400).send({
+        message: 'Cannot get cemeteries'
+      });
     }
   } catch (err) {
     next(err);
@@ -39,16 +37,17 @@ const addCemetery = async (req, res) => {
       zoom: newCemetery.zoom,
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid cemetery data");
+    res.status(400).send({
+      message: 'Invalid cemeterydata'
+    });
   }
 };
 
 
 const updateCemetery = async (req, res) => {
-  const { id, name, LAT, LON, zoom } = req.body;
+  const { _id, name, LAT, LON, zoom } = req.body;
   
-  const filter = { _id: id }; // Criteria to find a row
+  const filter = { _id: _id }; // Criteria to find a row
   const update = { name: name, LAT: LAT, LON: LON, zoom: zoom }; // Fields to update
 
   const updatedCemetery = await Cemetery.findOneAndUpdate(filter, update, {new: true});
@@ -64,8 +63,9 @@ const updateCemetery = async (req, res) => {
       zoom: updatedCemetery.zoom,
     });
   } else {
-    res.status(400);
-    throw new Error("Cannot update the cemetery");
+    res.status(400).send({
+      message: 'Cannot update the cemetery'
+    });
   }
 };
 
@@ -80,8 +80,9 @@ const deleteCemetery = async (req, res, next) => {
     if (gravesCount.length > 0) {
       const [{totalCount}] = gravesCount
       if (totalCount > 0) {
-        res.status(400);
-        throw new Error("Cannot delete the cemetery");
+        res.status(400).send({
+          message: 'Cannot delete the cemetery'
+        });
       }
     }
     
@@ -92,12 +93,16 @@ const deleteCemetery = async (req, res, next) => {
       console.log("deleted count 1");
       res.send({ id: id });
     } else {
-      res.json({ message: "Nothing to delete" });
+      res.status(400).send({
+        message: 'Nothing to delete'
+      });
     }
     // res.send(objToSend);
   } catch (error) {
     console.log(error);
-    return res.json({ message: "Cannot delete the cemetery" });
+    return res.status(400).send({
+      message: `Cannot delete the cemetery. ${error}`
+    });
   }
 };
 

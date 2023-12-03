@@ -55,7 +55,7 @@ export const useUpdateRow = (queryKey: string, path: string) => {
       return response.data;
     },
     //client side optimistic update
-    onMutate: (newGraveTypeInfo: GraveType) => {
+    onMutate: (newGraveTypeInfo: any) => {
       queryClient.setQueryData([queryKey], (prevRows: any) =>
         prevRows?.map((row: any) =>
           row._id === newGraveTypeInfo._id ? newGraveTypeInfo : row
