@@ -55,7 +55,7 @@ export const useUpdateRow = (queryKey: string, path: string) => {
       return response.data;
     },
     //client side optimistic update
-    onMutate: (newGraveTypeInfo: GraveType) => {
+    onMutate: (newGraveTypeInfo: any) => {
       queryClient.setQueryData([queryKey], (prevRows: any) =>
         prevRows?.map((row: any) =>
           row._id === newGraveTypeInfo._id ? newGraveTypeInfo : row
@@ -78,7 +78,7 @@ export const useDeleteRow = (queryKey: string, path: string) => {
     // client side optimistic update
     onMutate: (id: string) => {
       queryClient.setQueryData([queryKey], (prevRows: any) =>
-        prevRows?.filter((row: GraveType) => row._id !== id)
+        prevRows?.filter((row: any) => row._id !== id)
       );
     },
     // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo

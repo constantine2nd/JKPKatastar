@@ -1,6 +1,22 @@
 import Payer from "../models/payerModel.js";
 import { Types } from "mongoose";
 
+const getPayers = async (req, res, next) => {
+  const graveId = req.params.id;
+  try {
+    const payers = await Payer.find({ grave: graveId });
+    if (payers) {
+      res.send(payers);
+    } else {
+      res.status(400).send({
+        message: "Server error",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 const savePayer = async (req, res, next) => {
   // console.log(req.body);
   const sentPayer = req.body;
@@ -54,9 +70,10 @@ const deleteSinglePayer = async (req, res, next) => {
 };
 
 const updatePayer = async (req, res) => {
-  const { id, name, surname, address, phone, jmbg, active } = req.body;
+  const { _id, name, surname, address, phone, jmbg, active = true } = req.body;
+  console.log(req.body);
 
-  const filter = { _id: id }; // Criteria to find a row
+  const filter = { _id: _id }; // Criteria to find a row
   const update = {
     name: name,
     surname: surname,
@@ -66,9 +83,13 @@ const updatePayer = async (req, res) => {
     active: active,
   }; // Fields to update
 
-  const updatedPayer = await Payer.findOneAndUpdate(filter, update, {
+  const updatedPayer = await Payer.findOneAndUpdate(
+    filter,
+    update
+    /*   , {
     new: true,
-  });
+  } */
+  );
 
   console.log(updatedPayer);
 
@@ -88,4 +109,4 @@ const updatePayer = async (req, res) => {
   }
 };
 
-export { savePayer, deleteSinglePayer, updatePayer };
+export { savePayer, deleteSinglePayer, updatePayer, getPayers };

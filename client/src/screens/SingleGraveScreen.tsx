@@ -9,6 +9,15 @@ import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { PDFDownloadLink, usePDF } from "@react-pdf/renderer";
 import PDFRenderer from "./../components/PDFRenderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  PDFViewer,
+  pdf,
+} from "@react-pdf/renderer";
 
 import { dateFormatter } from "../utils/dateFormatter";
 import "./SingleGraveScreen.css";
@@ -25,6 +34,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import MapComponent from "../components/MapComponent";
 import OpenMapComponent from "../components/OpenMapComponent";
+import PayersTableScreenCrud from "./PayersTableScreenCrud";
 
 import { Grave } from "../interfaces/GraveIntefaces";
 import { useTranslation } from "react-i18next";
@@ -63,27 +73,56 @@ const SingleGraveScreen: React.FC = () => {
 
   let navigate = useNavigate();
 
-  const captureMapImage = () => {
+  const generatePDF = () => {
     const mapElement = document.getElementById("map-cont");
     //  console.log(mapElement);
 
+    if (mapElement && grave) {
+      //setShowButton(false);
+      html2canvas(mapElement, { useCORS: true }).then(async (canvas) => {
+        const mapImageUrl = canvas.toDataURL("image/png");
+
+        const pdfBlob = await pdf(
+          <PDFRenderer grave={grave} mapImageUrl={mapImageUrl} />
+        ).toBlob();
+
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        // Kreiranje i simulacija klika na skriveni link za download
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = pdfUrl;
+        a.download = "example.pdf";
+        // Dodavanje linka u dokument i simulacija klika
+        document.body.appendChild(a);
+        a.click();
+        // Oslobađanje resursa
+        document.body.removeChild(a);
+        URL.revokeObjectURL(pdfUrl);
+      });
+    }
+
+    // Kreiranje instance PDF-a
+
+    // Kreiranje Blob objekta za PDF
+
+    // Kreiranje URL-a za Blob objekat
+  };
+
+  const captureMapImage = () => {
+    /* const mapElement = document.getElementById("map-cont");
+    //  console.log(mapElement);
+
     if (mapElement) {
-      setShowButton(false);
+      //setShowButton(false);
       html2canvas(mapElement, { useCORS: true }).then((canvas) => {
         const mapImageUrl = canvas.toDataURL("image/png");
         setMapImageUrl(mapImageUrl);
         // Ovde možete dalje koristiti mapImageUrl
         // console.log(mapImageUrl);
-        setShowButton(true);
+        //setShowButton(true);
       });
-    }
+    } */
   };
-
-  useEffect(() => {
-    if (grave) {
-      captureMapImage();
-    }
-  }, [grave]);
 
   useEffect(() => {
     if (graveId) {
@@ -116,14 +155,14 @@ const SingleGraveScreen: React.FC = () => {
           <>
             <h2>Podaci o grobnom mestu</h2>
 
-            <PDFDownloadLink
+            {/* <PDFDownloadLink
               document={<PDFRenderer grave={grave} mapImageUrl={mapImageUrl} />}
               fileName="FORM"
             >
               <Button variant="success" disabled={!showButton}>
                 PDF
               </Button>
-              {/*  {({ loading }) =>
+                {({ loading }) =>
                 loading ? (
                   <Button>PDF erstellen...</Button>
                 ) : (
@@ -131,16 +170,16 @@ const SingleGraveScreen: React.FC = () => {
                     PDF herunterladen
                   </Button>
                 )
-              } */}
-            </PDFDownloadLink>
-            {/* <Button
+              } 
+            </PDFDownloadLink> */}
+            <Button
               variant="success"
               onClick={() => {
-                captureMapImage();
+                generatePDF();
               }}
             >
-              Capture map
-            </Button> */}
+              Download pdf
+            </Button>
 
             <div className="map-container" id="map-cont">
               <OpenMapComponent
@@ -351,6 +390,9 @@ const SingleGraveScreen: React.FC = () => {
                   ))}
               </tbody>
             </Table>
+            {grave && grave.payers.length !== 0 && (
+              <PayersTableScreenCrud graveId={grave._id} />
+            )}
           </>
         )}
       </div>
