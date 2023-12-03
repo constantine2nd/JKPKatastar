@@ -110,7 +110,6 @@ const GraveTypesTableScreenCrud = () => {
   } = useDeleteRow(queryFunction, deletePath);
 
   function errorOccuried() {
-    console.log("isUpdatingDataError" + isUpdatingDataError);
     return (
       isLoadingDataError ||
       isCreatingDataError ||
@@ -120,7 +119,6 @@ const GraveTypesTableScreenCrud = () => {
   }
 
   function errorMessage() {
-    console.log(updatingDataError);
     return (
       loadingDataError?.message ||
       creatingDataError?.message ||
