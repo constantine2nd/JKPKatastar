@@ -37,6 +37,9 @@
   "Edit Cemetery": "Uredi groblje",
   "Zoom": "Zum",
   "Name is Required": "Ime je obavezno",
+  "Zoom is Required": "Zoom je obavezan",
+  "LAT is Required": "LAT je obavezan",
+  "LON is Required": "LON je obavezan",
   "Enter the grave": "Unesite grobno mesto:",
   "Number of grave": "Broj grobnog mesta:",
   "Field of grave": "Polje grobnog mesta:",
@@ -56,5 +59,6 @@
   "Enter the capacity of the grave": "Unesite kapacitet grobnog mesta",
   "Enter LATITUDE of the grave": "Unesite LATITUDE grobnog mesta",
   "Enter LONGITUDE of the grave": "Unesite LONGITUDE grobnog mesta",
-  "Enter expiration date of contract": "Unesite datum isteka ugovora"
+  "Enter expiration date of contract": "Unesite datum isteka ugovora",
+  "Are you sure you want to delete the row?": "Da li ste sigurni da želite da obrišete red?"
 }
