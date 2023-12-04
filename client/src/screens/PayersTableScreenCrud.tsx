@@ -237,7 +237,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
 
   // DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Payer>) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    if (window.confirm(t("Are you sure you want to delete this user?"))) {
       deleteRow(row.original._id);
     }
   };
