@@ -190,7 +190,6 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   } = useDeleteRow(queryFunction, deletePath);
 
   function errorOccuried() {
-    console.log("isUpdatingDataError" + isUpdatingDataError);
     return (
       isLoadingDataError ||
       isCreatingDataError ||
@@ -200,7 +199,6 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   }
 
   function errorMessage() {
-    console.log(updatingDataError);
     return (
       loadingDataError?.message ||
       creatingDataError?.message ||
