@@ -141,9 +141,9 @@ const deleteSingleDeceased = async (req, res, next) => {
 };
 
 const updateDeceased = async (req, res) => {
-  const { id, name, surname, dateBirth, dateDeath } = req.body;
+  const { _id, name, surname, dateBirth, dateDeath } = req.body;
 
-  const filter = { _id: id }; // Criteria to find a row
+  const filter = { _id: _id }; // Criteria to find a row
   const update = {
     name: name,
     surname: surname,
@@ -171,10 +171,27 @@ const updateDeceased = async (req, res) => {
   }
 };
 
+const getDeceasedForGrave = async (req, res, next) => {
+  const graveId = req.params.id;
+  try {
+    const deceased = await Deceased.find({ grave: graveId });
+    if (deceased) {
+      res.send(deceased);
+    } else {
+      res.status(400).send({
+        message: "Server error",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   saveDeceased,
   getDeceased,
   getDeceasedPaginate,
   deleteSingleDeceased,
   updateDeceased,
+  getDeceasedForGrave,
 };

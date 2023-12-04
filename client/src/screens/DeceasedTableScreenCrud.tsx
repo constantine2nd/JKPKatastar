@@ -16,12 +16,13 @@ import {
   DialogTitle,
   IconButton,
   Tooltip,
+  Chip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../utils/languageSelector";
-import { Payer } from "../interfaces/GraveIntefaces";
+import { Deceased, Payer } from "../interfaces/GraveIntefaces";
 import { t } from "i18next";
 import {
   useCreateRow,
@@ -29,33 +30,39 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
-import { isActivePayer } from "../components/IsActiveUser";
+import { dateFormatter, dateCalendarFormatter } from "../utils/dateFormatter";
 
 // Defines the name of the react query
-const queryFunction = "payer-all";
+const queryFunction = "deceased-all";
 // Defines CRUD paths
 
 interface MyComponentProps {
   graveId: string;
+  graveCapcity: number;
 }
 
-const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
-  const getPath = `/api/payer/all/${props.graveId}`;
-  const createPath = `/api/payer/addpayer/${props.graveId}`;
-  const updatePath = "/api/payer/updatepayer";
-  const deletePath = "/api/payer";
+const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
+  const [deathDateString, setDeathDateString] = useState("");
+  const [birthDateString, setBirthDateString] = useState("");
+  const getPath = `/api/deceased/all/${props.graveId}`;
+  const createPath = `/api/deceased/adddeceased/${props.graveId}`;
+  const updatePath = "/api/deceased/updatedeceased";
+  const deletePath = "/api/deceased";
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
 
   const { t, i18n } = useTranslation();
 
-  const active = [
-    { label: t("yes"), value: true },
-    { label: t("no"), value: false },
-  ];
+  const dateOfBirth = (date: string) => {
+    return <Chip label={dateFormatter(date)} color="success" />;
+  };
 
-  const columns: MRT_ColumnDef<Payer>[] = [
+  const dateDeath = (date: string) => {
+    return <Chip label={dateFormatter(date)} color="error" />;
+  };
+
+  const columns: MRT_ColumnDef<Deceased>[] = [
     {
       accessorKey: "_id",
       header: "Id",
@@ -97,65 +104,51 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       },
     },
     {
-      accessorKey: "address",
-      header: t("address"),
+      //accessorKey: "dateBirth",
+      accessorFn: (row) => dateCalendarFormatter(row.dateBirth),
+      id: "dateBirth",
+      header: t("dateBirth"),
+      enableColumnFilter: false,
       muiEditTextFieldProps: {
-        type: "text",
+        type: "date",
         required: true,
-        error: !!validationErrors?.address,
-        helperText: validationErrors?.address,
+        error: !!validationErrors?.dateBirth,
+        helperText: validationErrors?.dateBirth,
         //remove any previous validation errors when user focuses on the input
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            address: undefined,
+            dateBirth: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
+      Cell: ({ cell }) => dateOfBirth(cell.getValue<string>()),
     },
     {
-      accessorKey: "phone",
-      header: t("phone"),
+      accessorFn: (row) => dateCalendarFormatter(row.dateDeath),
+      id: "dateDeath",
+      header: t("dateDeath"),
+      enableColumnFilter: false,
       muiEditTextFieldProps: {
-        type: "text",
+        type: "date",
         required: true,
-        error: !!validationErrors?.phone,
-        helperText: validationErrors?.phone,
+        error: !!validationErrors?.dateDeath,
+        helperText: validationErrors?.dateDeath,
         //remove any previous validation errors when user focuses on the input
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            phone: undefined,
+            dateDeath: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
-    },
-    {
-      accessorKey: "jmbg",
-      header: t("jmbg"),
-      muiEditTextFieldProps: {
-        type: "number",
-        required: true,
-        error: !!validationErrors?.jmbg,
-        helperText: validationErrors?.jmbg,
-        //remove any previous validation errors when user focuses on the input
-        onFocus: () =>
-          setValidationErrors({
-            ...validationErrors,
-            jmbg: undefined,
-          }),
-        //optionally add validation checking for onBlur or onChange
-      },
-    },
-    {
-      accessorKey: "active",
-      header: t("Active"),
-      editVariant: "select",
-      editSelectOptions: active,
-      muiEditTextFieldProps: {
-        select: true,
-      },
-      Cell: ({ row }) => isActivePayer(row.original.active, t),
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
+      Cell: ({ cell }) => dateDeath(cell.getValue<string>()),
     },
   ];
 
@@ -210,9 +203,9 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   }
 
   // CREATE action
-  const handleCreatePayer: MRT_TableOptions<Payer>["onCreatingRowSave"] =
+  const handleCreateDeceased: MRT_TableOptions<Deceased>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      const newValidationErrors = validatePayer(values);
+      const newValidationErrors = validateDeceased(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
         setValidationErrors(newValidationErrors);
         return;
@@ -223,11 +216,11 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     };
 
   // UPDATE action
-  const handleSaveRow: MRT_TableOptions<Payer>["onEditingRowSave"] = async ({
+  const handleSaveRow: MRT_TableOptions<Deceased>["onEditingRowSave"] = async ({
     values,
     table,
   }) => {
-    const newValidationErrors = validatePayer(values);
+    const newValidationErrors = validateDeceased(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
       return;
@@ -238,7 +231,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   };
 
   // DELETE action
-  const openDeleteConfirmModal = (row: MRT_Row<Payer>) => {
+  const openDeleteConfirmModal = (row: MRT_Row<Deceased>) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteRow(row.original._id);
     }
@@ -264,13 +257,13 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreatePayer,
+    onCreatingRowSave: handleCreateDeceased,
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleSaveRow,
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Payer")}</DialogTitle>
+        <DialogTitle variant="h3">{t("Create New Deceased")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -282,19 +275,48 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       </>
     ),
     //optionally customize modal content
-    renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
-      <>
-        <DialogTitle variant="h3">{t("Edit Payer")}</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-        >
-          {internalEditComponents} {/* or render custom edit components here */}
-        </DialogContent>
-        <DialogActions>
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
-        </DialogActions>
-      </>
-    ),
+    renderEditRowDialogContent: ({ table, row, internalEditComponents }) => {
+      //console.log(table);
+
+      // Ako getElementsByName vrati kolekciju elemenata, možda ćete želeti da pristupite prvom elementu
+
+      const elementsDateBirth = document.getElementsByName("dateBirth");
+      const myInput: HTMLInputElement | undefined = Array.from(
+        elementsDateBirth
+      )[0] as HTMLInputElement;
+
+      console.log(myInput.value);
+      /* const newRow = { ...row };
+      newRow._valuesCache = { ...row._valuesCache };
+      newRow.original = { ...row.original }; */
+
+      //newRow._valuesCache  = {...row._valuesCache};
+      //  console.log(internalEditComponents);
+      //   row.original.dateBirth = row.original.dateBirth.split("T")[0];
+      //row._valuesCache.dateDeath = row.original.dateDeath.split("T")[0];
+      //row._valuesCache.dateBirth = row.original.dateBirth.split("T")[0];
+      //  row.original.dateDeath = row.original.dateDeath.split("T")[0];
+      /* newRow._valuesCache.dateDeath = row.original.dateDeath.split("T")[0];
+      newRow.original.dateDeath = row.original.dateDeath.split("T")[0];
+      newRow._valuesCache.dateBirth = row.original.dateBirth.split("T")[0];
+      newRow.original.dateBirth = row.original.dateBirth.split("T")[0]; */
+      console.log(row);
+      // console.log(newRow);
+      return (
+        <>
+          <DialogTitle variant="h3">{t("Edit Deceased")}</DialogTitle>
+          <DialogContent
+            sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+          >
+            {internalEditComponents}{" "}
+            {/* or render custom edit components here */}
+          </DialogContent>
+          <DialogActions>
+            <MRT_EditActionButtons variant="text" table={table} row={row} />
+          </DialogActions>
+        </>
+      );
+    },
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Tooltip title={t("Edit")}>
@@ -312,6 +334,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     renderTopToolbarCustomActions: ({ table }) => (
       <Button
         variant="contained"
+        disabled={fetchedData.length >= props.graveCapcity}
         onClick={() => {
           table.setCreatingRow(true); //simplest way to open the create row modal with no default values
           //or you can pass in a row object to set default values with the `createRow` helper function
@@ -322,7 +345,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
           // );
         }}
       >
-        {t("Create New Payer")}
+        {t("Create New Deceased")}
       </Button>
     ),
     state: {
@@ -338,11 +361,11 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
 
 //const PayersTableScreenCrudWithProviders = () => <PayersTableScreenCrud />;
 
-export default PayersTableScreenCrud;
+export default DeceasedTableScreenCrud;
 
 const validateRequired = (value: string) => !!value.length;
 
-function validatePayer(row: Payer) {
+function validateDeceased(row: Deceased) {
   return {
     name: !validateRequired(row.name) ? t("Name is Required") : "",
   };

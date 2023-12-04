@@ -39,6 +39,7 @@ import PayersTableScreenCrud from "./PayersTableScreenCrud";
 import { Grave } from "../interfaces/GraveIntefaces";
 import { useTranslation } from "react-i18next";
 import html2canvas from "html2canvas";
+import DeceasedTableScreenCrud from "./DeceasedTableScreenCrud";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";
@@ -253,8 +254,8 @@ const SingleGraveScreen: React.FC = () => {
           </Form>
         )}
         <br />
-        {grave && (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
-          <Row
+
+        {/*  <Row
             style={{
               width: "500px",
             }}
@@ -270,7 +271,7 @@ const SingleGraveScreen: React.FC = () => {
                   });
                 }}
                 disabled={
-                  Number(grave.graveType.capacity) === grave.deceased.length
+                  Number(grave.graveType.capacity) >= grave.deceased.length
                 }
               >
                 Dodaj pokojnika
@@ -290,8 +291,7 @@ const SingleGraveScreen: React.FC = () => {
                 Dodaj platioca
               </Button>
             </Col>
-          </Row>
-        )}
+          </Row>  */}
         <br />
         {grave && grave.deceased.length == 0 && (
           <h4>Na ovom grobnom mestu nema pokojnika</h4>
@@ -300,7 +300,7 @@ const SingleGraveScreen: React.FC = () => {
         {grave && grave.deceased.length !== 0 && (
           <>
             <h2>Lista pokojnika</h2>
-            <Table
+            {/*  <Table
               striped
               bordered
               hover
@@ -338,14 +338,21 @@ const SingleGraveScreen: React.FC = () => {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </Table> */}
           </>
         )}
+        {grave && grave.payers.length !== 0 && (
+          <DeceasedTableScreenCrud
+            graveId={grave._id}
+            graveCapcity={Number(grave.graveType.capacity)}
+          />
+        )}
+
         <br />
         {grave && grave.payers.length !== 0 && (
           <>
             <h2>Lista platioca</h2>
-            <Table
+            {/*  <Table
               striped
               bordered
               hover
@@ -389,7 +396,7 @@ const SingleGraveScreen: React.FC = () => {
                     </tr>
                   ))}
               </tbody>
-            </Table>
+            </Table> */}
             {grave && grave.payers.length !== 0 && (
               <PayersTableScreenCrud graveId={grave._id} />
             )}
