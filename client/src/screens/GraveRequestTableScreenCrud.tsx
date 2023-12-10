@@ -29,6 +29,7 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
+import { GraveRequest } from "../interfaces/GraveRequestInterfaces";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -46,12 +47,12 @@ const GraveRequestTableScreenCrud = () => {
   const { t, i18n } = useTranslation();
 
   const statuses = [
-    'REQUESTED',
-    'FREE',
-    'OCCUPIED',
+    t('REQUESTED'),
+    t('FREE'),
+    t('OCCUPIED'),
   ] 
 
-  const columns: MRT_ColumnDef<GraveType>[] = [
+  const columns: MRT_ColumnDef<GraveRequest>[] = [
     {
       accessorKey: "_id",
       header: "Id",
@@ -78,14 +79,53 @@ const GraveRequestTableScreenCrud = () => {
     {
       accessorKey: "surname",
       header: t("surname"),
+      muiEditTextFieldProps: {
+        type: "text",
+        required: true,
+        error: !!validationErrors?.surname,
+        helperText: validationErrors?.surname,
+        //remove any previous validation errors when user focuses on the input
+        onFocus: () =>
+          setValidationErrors({
+            ...validationErrors,
+            name: undefined,
+          }),
+        //optionally add validation checking for onBlur or onChange
+      },
     },
     {
       accessorKey: "email",
       header: t("email"),
+      muiEditTextFieldProps: {
+        type: "text",
+        required: true,
+        error: !!validationErrors?.email,
+        helperText: validationErrors?.email,
+        //remove any previous validation errors when user focuses on the input
+        onFocus: () =>
+          setValidationErrors({
+            ...validationErrors,
+            name: undefined,
+          }),
+        //optionally add validation checking for onBlur or onChange
+      },
     },
     {
       accessorKey: "phone",
       header: t("phone"),
+      muiEditTextFieldProps: {
+        type: "text",
+        required: true,
+        error: !!validationErrors?.phone,
+        helperText: validationErrors?.phone,
+        //remove any previous validation errors when user focuses on the input
+        onFocus: () =>
+          setValidationErrors({
+            ...validationErrors,
+            name: undefined,
+          }),
+        //optionally add validation checking for onBlur or onChange
+      },
     },
     {
       accessorKey: "status",
@@ -144,7 +184,7 @@ const GraveRequestTableScreenCrud = () => {
   }
 
   // CREATE action
-  const handleCreateGraveType: MRT_TableOptions<GraveType>["onCreatingRowSave"] =
+  const handleCreateGraveType: MRT_TableOptions<GraveRequest>["onCreatingRowSave"] =
     async ({ values, table }) => {
       const newValidationErrors = validateGraveType(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
@@ -157,7 +197,7 @@ const GraveRequestTableScreenCrud = () => {
     };
 
   // UPDATE action
-  const handleSaveRow: MRT_TableOptions<GraveType>["onEditingRowSave"] =
+  const handleSaveRow: MRT_TableOptions<GraveRequest>["onEditingRowSave"] =
     async ({ values, table }) => {
       const newValidationErrors = validateGraveType(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
@@ -170,7 +210,7 @@ const GraveRequestTableScreenCrud = () => {
     };
 
   // DELETE action
-  const openDeleteConfirmModal = (row: MRT_Row<GraveType>) => {
+  const openDeleteConfirmModal = (row: MRT_Row<GraveRequest>) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteRow(row.original._id);
     }
@@ -276,8 +316,11 @@ export default GraveRequestTableScreenCrudWithProviders;
 
 const validateRequired = (value: string) => !!value.length;
 
-function validateGraveType(row: GraveType) {
+function validateGraveType(row: GraveRequest) {
   return {
     name: !validateRequired(row.name) ? t("Name is Required") : "",
+    surname: !validateRequired(row.surname) ? t("Surname is Required") : "",
+    email: !validateRequired(row.email) ? t("Email is Required") : "",
+    phone: !validateRequired(row.phone) ? t("Phone is Required") : "",
   };
 }
