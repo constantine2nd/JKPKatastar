@@ -5,8 +5,16 @@ import {
   useSearchParams,
   createSearchParams,
 } from "react-router-dom";
-import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
+import {
+  Modal,
+  Form,
+  Row,
+  Col,
+  Button as BootstrapButton,
+  Card,
+} from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+
 import { PDFDownloadLink, usePDF } from "@react-pdf/renderer";
 import PDFRenderer from "./../components/PDFRenderer";
 import {
@@ -56,9 +64,6 @@ const getParagraphStyling = (contractTo: string) => {
 };
 
 const SingleGraveScreen: React.FC = () => {
-  const [mapImageUrl, setMapImageUrl] = useState("");
-  const [showButton, setShowButton] = useState(false);
-  // const [instance, updateInstance] = usePDF({document: PDFRenderer});
   const dispatch = useDispatch<any>();
   const grave = useSelector(selectSingleGrave);
   const graveStatus = useSelector(getGraveStatus);
@@ -68,11 +73,7 @@ const SingleGraveScreen: React.FC = () => {
   const [searchParams] = useSearchParams();
   const graveId = searchParams.get("id");
 
-  // const [grave, setGrave] = useState<Grave>();
-
   const { t, i18n } = useTranslation();
-
-  let navigate = useNavigate();
 
   const generatePDF = () => {
     const mapElement = document.getElementById("map-cont");
@@ -109,22 +110,6 @@ const SingleGraveScreen: React.FC = () => {
     // Kreiranje URL-a za Blob objekat
   };
 
-  const captureMapImage = () => {
-    /* const mapElement = document.getElementById("map-cont");
-    //  console.log(mapElement);
-
-    if (mapElement) {
-      //setShowButton(false);
-      html2canvas(mapElement, { useCORS: true }).then((canvas) => {
-        const mapImageUrl = canvas.toDataURL("image/png");
-        setMapImageUrl(mapImageUrl);
-        // Ovde možete dalje koristiti mapImageUrl
-        // console.log(mapImageUrl);
-        //setShowButton(true);
-      });
-    } */
-  };
-
   useEffect(() => {
     if (graveId) {
       dispatch(fetchSingleGrave(graveId));
@@ -154,249 +139,95 @@ const SingleGraveScreen: React.FC = () => {
       >
         {grave && (
           <>
-            <h2>Podaci o grobnom mestu</h2>
-
-            {/* <PDFDownloadLink
-              document={<PDFRenderer grave={grave} mapImageUrl={mapImageUrl} />}
-              fileName="FORM"
-            >
-              <Button variant="success" disabled={!showButton}>
-                PDF
-              </Button>
-                {({ loading }) =>
-                loading ? (
-                  <Button>PDF erstellen...</Button>
-                ) : (
-                  <Button variant="success" disabled={disableButton}>
-                    PDF herunterladen
-                  </Button>
-                )
-              } 
-            </PDFDownloadLink> */}
-            <Button
-              variant="success"
-              onClick={() => {
-                generatePDF();
-              }}
-            >
-              Download pdf
-            </Button>
-
-            <div className="map-container" id="map-cont">
-              <OpenMapComponent
-                LAT={Number(grave?.LAT)}
-                LON={Number(grave?.LON)}
-                captureMap={captureMapImage}
-              />
-              {/*    <MapComponent
-                LAT={grave?.LAT}
-                LON={grave?.LON}
-                captureMap={captureMapImage}
-              /> */}
-            </div>
+            <Card style={{ width: "60%", marginTop: "20px" }}>
+              <Card.Body>
+                <Card.Title>Podaci o grobnom mestu</Card.Title>
+                <Row>
+                  <Col>
+                    <h3>
+                      {t("number")}: {grave.number}
+                    </h3>
+                  </Col>
+                  <Col>
+                    <h3>
+                      {t("field")}: {grave.field}
+                    </h3>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <h3>
+                      {t("row")}: {grave.row}
+                    </h3>
+                  </Col>
+                  <Col>
+                    <h3>
+                      {t("capacity")}: {grave.graveType.capacity}
+                    </h3>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <h3>
+                      {t("LAT")}: {grave.LAT}
+                    </h3>
+                  </Col>
+                  <Col>
+                    <h3>
+                      {t("LON")}: {grave.LON}
+                    </h3>
+                  </Col>
+                </Row>
+                <Row>
+                  <div className="map-container" id="map-cont">
+                    <OpenMapComponent
+                      LAT={Number(grave?.LAT)}
+                      LON={Number(grave?.LON)}
+                    />
+                  </div>
+                </Row>
+                <Row>
+                  <Col>
+                    <BootstrapButton
+                      variant="success"
+                      onClick={() => {
+                        generatePDF();
+                      }}
+                    >
+                      Download pdf
+                    </BootstrapButton>
+                  </Col>
+                  <Col>
+                    <h3>
+                      {t("contract-expiration-date")}:{" "}
+                      <span className={getParagraphStyling(grave.contractTo)}>
+                        {dateFormatter(grave.contractTo)}
+                      </span>
+                    </h3>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
           </>
         )}
-        {grave && (
-          <Form>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("number")}</Form.Label>
-                  <Form.Control type="text" value={grave.number}></Form.Control>
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("field")}</Form.Label>
-                  <Form.Control type="text" value={grave.field}></Form.Control>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("row")}</Form.Label>
-                  <Form.Control type="text" value={grave.row}></Form.Control>
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("capacity")}</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={grave.graveType.capacity}
-                  ></Form.Control>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("LAT")}</Form.Label>
-                  <Form.Control type="text" value={grave.LAT}></Form.Control>
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group>
-                  <Form.Label>{t("LON")}</Form.Label>
-                  <Form.Control type="text" value={grave.LON}></Form.Control>
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <h2>
-                {t("contract-expiration-date")}:{" "}
-                <span className={getParagraphStyling(grave.contractTo)}>
-                  {dateFormatter(grave.contractTo)}
-                </span>
-              </h2>
-            </Row>
-          </Form>
-        )}
         <br />
-
-        {/*  <Row
-            style={{
-              width: "500px",
-            }}
-          >
-            <Col className="button-add">
-              <Button
-                onClick={() => {
-                  navigate({
-                    pathname: "/add-deceased",
-                    search: createSearchParams({
-                      id: grave._id,
-                    }).toString(),
-                  });
-                }}
-                disabled={
-                  Number(grave.graveType.capacity) >= grave.deceased.length
-                }
-              >
-                Dodaj pokojnika
-              </Button>
-            </Col>
-            <Col className="button-add">
-              <Button
-                onClick={() => {
-                  navigate({
-                    pathname: "/add-payer",
-                    search: createSearchParams({
-                      id: grave._id,
-                    }).toString(),
-                  });
-                }}
-              >
-                Dodaj platioca
-              </Button>
-            </Col>
-          </Row>  */}
         <br />
         {grave && grave.deceased.length == 0 && (
           <h4>Na ovom grobnom mestu nema pokojnika</h4>
         )}
-
-        {grave && grave.deceased.length !== 0 && (
+        {grave && grave.payers.length !== 0 && (
           <>
             <h2>Lista pokojnika</h2>
-            {/*  <Table
-              striped
-              bordered
-              hover
-              size="sm"
-              style={{
-                width: "70%",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Ime</th>
-                  <th>Prezime</th>
-                  <th>Datum rodjenja</th>
-                  <th>Datum smrti</th>
-                </tr>
-              </thead>
-              <tbody>
-                {grave.deceased.map((dec, index, niz) => (
-                  <tr key={dec._id}>
-                    <td>{index + 1}</td>
-                    <td>{dec.name}</td>
-                    <td>{dec.surname}</td>
-                    <td>{dateFormatter(dec.dateBirth)}</td>
-                    <td>{dateFormatter(dec.dateDeath)}</td>
-                    <td>
-                      <Button
-                        onClick={() => {
-                          dispatch(deleteDeceased(dec._id));
-                        }}
-                      >
-                        izbrisi pokojnika
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table> */}
+            <DeceasedTableScreenCrud
+              graveId={grave._id}
+              graveCapcity={Number(grave.graveType.capacity)}
+            />
           </>
         )}
-        {grave && grave.payers.length !== 0 && (
-          <DeceasedTableScreenCrud
-            graveId={grave._id}
-            graveCapcity={Number(grave.graveType.capacity)}
-          />
-        )}
-
         <br />
         {grave && grave.payers.length !== 0 && (
           <>
             <h2>Lista platioca</h2>
-            {/*  <Table
-              striped
-              bordered
-              hover
-              size="sm"
-              style={{
-                width: "70%",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Ime</th>
-                  <th>Prezime</th>
-                  <th>Adresa</th>
-                  <th>Telefon</th>
-                  <th>JMBG</th>
-                  <th>Aktivan</th>
-                  <th>#</th>
-                </tr>
-              </thead>
-              <tbody>
-                {grave &&
-                  grave.payers.map((payer, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{payer.name}</td>
-                      <td>{payer.surname}</td>
-                      <td>{payer.address}</td>
-                      <td>{payer.phone}</td>
-                      <td>{payer.jmbg}</td>
-                      <td>{payer.active ? "DA" : "NE"}</td>
-                      <td>
-                        <Button
-                          onClick={() => {
-                            dispatch(deletePayer(payer._id));
-                          }}
-                        >
-                          izbrisi platioca
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </Table> */}
             {grave && grave.payers.length !== 0 && (
               <PayersTableScreenCrud graveId={grave._id} />
             )}

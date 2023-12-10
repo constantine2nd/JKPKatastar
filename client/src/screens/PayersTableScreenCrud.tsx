@@ -260,7 +260,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       : undefined,
     muiTableContainerProps: {
       sx: {
-        minHeight: "500px",
+        minHeight: "100px",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
