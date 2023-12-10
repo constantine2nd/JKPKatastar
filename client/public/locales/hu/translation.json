@@ -26,6 +26,10 @@
   "no": "Nem",
   "role": "Szerep",
   "Active": "Aktív",
+  "status": "állapot",
+  "REQUESTED": "KÉREM",
+  "FREE": "INGYENES",
+  "OCCUPIED": "MEGSZÁLLT",
   "Send": "Küld",
   "Back": "Vissza",
   "Edit": "Szerkesztés",
@@ -38,6 +42,12 @@
   "Edit Cemetery": "Temető szerkesztése",
   "Zoom": "Zoomolás",
   "Name is Required": "Név kötelező",
+  "Surname is Required": "Vezetéknév kötelező",
+  "Email is Required": "E-mail kötelező",
+  "Phone is Required": "Telefon szükséges",
+  "Zoom is Required": "Nagyítás szükséges",
+  "LAT is Required": "LAT szükséges",
+  "LON is Required": "LON szükséges",
   "Enter the grave": "Lépj be a sírba:",
   "Number of grave": "Sír száma:",
   "Field of grave": "Sírmező:",
@@ -57,5 +67,6 @@
   "Enter the capacity of the grave": "Adja meg a sír kapacitását",
   "Enter LATITUDE of the grave": "Adja meg a sír LATITUDE-ját",
   "Enter LONGITUDE of the grave": "LONGITUDE a sírból",
-  "Enter expiration date of contract": "Adja meg a szerződés lejárati dátumát"
+  "Enter expiration date of contract": "Adja meg a szerződés lejárati dátumát",
+  "Are you sure you want to delete the row?": "Biztosan törli a sort?"
 }

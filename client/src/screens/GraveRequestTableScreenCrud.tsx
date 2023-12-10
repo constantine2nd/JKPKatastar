@@ -21,7 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../utils/languageSelector";
-import { Payer } from "../interfaces/GraveIntefaces";
+import { GraveType } from "../interfaces/GraveTypeInterfaces";
 import { t } from "i18next";
 import {
   useCreateRow,
@@ -29,33 +29,30 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
-import { isActivePayer } from "../components/IsActiveUser";
+import { GraveRequest } from "../interfaces/GraveRequestInterfaces";
 
 // Defines the name of the react query
-const queryFunction = "payer-all";
+const queryFunction = "grave-types-all";
 // Defines CRUD paths
+const getPath = "/api/grave-requests/all";
+const createPath = "/api/grave-requests/addgraverequest";
+const updatePath = "/api/grave-requests/updategraverequest";
+const deletePath = "/api/grave-requests";
 
-interface MyComponentProps {
-  graveId: string;
-}
-
-const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
-  const getPath = `/api/payer/all/${props.graveId}`;
-  const createPath = `/api/payer/addpayer/${props.graveId}`;
-  const updatePath = "/api/payer/updatepayer";
-  const deletePath = "/api/payer";
+const GraveRequestTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
 
   const { t, i18n } = useTranslation();
 
-  const active = [
-    { label: t("yes"), value: true },
-    { label: t("no"), value: false },
-  ];
+  const statuses = [
+    t('REQUESTED'),
+    t('FREE'),
+    t('OCCUPIED'),
+  ] 
 
-  const columns: MRT_ColumnDef<Payer>[] = [
+  const columns: MRT_ColumnDef<GraveRequest>[] = [
     {
       accessorKey: "_id",
       header: "Id",
@@ -91,24 +88,24 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            surname: undefined,
+            name: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
     },
     {
-      accessorKey: "address",
-      header: t("address"),
+      accessorKey: "email",
+      header: t("email"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
-        error: !!validationErrors?.address,
-        helperText: validationErrors?.address,
+        error: !!validationErrors?.email,
+        helperText: validationErrors?.email,
         //remove any previous validation errors when user focuses on the input
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            address: undefined,
+            name: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
@@ -125,37 +122,16 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            phone: undefined,
+            name: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
     },
     {
-      accessorKey: "jmbg",
-      header: t("jmbg"),
-      muiEditTextFieldProps: {
-        type: "number",
-        required: true,
-        error: !!validationErrors?.jmbg,
-        helperText: validationErrors?.jmbg,
-        //remove any previous validation errors when user focuses on the input
-        onFocus: () =>
-          setValidationErrors({
-            ...validationErrors,
-            jmbg: undefined,
-          }),
-        //optionally add validation checking for onBlur or onChange
-      },
-    },
-    {
-      accessorKey: "active",
-      header: t("Active"),
-      editVariant: "select",
-      editSelectOptions: active,
-      muiEditTextFieldProps: {
-        select: true,
-      },
-      Cell: ({ row }) => isActivePayer(row.original.active, t),
+      accessorKey: "status",
+      header: t("status"),
+      editVariant: 'select',
+      editSelectOptions: statuses,
     },
   ];
 
@@ -208,36 +184,34 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   }
 
   // CREATE action
-  const handleCreatePayer: MRT_TableOptions<Payer>["onCreatingRowSave"] =
+  const handleCreateGraveType: MRT_TableOptions<GraveRequest>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      const newValidationErrors = validatePayer(values);
+      const newValidationErrors = validateGraveType(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
         setValidationErrors(newValidationErrors);
         return;
       }
       setValidationErrors({});
-      await createRow(values).catch((error: any) => console.log(error));
+      await createRow(values).catch((error) => console.log(error));
       table.setCreatingRow(null); //exit creating mode
     };
 
   // UPDATE action
-  const handleSaveRow: MRT_TableOptions<Payer>["onEditingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    const newValidationErrors = validatePayer(values);
-    if (Object.values(newValidationErrors).some((error) => error)) {
-      setValidationErrors(newValidationErrors);
-      return;
-    }
-    setValidationErrors({});
-    await updateRow(values).catch((error: any) => console.log(error));
-    table.setEditingRow(null); //exit editing mode
-  };
+  const handleSaveRow: MRT_TableOptions<GraveRequest>["onEditingRowSave"] =
+    async ({ values, table }) => {
+      const newValidationErrors = validateGraveType(values);
+      if (Object.values(newValidationErrors).some((error) => error)) {
+        setValidationErrors(newValidationErrors);
+        return;
+      }
+      setValidationErrors({});
+      await updateRow(values).catch((error) => console.log(error));
+      table.setEditingRow(null); //exit editing mode
+    };
 
   // DELETE action
-  const openDeleteConfirmModal = (row: MRT_Row<Payer>) => {
-    if (window.confirm(t("Are you sure you want to delete this user?"))) {
+  const openDeleteConfirmModal = (row: MRT_Row<GraveRequest>) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
       deleteRow(row.original._id);
     }
   };
@@ -258,17 +232,17 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       : undefined,
     muiTableContainerProps: {
       sx: {
-        minHeight: "100px",
+        minHeight: "500px",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreatePayer,
+    onCreatingRowSave: handleCreateGraveType,
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleSaveRow,
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Payer")}</DialogTitle>
+        <DialogTitle variant="h3">{t("Create New Grave Type")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -282,7 +256,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Payer")}</DialogTitle>
+        <DialogTitle variant="h3">{t("Edit Grave Type")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -320,7 +294,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
           // );
         }}
       >
-        {t("Create New Payer")}
+        {t("Create New Grave Type")}
       </Button>
     ),
     state: {
@@ -334,14 +308,19 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   return <MaterialReactTable table={table} />;
 };
 
-//const PayersTableScreenCrudWithProviders = () => <PayersTableScreenCrud />;
+const GraveRequestTableScreenCrudWithProviders = () => (
+  <GraveRequestTableScreenCrud />
+);
 
-export default PayersTableScreenCrud;
+export default GraveRequestTableScreenCrudWithProviders;
 
 const validateRequired = (value: string) => !!value.length;
 
-function validatePayer(row: Payer) {
+function validateGraveType(row: GraveRequest) {
   return {
     name: !validateRequired(row.name) ? t("Name is Required") : "",
+    surname: !validateRequired(row.surname) ? t("Surname is Required") : "",
+    email: !validateRequired(row.email) ? t("Email is Required") : "",
+    phone: !validateRequired(row.phone) ? t("Phone is Required") : "",
   };
 }
