@@ -29,7 +29,7 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
-import { GraveRequest } from "../interfaces/GraveRequestInterfaces";
+import { GraveRequest as CrudTableType } from "../interfaces/GraveRequestInterfaces";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -52,7 +52,7 @@ const GraveRequestTableScreenCrud = () => {
     t('OCCUPIED'),
   ] 
 
-  const columns: MRT_ColumnDef<GraveRequest>[] = [
+  const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
       accessorKey: "_id",
       header: "Id",
@@ -184,7 +184,7 @@ const GraveRequestTableScreenCrud = () => {
   }
 
   // CREATE action
-  const handleCreateGraveType: MRT_TableOptions<GraveRequest>["onCreatingRowSave"] =
+  const handleCreateGraveType: MRT_TableOptions<CrudTableType>["onCreatingRowSave"] =
     async ({ values, table }) => {
       const newValidationErrors = validateGraveType(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
@@ -197,7 +197,7 @@ const GraveRequestTableScreenCrud = () => {
     };
 
   // UPDATE action
-  const handleSaveRow: MRT_TableOptions<GraveRequest>["onEditingRowSave"] =
+  const handleSaveRow: MRT_TableOptions<CrudTableType>["onEditingRowSave"] =
     async ({ values, table }) => {
       const newValidationErrors = validateGraveType(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
@@ -210,7 +210,7 @@ const GraveRequestTableScreenCrud = () => {
     };
 
   // DELETE action
-  const openDeleteConfirmModal = (row: MRT_Row<GraveRequest>) => {
+  const openDeleteConfirmModal = (row: MRT_Row<CrudTableType>) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteRow(row.original._id);
     }
@@ -316,11 +316,11 @@ export default GraveRequestTableScreenCrudWithProviders;
 
 const validateRequired = (value: string) => !!value.length;
 
-function validateGraveType(row: GraveRequest) {
+function validateGraveType(row: CrudTableType) {
   return {
-    name: !validateRequired(row.name) ? t("Name is Required") : "",
-    surname: !validateRequired(row.surname) ? t("Surname is Required") : "",
-    email: !validateRequired(row.email) ? t("Email is Required") : "",
-    phone: !validateRequired(row.phone) ? t("Phone is Required") : "",
+    name: !validateRequired(row.name) ? t("The field is Required") : "",
+    surname: !validateRequired(row.surname) ? t("The field is Required") : "",
+    email: !validateRequired(row.email) ? t("The field is Required") : "",
+    phone: !validateRequired(row.phone) ? t("The field is Required") : "",
   };
 }
