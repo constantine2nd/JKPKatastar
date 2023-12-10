@@ -34,6 +34,7 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
+import { t } from 'i18next';
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -228,7 +229,7 @@ function errorMessage() {
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Cemetery>) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm(t('Are you sure you want to delete the row?'))) {
       deleteRow(row.original._id);
     }
   };
@@ -373,9 +374,9 @@ const validateRequired = (value: string) => !!value.length;
 
 function validateCemetery(cemetery: Cemetery) {
   return {
-    name: !validateRequired(cemetery.name) ? 'Name is Required' : '',
-    zoom: !validateRequired(cemetery.zoom.toString()) ? 'Zoom is Required' : '',
-    LAT: !validateRequired(cemetery.LAT.toString()) ? 'LAT is Required' : '',
-    LON: !validateRequired(cemetery.LON.toString()) ? 'LON is Required' : '',
+    name: !validateRequired(cemetery.name) ? t('Name is Required') : '',
+    zoom: !validateRequired(cemetery.zoom.toString()) ? t('Zoom is Required') : '',
+    LAT: !validateRequired(cemetery.LAT.toString()) ? t('LAT is Required') : '',
+    LON: !validateRequired(cemetery.LON.toString()) ? t('LON is Required') : '',
   };
 }
