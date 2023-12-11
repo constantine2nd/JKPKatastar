@@ -18,10 +18,10 @@ const getGraveRequests = async (req, res, next) => {
 
 
 const addGraveRequest = async (req, res) => {
-  const { graveId, name, surname, email, phone, status } = req.body;
+  const { grave, name, surname, email, phone, status } = req.body;
 
   const newRow = await GraveRequest.create({
-    grave: new mongoose.Types.ObjectId(graveId),
+    grave: new mongoose.Types.ObjectId(grave),
     name: name,
     surname: surname,
     email: email,
@@ -48,10 +48,10 @@ const addGraveRequest = async (req, res) => {
 
 
 const updateGraveRequest = async (req, res) => {
-  const { _id, status } = req.body;
+  const { _id, status, name, surname, email, phone } = req.body;
   
   const filter = { _id: _id }; // Criteria to find a row
-  const update = { status: status}; // Fields to update
+  const update = { status: status, name: name, surname: surname, email: email, phone: phone}; // Fields to update
 
   const updatedRow = await GraveRequest.findOneAndUpdate(filter, update, {new: true});
 

@@ -133,15 +133,12 @@ const GraveRequestTableScreenCrud = () => {
       editVariant: 'select',
       editSelectOptions: statuses,
     },
+    {
+      accessorKey: "grave",
+      header: t("Grave ID"),
+    },
   ];
 
-  // call CREATE hook
-  const {
-    mutateAsync: createRow,
-    isPending: isCreatingRow,
-    isError: isCreatingDataError,
-    error: creatingDataError,
-  } = useCreateRow(queryFunction, createPath);
   // call READ hook
   const {
     data: fetchedData = [],
@@ -168,7 +165,6 @@ const GraveRequestTableScreenCrud = () => {
   function errorOccuried() {
     return (
       isLoadingDataError ||
-      isCreatingDataError ||
       isUpdatingDataError ||
       isUDeletingDataError
     );
@@ -177,24 +173,10 @@ const GraveRequestTableScreenCrud = () => {
   function errorMessage() {
     return (
       loadingDataError?.message ||
-      creatingDataError?.message ||
       updatingDataError?.message ||
       deletingDataError?.message
     );
   }
-
-  // CREATE action
-  const handleCreateGraveType: MRT_TableOptions<CrudTableType>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      const newValidationErrors = validateGraveType(values);
-      if (Object.values(newValidationErrors).some((error) => error)) {
-        setValidationErrors(newValidationErrors);
-        return;
-      }
-      setValidationErrors({});
-      await createRow(values).catch((error) => console.log(error));
-      table.setCreatingRow(null); //exit creating mode
-    };
 
   // UPDATE action
   const handleSaveRow: MRT_TableOptions<CrudTableType>["onEditingRowSave"] =
@@ -236,7 +218,6 @@ const GraveRequestTableScreenCrud = () => {
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateGraveType,
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleSaveRow,
     //optionally customize modal content
@@ -281,25 +262,20 @@ const GraveRequestTableScreenCrud = () => {
         </Tooltip>
       </Box>
     ),
-    renderTopToolbarCustomActions: ({ table }) => (
+    renderTopToolbarCustomActions: () => (
       <Button
         variant="contained"
         onClick={() => {
-          table.setCreatingRow(true); //simplest way to open the create row modal with no default values
-          //or you can pass in a row object to set default values with the `createRow` helper function
-          // table.setCreatingRow(
-          //   createRow(table, {
-          //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
-          //   }),
-          // );
+          const url = '/grave-requests-stepper';
+          window.open(url, '_blank');
         }}
       >
-        {t("Create New Grave Type")}
+        {t("Create New Grave Request")}
       </Button>
     ),
     state: {
       isLoading: isLoadingData,
-      isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
+      isSaving: isUpdatingRow || isDeletingRow,
       showAlertBanner: errorOccuried(),
       showProgressBars: isFetchingData,
     },
