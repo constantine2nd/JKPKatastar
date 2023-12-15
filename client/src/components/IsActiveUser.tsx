@@ -20,4 +20,16 @@ const isActivePayer = (isActive: boolean, t: any) => {
   return result;
 };
 
-export { isActiveUser, isActivePayer };
+const statusOfGraveRequest = (status: string, t: any) => {
+  let result = null;
+  if (status === 'ACCEPTED') {
+    result = <Chip label={t("ACCEPTED")} color="success" />;
+  } else if(status === 'DENIED') {
+    result = <Chip label={t("DENIED")} color="error" />;
+  } else {
+    result = <Chip label={t("REQUESTED")} color="warning" />;
+  }
+  return result;
+};
+
+export { isActiveUser, isActivePayer, statusOfGraveRequest };

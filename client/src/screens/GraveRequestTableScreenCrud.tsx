@@ -30,6 +30,8 @@ import {
   useUpdateRow,
 } from "../hooks/useCrudHooks";
 import { GraveRequest as CrudTableType } from "../interfaces/GraveRequestInterfaces";
+import { statusOfGraveRequest } from "../components/IsActiveUser";
+import { dateFormatter } from "../utils/dateFormatter";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -47,9 +49,9 @@ const GraveRequestTableScreenCrud = () => {
   const { t, i18n } = useTranslation();
 
   const statuses = [
-    t('REQUESTED'),
-    t('FREE'),
-    t('OCCUPIED'),
+    { label: t('REQUESTED'), value: 'REQUESTED' },
+    { label: t('ACCEPTED'), value: 'ACCEPTED' },
+    { label: t('DENIED'), value: 'DENIED' },
   ] 
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
@@ -132,6 +134,18 @@ const GraveRequestTableScreenCrud = () => {
       header: t("status"),
       editVariant: 'select',
       editSelectOptions: statuses,
+      Cell: ({ row }) => (
+        statusOfGraveRequest(row.original.status, t)
+      ),
+    },
+    {
+      accessorFn: (row) => new Date(row.createdAt),
+      id: "createdAt",
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
+      header: t("created-at"),
+      Cell: ({ cell }) => dateFormatter(cell.getValue<string>()),
     },
     {
       accessorKey: "grave",

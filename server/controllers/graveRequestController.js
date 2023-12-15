@@ -3,7 +3,7 @@ import GraveRequest from "../models/graveRequestModel.js";
 
 const getGraveRequests = async (req, res, next) => {
   try {
-    const allRows = await GraveRequest.find();
+    const allRows = await GraveRequest.find().sort({status: 'desc'});
     if (allRows) {
       res.send(allRows);
     } else {
@@ -18,7 +18,7 @@ const getGraveRequests = async (req, res, next) => {
 
 
 const addGraveRequest = async (req, res) => {
-  const { grave, name, surname, email, phone, status } = req.body;
+  const { grave, name, surname, email, phone, status, createdAt } = req.body;
 
   const newRow = await GraveRequest.create({
     grave: new mongoose.Types.ObjectId(grave),
@@ -27,6 +27,7 @@ const addGraveRequest = async (req, res) => {
     email: email,
     phone: phone,
     status: status,
+    createdAt: createdAt,
   });
   console.log(newRow);
   if (newRow) {
@@ -38,6 +39,7 @@ const addGraveRequest = async (req, res) => {
       email: newRow.email,
       phone: newRow.phone,
       status: newRow.status,
+      createdAt: newRow.createdAt,
     });
   } else {
     res.status(400).send({
@@ -48,10 +50,10 @@ const addGraveRequest = async (req, res) => {
 
 
 const updateGraveRequest = async (req, res) => {
-  const { _id, status, name, surname, email, phone } = req.body;
+  const { _id, status, name, surname, email, phone, createdAt } = req.body;
   
   const filter = { _id: _id }; // Criteria to find a row
-  const update = { status: status, name: name, surname: surname, email: email, phone: phone}; // Fields to update
+  const update = { status: status, name: name, surname: surname, email: email, phone: phone, createdAt: createdAt}; // Fields to update
 
   const updatedRow = await GraveRequest.findOneAndUpdate(filter, update, {new: true});
 
@@ -60,6 +62,11 @@ const updateGraveRequest = async (req, res) => {
   if (updatedRow) {
     res.status(200).json({
       _id: updatedRow._id,
+      name: updatedRow.name,
+      surname: updatedRow.surname,
+      email: updatedRow.email,
+      phone: updatedRow.phone,
+      createdAt: updatedRow.createdAt,
       status: updatedRow.status,
     });
   } else {

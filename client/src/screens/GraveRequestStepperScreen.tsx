@@ -108,6 +108,7 @@ const GraveRequestStepperScreen: React.FC = () => {
       email: email,
       phone: phone,
       status: "REQUSTED",
+      createdAt: new Date(),
     };
     const response = await axios.post(path, dataToSend, config);
     console.log(response.data);
