@@ -3,7 +3,7 @@ import GraveRequest from "../models/graveRequestModel.js";
 
 const getGraveRequests = async (req, res, next) => {
   try {
-    const allRows = await GraveRequest.find().sort({status: 'desc'});
+    const allRows = await GraveRequest.find().sort({createdAt: 'desc'});
     if (allRows) {
       res.send(allRows);
     } else {
