@@ -11,6 +11,7 @@ export interface GraveData {
   LAT: string;
   LON: string;
   numberOfDeceaseds: string;
+  status: string;
   graveType: GraveType;
 }
 

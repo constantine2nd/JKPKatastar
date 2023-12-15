@@ -29,7 +29,7 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
-import { isActivePayer } from "../components/IsActiveUser";
+import { isActivePayer } from "../components/CommonFuntions";
 
 // Defines the name of the react query
 const queryFunction = "payer-all";

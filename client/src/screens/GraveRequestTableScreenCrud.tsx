@@ -30,7 +30,7 @@ import {
   useUpdateRow,
 } from "../hooks/useCrudHooks";
 import { GraveRequest as CrudTableType } from "../interfaces/GraveRequestInterfaces";
-import { statusOfGraveRequest } from "../components/IsActiveUser";
+import { statusOfGraveRequest } from "../components/CommonFuntions";
 import { dateFormatter } from "../utils/dateFormatter";
 
 // Defines the name of the react query

@@ -36,40 +36,8 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
 } from "material-react-table";
+import { capacity, expiredContract, statusOfGrave } from "../components/CommonFuntions";
 
-const capacity = (capacity: string, numberOfDeceaseds: string) => {
-  let result = null;
-  const capacityNum = Number(capacity);
-  const deceasedsNum = Number(numberOfDeceaseds);
-  if (capacityNum - deceasedsNum === 0) {
-    result = <Chip label={`${numberOfDeceaseds}/${capacity}`} color="error" />;
-  } else if (deceasedsNum / capacityNum > 0.49) {
-    result = (
-      <Chip label={`${numberOfDeceaseds}/${capacity}`} color="warning" />
-    );
-  } else {
-    result = (
-      <Chip label={`${numberOfDeceaseds}/${capacity}`} color="success" />
-    );
-  }
-  return result;
-};
-
-const expiredContract = (contractTo: string) => {
-  let result = null;
-  let contractDate = new Date(contractTo);
-  let contractDatePlus = new Date(contractTo);
-  contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
-  let today = new Date();
-  if (today > contractDate) {
-    result = <Chip label={dateFormatter(contractTo)} color="error" />;
-  } else if (today > contractDatePlus) {
-    result = <Chip label={dateFormatter(contractTo)} color="warning" />;
-  } else {
-    result = <Chip label={dateFormatter(contractTo)} color="success" />;
-  }
-  return result;
-};
 
 const capacityExt = (renderedValue: string) => {
   return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
@@ -86,6 +54,11 @@ const GravesTableScreen: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedGraveId, setSelectedGraveId] = useState<string>();
   const { t, i18n } = useTranslation();
+
+  const statuses = [
+    { label: t('FREE'), value: 'FREE' },
+    { label: t('OCCUPIED'), value: 'OCCUPIED' },
+  ]
 
   const columns: MRT_ColumnDef<GraveData>[] = [
     {
@@ -123,6 +96,15 @@ const GravesTableScreen: React.FC = () => {
       sortingFn: "datetime",
       header: t("contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
+    },
+    {
+      accessorKey: "status",
+      header: t("status"),
+      editVariant: 'select',
+      editSelectOptions: statuses,
+      Cell: ({ row }) => (
+        statusOfGrave(row.original.status, t)
+      ),
     },
     {
       accessorKey: "_id",
