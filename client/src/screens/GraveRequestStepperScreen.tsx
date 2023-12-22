@@ -102,7 +102,7 @@ const GraveRequestStepperScreen: React.FC = () => {
       },
     };
     const dataToSend = {
-      grave: selectedGrave?._id,
+      graveId: selectedGrave?._id,
       name: name,
       surname: surname,
       email: email,

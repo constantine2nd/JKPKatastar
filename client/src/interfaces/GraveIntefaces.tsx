@@ -43,6 +43,7 @@ export interface Grave {
   contractTo: string;
   LAT: string;
   LON: string;
+  status: string;
   deceased: Deceased[];
   payers: Payer[];
   graveType: GraveType;

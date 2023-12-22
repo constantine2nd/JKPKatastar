@@ -80,6 +80,7 @@ const getGraves = async (req, res, next) => {
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
           graveType: 1,
+          status: 1,
           cemetery: 1,
         },
       },
@@ -142,6 +143,7 @@ const getGravesForCemetery = async (req, res, next) => {
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
           graveType: 1,
+          status: 1,
           cemetery: 1,
         },
       },
