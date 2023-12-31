@@ -15,6 +15,7 @@ const saveGrave = async (req, res, next) => {
     LON: sentGrave.LON1,
     capacity: sentGrave.graveCapacity,
     contractTo: sentGrave.contractTo,
+    status: sentGrave.status,
     cemetery: new mongoose.Types.ObjectId(sentGrave.cemeteryId),
   });
 
@@ -79,6 +80,7 @@ const getGraves = async (req, res, next) => {
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
           graveType: 1,
+          status: 1,
           cemetery: 1,
         },
       },
@@ -141,6 +143,7 @@ const getGravesForCemetery = async (req, res, next) => {
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
           graveType: 1,
+          status: 1,
           cemetery: 1,
         },
       },

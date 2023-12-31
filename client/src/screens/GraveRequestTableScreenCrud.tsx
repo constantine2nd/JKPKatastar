@@ -29,7 +29,9 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
-import { GraveRequest } from "../interfaces/GraveRequestInterfaces";
+import { GraveRequest as CrudTableType } from "../interfaces/GraveRequestInterfaces";
+import { statusOfGraveRequest } from "../components/CommonFuntions";
+import { dateFormatter } from "../utils/dateFormatter";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -47,12 +49,12 @@ const GraveRequestTableScreenCrud = () => {
   const { t, i18n } = useTranslation();
 
   const statuses = [
-    t('REQUESTED'),
-    t('FREE'),
-    t('OCCUPIED'),
+    { label: t('REQUESTED'), value: 'REQUESTED' },
+    { label: t('ACCEPTED'), value: 'ACCEPTED' },
+    { label: t('DENIED'), value: 'DENIED' },
   ] 
 
-  const columns: MRT_ColumnDef<GraveRequest>[] = [
+  const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
       accessorKey: "_id",
       header: "Id",
@@ -132,16 +134,25 @@ const GraveRequestTableScreenCrud = () => {
       header: t("status"),
       editVariant: 'select',
       editSelectOptions: statuses,
+      Cell: ({ row }) => (
+        statusOfGraveRequest(row.original.status, t)
+      ),
+    },
+    {
+      accessorFn: (row) => new Date(row.createdAt),
+      id: "createdAt",
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
+      header: t("created-at"),
+      Cell: ({ cell }) => dateFormatter(cell.getValue<string>()),
+    },
+    {
+      accessorKey: "grave",
+      header: t("Grave ID"),
     },
   ];
 
-  // call CREATE hook
-  const {
-    mutateAsync: createRow,
-    isPending: isCreatingRow,
-    isError: isCreatingDataError,
-    error: creatingDataError,
-  } = useCreateRow(queryFunction, createPath);
   // call READ hook
   const {
     data: fetchedData = [],
@@ -168,7 +179,6 @@ const GraveRequestTableScreenCrud = () => {
   function errorOccuried() {
     return (
       isLoadingDataError ||
-      isCreatingDataError ||
       isUpdatingDataError ||
       isUDeletingDataError
     );
@@ -177,27 +187,13 @@ const GraveRequestTableScreenCrud = () => {
   function errorMessage() {
     return (
       loadingDataError?.message ||
-      creatingDataError?.message ||
       updatingDataError?.message ||
       deletingDataError?.message
     );
   }
 
-  // CREATE action
-  const handleCreateGraveType: MRT_TableOptions<GraveRequest>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      const newValidationErrors = validateGraveType(values);
-      if (Object.values(newValidationErrors).some((error) => error)) {
-        setValidationErrors(newValidationErrors);
-        return;
-      }
-      setValidationErrors({});
-      await createRow(values).catch((error) => console.log(error));
-      table.setCreatingRow(null); //exit creating mode
-    };
-
   // UPDATE action
-  const handleSaveRow: MRT_TableOptions<GraveRequest>["onEditingRowSave"] =
+  const handleSaveRow: MRT_TableOptions<CrudTableType>["onEditingRowSave"] =
     async ({ values, table }) => {
       const newValidationErrors = validateGraveType(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
@@ -210,7 +206,7 @@ const GraveRequestTableScreenCrud = () => {
     };
 
   // DELETE action
-  const openDeleteConfirmModal = (row: MRT_Row<GraveRequest>) => {
+  const openDeleteConfirmModal = (row: MRT_Row<CrudTableType>) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteRow(row.original._id);
     }
@@ -236,7 +232,6 @@ const GraveRequestTableScreenCrud = () => {
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateGraveType,
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleSaveRow,
     //optionally customize modal content
@@ -281,25 +276,20 @@ const GraveRequestTableScreenCrud = () => {
         </Tooltip>
       </Box>
     ),
-    renderTopToolbarCustomActions: ({ table }) => (
+    renderTopToolbarCustomActions: () => (
       <Button
         variant="contained"
         onClick={() => {
-          table.setCreatingRow(true); //simplest way to open the create row modal with no default values
-          //or you can pass in a row object to set default values with the `createRow` helper function
-          // table.setCreatingRow(
-          //   createRow(table, {
-          //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
-          //   }),
-          // );
+          const url = '/grave-requests-stepper';
+          window.open(url, '_blank');
         }}
       >
-        {t("Create New Grave Type")}
+        {t("Create New Grave Request")}
       </Button>
     ),
     state: {
       isLoading: isLoadingData,
-      isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
+      isSaving: isUpdatingRow || isDeletingRow,
       showAlertBanner: errorOccuried(),
       showProgressBars: isFetchingData,
     },
@@ -316,11 +306,11 @@ export default GraveRequestTableScreenCrudWithProviders;
 
 const validateRequired = (value: string) => !!value.length;
 
-function validateGraveType(row: GraveRequest) {
+function validateGraveType(row: CrudTableType) {
   return {
-    name: !validateRequired(row.name) ? t("Name is Required") : "",
-    surname: !validateRequired(row.surname) ? t("Surname is Required") : "",
-    email: !validateRequired(row.email) ? t("Email is Required") : "",
-    phone: !validateRequired(row.phone) ? t("Phone is Required") : "",
+    name: !validateRequired(row.name) ? t("The field is Required") : "",
+    surname: !validateRequired(row.surname) ? t("The field is Required") : "",
+    email: !validateRequired(row.email) ? t("The field is Required") : "",
+    phone: !validateRequired(row.phone) ? t("The field is Required") : "",
   };
 }

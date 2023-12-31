@@ -16,6 +16,9 @@ const graveRequestSchema = mongoose.Schema({
   status: {
     type: String,
   },
+  createdAt: {
+    type: Date,
+  },
   grave: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Grave",

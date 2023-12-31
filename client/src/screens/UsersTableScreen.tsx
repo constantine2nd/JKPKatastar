@@ -17,7 +17,7 @@ import {
 
 import { User } from "../interfaces/UserInterfaces";
 import { getLanguage } from "../utils/languageSelector";
-import { isActiveUser } from "../components/IsActiveUser";
+import { isActiveUser } from "../components/CommonFuntions";
 
 const UsersTableScreen: React.FC = () => {
   const { t, i18n } = useTranslation();

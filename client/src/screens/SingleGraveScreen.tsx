@@ -215,7 +215,7 @@ const SingleGraveScreen: React.FC = () => {
         {grave && grave.deceased.length == 0 && (
           <h4>Na ovom grobnom mestu nema pokojnika</h4>
         )}
-        {grave && grave.payers.length !== 0 && (
+        {grave && (
           <>
             <h2>Lista pokojnika</h2>
             <DeceasedTableScreenCrud

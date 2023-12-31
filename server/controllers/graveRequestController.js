@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import GraveRequest from "../models/graveRequestModel.js";
+import Grave from "../models/graveModel.js";
 
 const getGraveRequests = async (req, res, next) => {
   try {
-    const allRows = await GraveRequest.find();
+    const allRows = await GraveRequest.find().sort({createdAt: 'desc'});
     if (allRows) {
       res.send(allRows);
     } else {
@@ -18,40 +19,54 @@ const getGraveRequests = async (req, res, next) => {
 
 
 const addGraveRequest = async (req, res) => {
-  const { graveId, name, surname, email, phone, status } = req.body;
+  
+  const { graveId, name, surname, email, phone, status, createdAt } = req.body;
 
-  const newRow = await GraveRequest.create({
-    grave: new mongoose.Types.ObjectId(graveId),
-    name: name,
-    surname: surname,
-    email: email,
-    phone: phone,
-    status: status,
-  });
-  console.log(newRow);
-  if (newRow) {
-    res.status(201).json({
-      _id: newRow._id,
-      grave: newRow.grave,
-      name: newRow.name,
-      surname: newRow.surname,
-      email: newRow.email,
-      phone: newRow.phone,
-      status: newRow.status,
+  const foundGrave = await Grave.findById(graveId);
+  if(foundGrave.status === 'OCCUPIED') {
+    res.status(400).send({
+      message: 'Grave is not free'
     });
   } else {
-    res.status(400).send({
-      message: 'Invalid Grave Request data'
+    foundGrave.status = 'OCCUPIED';
+    const updatedGrave = await foundGrave.save();
+    console.log(updatedGrave);
+    const newRow = await GraveRequest.create({
+      grave: new mongoose.Types.ObjectId(graveId),
+      name: name,
+      surname: surname,
+      email: email,
+      phone: phone,
+      status: status,
+      createdAt: createdAt,
     });
+    console.log(newRow);
+    if (newRow) {
+      res.status(201).json({
+        _id: newRow._id,
+        grave: newRow.grave,
+        name: newRow.name,
+        surname: newRow.surname,
+        email: newRow.email,
+        phone: newRow.phone,
+        status: newRow.status,
+        createdAt: newRow.createdAt,
+      });
+    } else {
+      res.status(400).send({
+        message: 'Invalid Grave Request data'
+      });
+    }
   }
+  
 };
 
 
 const updateGraveRequest = async (req, res) => {
-  const { _id, status } = req.body;
+  const { _id, status, name, surname, email, phone, createdAt } = req.body;
   
   const filter = { _id: _id }; // Criteria to find a row
-  const update = { status: status}; // Fields to update
+  const update = { status: status, name: name, surname: surname, email: email, phone: phone, createdAt: createdAt}; // Fields to update
 
   const updatedRow = await GraveRequest.findOneAndUpdate(filter, update, {new: true});
 
@@ -60,6 +75,11 @@ const updateGraveRequest = async (req, res) => {
   if (updatedRow) {
     res.status(200).json({
       _id: updatedRow._id,
+      name: updatedRow.name,
+      surname: updatedRow.surname,
+      email: updatedRow.email,
+      phone: updatedRow.phone,
+      createdAt: updatedRow.createdAt,
       status: updatedRow.status,
     });
   } else {

@@ -33,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import { updateUser, deleteUser, getAllUsers, getAllUsersStatus, getAllUsersError, selectAllUsers } from '../features/allUsersSlice';
 import axios from 'axios';
 import { getLanguage } from "../utils/languageSelector";
-import { isActiveUser } from "../components/IsActiveUser"
+import { isActiveUser } from "../components/CommonFuntions"
 //Import Material React Table Translations
 import { MRT_Localization_ES } from 'material-react-table/locales/es';
 

@@ -59,9 +59,13 @@ const HomeScreen = (props) => {
   const [selectedCemetery, setCemeteryId] = React.useState(getSelectedCemetery());
   //|| location.state?.sender === "ADDGraveSreen"
   useEffect(() => {
-    if (gravesStatus === "idle") {
-      console.log("UPAO");
-      dispatch(fetchGravesForCemetary(selectedCemetery._id));
+    if(!localStorage.getItem("selected-cemetery")) {
+      navigate("/landing")
+    } else {
+      if (gravesStatus === "idle") {
+        console.log("UPAO");
+        dispatch(fetchGravesForCemetary(selectedCemetery?._id));
+      }
     }
   }, [gravesStatus, dispatch]);
   /*   useEffect(() => {
@@ -71,6 +75,7 @@ const HomeScreen = (props) => {
   }, []); */
 
   useEffect(() => {
+    
     if (mapRef.current) {
       // Dohvatite trenutni zoom nivo
       const newZoom = mapRef.current.map.getZoom();
@@ -120,6 +125,9 @@ const HomeScreen = (props) => {
         }}
       >
         <div>Home Screen</div>
+        <h2>Ukupan broj grobnih mesta: {graves.length}</h2>
+        <h2>Ukupan broj grobnih mesta tipa GR6: {graves.filter(grave => grave.graveType.name == 'GR6').length}</h2>
+        <h2>Ukupan broj slobodnih grobnih mesta: {graves.filter(grave => grave.status == 'FREE').length}</h2>
         <br />
         <Button
           onClick={() => {
@@ -131,22 +139,23 @@ const HomeScreen = (props) => {
           Idi na tabelarni prikaz
         </Button>
         <br />
-        <h3>Naziv: {selectedCemetery.name}</h3>
+        <h3>Naziv: {selectedCemetery?.name}</h3>
 
         <Map
           containerStyle={mapStyles}
           ref={mapRef}
-          zoom={selectedCemetery.zoom}
+          zoom={selectedCemetery?.zoom}
           google={props.google}
           initialCenter={{
-            lat: selectedCemetery.LAT,
-            lng: selectedCemetery.LON,
+            lat: selectedCemetery?.LAT,
+            lng: selectedCemetery?.LON,
           }}
           mapType="satellite"
         >
           {graves.map((grave) => {
+            console.log(grave.status)
             const iconUrl =
-              grave.capacity - grave.numberOfDeceaseds > 0
+              grave.status === undefined
                 ? iconBaseFree
                 : iconBaseFull;
             return (
@@ -262,5 +271,5 @@ const HomeScreen = (props) => {
   );
 };
 export default GoogleApiWrapper({
-  apiKey: process.env.GOOGLE_KEY,
+  apiKey: 'AIzaSyACV2yMJcx_aByY3PwY1b59WvppbM9_ovc',
 })(HomeScreen);

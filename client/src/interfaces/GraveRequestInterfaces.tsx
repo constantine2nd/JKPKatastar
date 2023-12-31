@@ -5,4 +5,5 @@ export interface GraveRequest {
   email: string;
   phone: string;
   status: string;
+  createdAt: string;
 }

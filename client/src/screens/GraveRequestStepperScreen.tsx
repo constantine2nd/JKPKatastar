@@ -102,12 +102,13 @@ const GraveRequestStepperScreen: React.FC = () => {
       },
     };
     const dataToSend = {
-      grave: selectedGrave?._id,
+      graveId: selectedGrave?._id,
       name: name,
       surname: surname,
       email: email,
       phone: phone,
       status: "REQUSTED",
+      createdAt: new Date(),
     };
     const response = await axios.post(path, dataToSend, config);
     console.log(response.data);
