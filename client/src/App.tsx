@@ -26,6 +26,7 @@ import Test2Screen from "./screens/Test2Screen";
 import Test3Screen from "./screens/Test3Screen";
 import GraveRequestTableScreenCrud from "./screens/GraveRequestTableScreenCrud";
 import GraveRequestStepperScreen from "./screens/GraveRequestStepperScreen";
+import GravesTableScreenCrudWithProviders from "./screens/GravesTableScreenCrud";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/add-user" element={<AddUserScreen />} />
             <Route path="/login-user" element={<LoginScreen />} />
             <Route path="/graves-table" element={<GravesTableScreen />} />
+            <Route path="/graves-table-crud" element={<GravesTableScreenCrudWithProviders />} />
             <Route path="/deceased-table" element={<DeceasedTableScreen />} />
             <Route path="/users-table" element={<UsersTableScreen />} />
             <Route

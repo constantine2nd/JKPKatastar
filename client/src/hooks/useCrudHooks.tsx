@@ -52,17 +52,21 @@ export const useUpdateRow = (queryKey: string, path: string) => {
         },
       };
       const response = await axios.put(path, { ...row }, config);
+      console.log('++++++++++++++++++++++++++++');
+      console.log(response.data);
       return response.data;
     },
     //client side optimistic update
-    onMutate: (newGraveTypeInfo: any) => {
+    onMutate: (newRowInfo: any) => {
+      console.log('+ newRowInfo +');
+      console.log(newRowInfo);
       queryClient.setQueryData([queryKey], (prevRows: any) =>
         prevRows?.map((row: any) =>
-          row._id === newGraveTypeInfo._id ? newGraveTypeInfo : row
+          row._id === newRowInfo._id ? newRowInfo : row
         )
       );
     },
-    // onSettled: () => queryClient.refetchQueries({ queryKey: [graveTypeQueryKey] }), //refetch users after mutation, disabled for demo
+    // onSettled: () => queryClient.refetchQueries({ queryKey: [queryKey] }), //refetch users after mutation, disabled for demo
   });
 };
 
