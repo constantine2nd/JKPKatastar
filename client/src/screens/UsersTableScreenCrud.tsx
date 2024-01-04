@@ -36,6 +36,15 @@ import { getLanguage } from "../utils/languageSelector";
 import { isActiveUser } from "../components/CommonFuntions"
 //Import Material React Table Translations
 import { MRT_Localization_ES } from 'material-react-table/locales/es';
+import { useCreateRow, useDeleteRow, useGetRows, useUpdateRow } from '../hooks/useCrudHooks';
+
+// Defines the name of the react query
+const queryFunction = "users-all";
+// Defines CRUD paths
+const getPath = "/api/users";
+const createPath = "/api/users/adduser";
+const updatePath = "/api/users/updateuser";
+const deletePath = "/api/users";
 
 const UsersTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -43,7 +52,7 @@ const UsersTableScreenCrud = () => {
   >({});
 
   const { t, i18n } = useTranslation();
-  const users: User[] = useSelector(selectAllUsers);
+  // const users: User[] = useSelector(selectAllUsers);
   const dispatch = useDispatch<any>();
   const usersStatus = useSelector(getAllUsersStatus);
   const error = useSelector(getAllUsersError);
@@ -91,7 +100,7 @@ const UsersTableScreenCrud = () => {
       {
         accessorKey: 'email',
         header: t('email'),
-        enableEditing: false,
+        enableEditing: true,
         muiEditTextFieldProps: {
           type: 'email',
           required: true,
@@ -104,6 +113,11 @@ const UsersTableScreenCrud = () => {
               email: undefined,
             }),
         },
+      },
+      {
+        accessorKey: 'password',
+        header: 'password',
+        enableEditing: true,
       },
       {
         accessorKey: 'role',
@@ -125,22 +139,53 @@ const UsersTableScreenCrud = () => {
       },
     ];
 
-  //call CREATE hook
-  const { mutateAsync: createUser, isPending: isCreatingUser } =
-    useCreateUser();
-  //call READ hook
+  // call CREATE hook
   const {
-    data: fetchedUsers = [],
-    isError: isLoadingUsersError,
-    isFetching: isFetchingUsers,
-    isLoading: isLoadingUsers,
-  } = useGetUsers(users);
-  //call UPDATE hook
-  const { mutateAsync: updateUser, isPending: isUpdatingUser } =
-    useUpdateUser(dispatch);
-  //call DELETE hook
-  const { mutateAsync: deleteUser, isPending: isDeletingUser } =
-    useDeleteUser(dispatch);
+    mutateAsync: createRow,
+    isPending: isCreatingRow,
+    isError: isCreatingDataError,
+    error: creatingDataError,
+  } = useCreateRow(queryFunction, createPath);
+  // call READ hook
+  const {
+    data: fetchedData = [],
+    isError: isLoadingDataError,
+    error: loadingDataError,
+    isFetching: isFetchingData,
+    isLoading: isLoadingData,
+  } = useGetRows(queryFunction, getPath);
+  // call UPDATE hook
+  const {
+    mutateAsync: updateRow,
+    isPending: isUpdatingRow,
+    isError: isUpdatingDataError,
+    error: updatingDataError,
+  } = useUpdateRow(queryFunction, updatePath);
+  // call DELETE hook
+  const {
+    mutateAsync: deleteRow,
+    isPending: isDeletingRow,
+    isError: isUDeletingDataError,
+    error: deletingDataError,
+  } = useDeleteRow(queryFunction, deletePath);
+
+  function errorOccuried() {
+    return (
+      isLoadingDataError ||
+      isCreatingDataError ||
+      isUpdatingDataError ||
+      isUDeletingDataError
+    );
+  }
+
+  function errorMessage() {
+    return (
+      loadingDataError?.message ||
+      creatingDataError?.message ||
+      updatingDataError?.message ||
+      deletingDataError?.message
+    );
+  }
 
   //CREATE action
   const handleCreateUser: MRT_TableOptions<User>['onCreatingRowSave'] = async ({
@@ -153,7 +198,7 @@ const UsersTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await createUser(values);
+    await createRow(values).catch((error) => console.log(error));
     table.setCreatingRow(null); //exit creating mode
   };
 
@@ -168,29 +213,29 @@ const UsersTableScreenCrud = () => {
       return;
     }
     setValidationErrors({});
-    await updateUser(values);
+    await updateRow(values).catch((error) => console.log(error));
     table.setEditingRow(null); //exit editing mode
   };
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<User>) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteUser(row.original._id);
+      deleteRow(row.original._id);
     }
   };
 
   const table = useMaterialReactTable({
     columns,
-    data: users,
+    data: fetchedData,
     localization: getLanguage(i18n),
     createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
     editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row._id,
-    muiToolbarAlertBannerProps: isLoadingUsersError
+    muiToolbarAlertBannerProps: errorOccuried()
       ? {
-          color: 'error',
-          children: 'Error loading data',
+          color: "error",
+          children: errorMessage(),
         }
       : undefined,
     muiTableContainerProps: {
@@ -261,10 +306,10 @@ const UsersTableScreenCrud = () => {
       </Button>
     ),
     state: {
-      isLoading: isLoadingUsers,
-      isSaving: isCreatingUser || isUpdatingUser || isDeletingUser,
-      showAlertBanner: isLoadingUsersError,
-      showProgressBars: isFetchingUsers,
+      isLoading: isLoadingData,
+      isSaving: isUpdatingRow || isDeletingRow,
+      showAlertBanner: errorOccuried(),
+      showProgressBars: isFetchingData,
     },
   });
 
