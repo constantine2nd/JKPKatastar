@@ -7,8 +7,9 @@ const registerUser = async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    res.status(400).send({
+      message: 'User already exists'
+    });
   }
 
   const newUser = await User.create({
@@ -26,8 +27,9 @@ const registerUser = async (req, res) => {
       token: generateToken(newUser._id),
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+    res.status(400).send({
+      message: 'Cannot add the user'
+    });
   }
 };
 
@@ -52,8 +54,9 @@ const updateUser = async (req, res) => {
       isActive: updatedUser.isActive,
     });
   } else {
-    res.status(400);
-    throw new Error("Cannot update the user");
+    res.status(400).send({
+      message: 'Cannot update the user'
+    });
   }
 };
 
@@ -67,12 +70,16 @@ const deleteUser = async (req, res, next) => {
       console.log("deleted count 1");
       res.send({ id: id });
     } else {
-      res.json({ message: "Nothing to delete" });
+      res.status(400).send({
+        message: 'Nothing to delete'
+      });
     }
     // res.send(objToSend);
   } catch (error) {
     console.log(error);
-    return res.json({ message: "Cound not get data" });
+    return res.status(400).send({
+      message: `Cannot delete the user. ${error}`
+    });
   }
 };
 

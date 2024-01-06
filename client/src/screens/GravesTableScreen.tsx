@@ -36,12 +36,8 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
 } from "material-react-table";
-import { capacity, expiredContract, statusOfGrave } from "../components/CommonFuntions";
+import { capacity, capacityExt, expiredContract, statusOfGrave } from "../components/CommonFuntions";
 
-
-const capacityExt = (renderedValue: string) => {
-  return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
-};
 
 const GravesTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GraveType } from "../interfaces/GraveTypeInterfaces";
 import axios from "axios";
+import _ from "lodash";
 
 // CREATE hook (post a new row to api)
 export const useCreateRow = (queryKey: string, path: string) => {
@@ -55,14 +56,20 @@ export const useUpdateRow = (queryKey: string, path: string) => {
       return response.data;
     },
     //client side optimistic update
-    onMutate: (newGraveTypeInfo: any) => {
+    onMutate: (newRowInfo: any) => {
       queryClient.setQueryData([queryKey], (prevRows: any) =>
-        prevRows?.map((row: any) =>
-          row._id === newGraveTypeInfo._id ? newGraveTypeInfo : row
+        prevRows?.map((row: any) => {
+          if(row._id === newRowInfo._id) { // Update the changed row
+            for (const [key, value] of Object.entries(newRowInfo)) {
+              _.set(row, key, value);
+            }
+          }
+          return row;
+        }
         )
       );
     },
-    // onSettled: () => queryClient.refetchQueries({ queryKey: [graveTypeQueryKey] }), //refetch users after mutation, disabled for demo
+    // onSettled: () => queryClient.refetchQueries({ queryKey: [queryKey] }), //refetch users after mutation, disabled for demo
   });
 };
 

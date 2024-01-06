@@ -77,4 +77,8 @@ const statusOfGrave = (status: string, t: any) => {
   return result;
 };
 
-export { expiredContract, capacity, isActiveUser, isActivePayer, statusOfGraveRequest, statusOfGrave };
+const capacityExt = (renderedValue: string) => {
+  return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
+};
+
+export { expiredContract, capacity, isActiveUser, isActivePayer, statusOfGraveRequest, statusOfGrave, capacityExt };

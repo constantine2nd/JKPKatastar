@@ -13,6 +13,7 @@ export interface GraveData {
   numberOfDeceaseds: string;
   status: string;
   graveType: GraveType;
+  cemetery: Cemetery;
 }
 
 export interface Deceased {

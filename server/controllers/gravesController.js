@@ -189,10 +189,46 @@ const deleteSingleGrave = async (req, res, next) => {
   }
 };
 
+
+const updateGrave = async (req, res) => {
+  const { _id, number, field, row, status } = req.body;
+  
+  const filter = { _id: _id }; // Criteria to find a row
+  const update = { number: number, field: field, row: row, status: status}; // Fields to update
+
+  const updatedRow = await Grave.findOneAndUpdate(filter, update, {new: true}).populate("graveType").populate("cemetery");
+
+  console.log(updatedRow);
+
+  const deceased = await Deceased.find({ grave: _id });
+  
+  if (updatedRow) {
+    res.status(200).json({
+      _id: updatedRow._id,
+      number: updatedRow.number,
+      field: updatedRow.field,
+      row: updatedRow.row,
+      capacity: updatedRow.capacity,
+      contractTo: updatedRow.contractTo,
+      LAT: updatedRow.LAT,
+      LON: updatedRow.LON,
+      numberOfDeceaseds: deceased.length,
+      graveType: updatedRow.graveType,
+      status: updatedRow.status,
+      cemetery: updatedRow.cemetery,
+    });
+  } else {
+    res.status(400).send({
+      message: 'Cannot update the grave request'
+    });
+  }
+};
+
 export {
   saveGrave,
   getGraves,
   getSingleGrave,
   deleteSingleGrave,
   getGravesForCemetery,
+  updateGrave,
 };
