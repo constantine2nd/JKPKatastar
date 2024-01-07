@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -30,7 +30,22 @@ import {
 } from "../hooks/useCrudHooks";
 import { GraveData as CrudTableType } from "../interfaces/GraveIntefaces";
 import { dateFormatter } from "../utils/dateFormatter";
-import { capacityExt, expiredContract, statusOfGrave } from "../components/CommonFuntions";
+import {
+  capacityExt,
+  expiredContract,
+  statusOfGrave,
+} from "../components/CommonFuntions";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getAllGraveTypes,
+  selectAllGraveTypes,
+} from "../features/graveTypesSlice";
+import {
+  fetchCemeteries,
+  selectAllCemeteries,
+} from "../features/cemeteriesSlice";
+import { GraveType } from "../interfaces/GraveTypeInterfaces";
+import { Cemetery } from "../interfaces/CemeteryInterfaces";
 
 // Defines the name of the react query
 const queryFunction = "graves-all";
@@ -44,12 +59,33 @@ const GravesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
-
+  const graveTypes: GraveType[] | null = useSelector(selectAllGraveTypes);
+  const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch<any>();
+
+  useEffect(() => {
+    dispatch(getAllGraveTypes());
+    dispatch(fetchCemeteries());
+  }, []);
   const statuses = [
-    { label: t('FREE'), value: 'FREE' },
-    { label: t('OCCUPIED'), value: 'OCCUPIED' },
-  ]
+    { label: t("FREE"), value: "FREE" },
+    { label: t("OCCUPIED"), value: "OCCUPIED" },
+  ];
+
+  const myGraveTypes = graveTypes.map((item) => {
+    return {
+      label: item.name,
+      value: item._id,
+    };
+  });
+
+  const myCemeteries = cemeteries.map((item) => {
+    return {
+      label: item.name,
+      value: item._id,
+    };
+  });
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
@@ -110,9 +146,14 @@ const GravesTableScreenCrud = () => {
       },
     },
     {
-      accessorKey: "graveType.name",
+      accessorKey: "graveType._id",
       header: t("grave type"),
-      enableEditing: false,
+      editVariant: "select",
+      editSelectOptions: myGraveTypes,
+      enableEditing: true,
+      Cell: ({ row }) =>
+        graveTypes.find((item) => item._id === row.original.graveType._id)
+          ?.name,
     },
     {
       accessorFn: (row) => new Date(row.contractTo),
@@ -125,27 +166,31 @@ const GravesTableScreenCrud = () => {
       enableEditing: false,
     },
     {
-      accessorFn: (row) => {console.log(row); return `${row.numberOfDeceaseds}/${row.graveType?.capacity}`}, //accessorFn used to join multiple data into a single cell
+      accessorFn: (row) => {
+        console.log(row);
+        return `${row.numberOfDeceaseds}/${row.graveType?.capacity}`;
+      }, //accessorFn used to join multiple data into a single cell
       id: "occupation",
       header: t("occupation"),
       enableEditing: false,
       Cell: ({ renderedCellValue, row }) =>
         capacityExt(row.getValue("occupation")),
-        
     },
     {
       accessorKey: "status",
       header: t("status"),
-      editVariant: 'select',
+      editVariant: "select",
       editSelectOptions: statuses,
-      Cell: ({ row }) => (
-        statusOfGrave(row.original.status, t)
-      ),
+      Cell: ({ row }) => statusOfGrave(row.original.status, t),
     },
     {
-      accessorKey: "cemetery.name",
+      accessorKey: "cemetery._id",
       header: t("Cemetery"),
-      enableEditing: false,
+      editVariant: "select",
+      editSelectOptions: myCemeteries,
+      enableEditing: true,
+      Cell: ({ row }) =>
+        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name,
     },
   ];
 
@@ -173,11 +218,7 @@ const GravesTableScreenCrud = () => {
   } = useDeleteRow(queryFunction, deletePath);
 
   function errorOccuried() {
-    return (
-      isLoadingDataError ||
-      isUpdatingDataError ||
-      isUDeletingDataError
-    );
+    return isLoadingDataError || isUpdatingDataError || isUDeletingDataError;
   }
 
   function errorMessage() {
@@ -276,8 +317,8 @@ const GravesTableScreenCrud = () => {
       <Button
         variant="contained"
         onClick={() => {
-          const url = '/add-grave';
-          window.open(url, '_blank');
+          const url = "/add-grave";
+          window.open(url, "_blank");
         }}
       >
         {t("add grave")}
@@ -294,19 +335,19 @@ const GravesTableScreenCrud = () => {
   return <MaterialReactTable table={table} />;
 };
 
-const GravesTableScreenCrudWithProviders = () => (
-  <GravesTableScreenCrud />
-);
+const GravesTableScreenCrudWithProviders = () => <GravesTableScreenCrud />;
 
 export default GravesTableScreenCrudWithProviders;
 
-const validateRequired = (value: string) => { 
+const validateRequired = (value: string) => {
   return String(value).split("").length;
-}
+};
 
 function validateCrudTable(tableRow: CrudTableType) {
   return {
-    number: !validateRequired(tableRow.number) ? t("The field is Required") : "",
+    number: !validateRequired(tableRow.number)
+      ? t("The field is Required")
+      : "",
     field: !validateRequired(tableRow.field) ? t("The field is Required") : "",
     row: !validateRequired(tableRow.row) ? t("The field is Required") : "",
   };
