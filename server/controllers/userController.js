@@ -33,7 +33,7 @@ const registerUser = async (req, res, next) => { //When an error is thrown insid
       });
     }
   } catch (err) {
-    next(err);
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
   }
 };
 
@@ -66,7 +66,7 @@ const updateUser = async (req, res, next) => {
       });
     }
   } catch (err) {
-    next(err);
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
   }
 };
 
@@ -110,7 +110,7 @@ const authUser = async (req, res, next) => {
       throw new Error("Invalid email or password");
     }
   } catch (err) {
-    next(err);
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
   }
 };
 
@@ -125,7 +125,7 @@ const getAllUsers = async (req, res, next) => {
       throw new Error("Invalid email or password");
     }
   } catch (err) {
-    next(err);
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
   }
 };
 

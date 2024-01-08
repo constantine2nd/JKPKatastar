@@ -191,19 +191,19 @@ const UsersTableScreenCrud = () => {
     const newValidationErrors = validateUser(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
-      return;
+      return
     }
     setValidationErrors({});
-    await updateRow(values).catch((error) => console.log(error));
-    table.setEditingRow(null); //exit editing mode
-  };
+    await updateRow(values).catch((error) => console.log(error))
+    table.setEditingRow(null) //exit editing mode
+  }
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<User>) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteRow(row.original._id);
+      deleteRow(row.original._id).catch((error) => console.log(error))
     }
-  };
+  }
 
   const table = useMaterialReactTable({
     columns,
