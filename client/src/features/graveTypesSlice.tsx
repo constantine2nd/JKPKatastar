@@ -6,7 +6,6 @@ import { RootState } from "../store";
 export const getAllGraveTypes = createAsyncThunk(
   "allGraveTypes/get",
   async (_, { rejectWithValue }) => {
-    
     try {
       const response = await axios.get(`/api/grave-types/all`);
       return response.data;
@@ -17,7 +16,6 @@ export const getAllGraveTypes = createAsyncThunk(
   }
 );
 
-
 export const addGraveType = createAsyncThunk(
   "allGraveTypes/addGraveType",
   async (dataToSend: any) => {
@@ -26,11 +24,14 @@ export const addGraveType = createAsyncThunk(
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(`/api/grave-types/addgravetype`, dataToSend, config);
+    const response = await axios.post(
+      `/api/grave-types/addgravetype`,
+      dataToSend,
+      config
+    );
     return response.data;
   }
 );
-
 
 export const updateGraveType = createAsyncThunk(
   "allGraveTypes/updateGraveType",
@@ -40,28 +41,32 @@ export const updateGraveType = createAsyncThunk(
         "Content-Type": "application/json",
       },
     };
-      
-     
+
     const {
       allGraveTypes: { graveTypes },
     } = getState() as any;
-    const newgraveTypes= [...graveTypes]
+    const newgraveTypes = [...graveTypes];
 
     try {
-      let response = await axios.put(`/api/grave-types/updategravetype`, dataToSend, config);
-      
-      const index = newgraveTypes.findIndex((graveType: any) => graveType._id === response.data._id)
+      let response = await axios.put(
+        `/api/grave-types/updategravetype`,
+        dataToSend,
+        config
+      );
+
+      const index = newgraveTypes.findIndex(
+        (graveType: any) => graveType._id === response.data._id
+      );
       newgraveTypes[index] = response.data;
       return newgraveTypes;
     } catch (error: any) {
       // Use `error.response.data` as `action.payload` for a `rejected` action
       return rejectWithValue(error.response.data);
     }
-    
   }
 );
 
-export const deleteGraveType= createAsyncThunk(
+export const deleteGraveType = createAsyncThunk(
   "users/deleteGraveType",
   async (id: string, { rejectWithValue }) => {
     try {
@@ -71,10 +76,8 @@ export const deleteGraveType= createAsyncThunk(
       // Use `error.response.data` as `action.payload` for a `rejected` action
       return rejectWithValue(error.response.data);
     }
-    
   }
 );
-
 
 interface GraveTypesState {
   graveTypes: GraveType[];
@@ -113,7 +116,10 @@ const allGraveTypesSlice = createSlice({
       .addCase(addGraveType.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.graveTypes.push(action.payload);
-        localStorage.setItem("all-grave-types", JSON.stringify(state.graveTypes));
+        localStorage.setItem(
+          "all-grave-types",
+          JSON.stringify(state.graveTypes)
+        );
       })
       .addCase(addGraveType.rejected, (state, action) => {
         state.status = "failed";
@@ -127,7 +133,10 @@ const allGraveTypesSlice = createSlice({
       .addCase(updateGraveType.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.graveTypes = action.payload;
-        localStorage.setItem("all-grave-types", JSON.stringify(state.graveTypes));
+        localStorage.setItem(
+          "all-grave-types",
+          JSON.stringify(state.graveTypes)
+        );
       })
       .addCase(updateGraveType.rejected, (state, action) => {
         state.status = "failed";
@@ -146,10 +155,14 @@ const allGraveTypesSlice = createSlice({
       })
       .addCase(deleteGraveType.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.graveTypes = state.graveTypes.filter((graveTypes) => graveTypes._id !== action.payload.id)
-        localStorage.setItem("all-grave-types", JSON.stringify(state.graveTypes));
-      })
-      ;
+        state.graveTypes = state.graveTypes.filter(
+          (graveTypes) => graveTypes._id !== action.payload.id
+        );
+        localStorage.setItem(
+          "all-grave-types",
+          JSON.stringify(state.graveTypes)
+        );
+      });
   },
 });
 

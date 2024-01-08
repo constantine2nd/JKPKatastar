@@ -8,14 +8,13 @@ const getAllGraveTypes = async (req, res, next) => {
       res.send(graveTypes);
     } else {
       res.status(400).send({
-        message: 'Server error'
+        message: "Server error",
       });
     }
   } catch (err) {
     next(err);
   }
 };
-
 
 const addGraveType = async (req, res) => {
   const { name, capacity, description } = req.body;
@@ -35,7 +34,7 @@ const addGraveType = async (req, res) => {
     });
   } else {
     res.status(400).send({
-      message: 'Invalid grave type data'
+      message: "Invalid grave type data",
     });
   }
 };
@@ -46,10 +45,12 @@ const updateGraveType = async (req, res) => {
   const filter = { _id: _id }; // Criteria to find a row
   const update = { name: name, capacity: capacity, description: description }; // Fields to update
 
-  const updatedGraveType = await GraveType.findOneAndUpdate(filter, update, {new: true});
+  const updatedGraveType = await GraveType.findOneAndUpdate(filter, update, {
+    new: true,
+  });
 
   console.log(updatedGraveType);
-  
+
   if (updatedGraveType) {
     res.status(200).json({
       _id: updatedGraveType._id,
@@ -59,29 +60,29 @@ const updateGraveType = async (req, res) => {
     });
   } else {
     res.status(400).send({
-      message: 'Cannot update the grave type'
+      message: "Cannot update the grave type",
     });
   }
 };
 
-
 const deleteGraveType = async (req, res, next) => {
   const id = req.params.id;
-  try {GraveType
+  try {
+    GraveType;
     const gravesTypesCount = await GraveType.aggregate([
       { $match: { graveType: new mongoose.Types.ObjectId(id) } },
-      { $count: "totalCount" }
+      { $count: "totalCount" },
     ]);
-    console.log(gravesTypesCount)
+    console.log(gravesTypesCount);
     if (gravesTypesCount.length > 0) {
-      const [{totalCount}] = gravesTypesCount
+      const [{ totalCount }] = gravesTypesCount;
       if (totalCount > 0) {
         res.status(400).send({
-          message: 'Cannot delete the grave type'
+          message: "Cannot delete the grave type",
         });
       }
     }
-    
+
     const result = await GraveType.deleteOne({ _id: id });
     console.log(res);
     if (result.deletedCount === 1) {
@@ -89,14 +90,14 @@ const deleteGraveType = async (req, res, next) => {
       res.send({ id: id });
     } else {
       res.status(400).send({
-        message: 'Nothing to delete'
+        message: "Nothing to delete",
       });
     }
     // res.send(objToSend);
   } catch (error) {
     console.log(error);
     return res.status(400).send({
-      message: `Cannot delete the grave type. ${error}`
+      message: `Cannot delete the grave type. ${error}`,
     });
   }
 };
