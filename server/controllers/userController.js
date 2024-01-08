@@ -2,64 +2,73 @@ import User from "../models/userModel.js";
 
 import generateToken from "../utils/generateToken.js";
 
-const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  const userExists = await User.findOne({ email });
+const registerUser = async (req, res, next) => { //When an error is thrown inside asynchronous code you, you need to tell express to handle the error by passing it to the next function:
+  try {
+    const { name, email, password } = req.body;
+    const userExists = await User.findOne({ email }); // Email must be unique
 
-  if (userExists) {
-    res.status(400).send({
-      message: 'User already exists'
+    if (userExists) {
+      res.status(400).send({
+        message: "User already exists",
+      });
+    }
+
+    const newUser = await User.create({
+      name,
+      email,
+      password,
     });
-  }
-
-  const newUser = await User.create({
-    name,
-    email,
-    password,
-  });
-  console.log(newUser);
-  if (newUser) {
-    res.status(201).json({
-      _id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      token: generateToken(newUser._id),
-    });
-  } else {
-    res.status(400).send({
-      message: 'Cannot add the user'
-    });
-  }
-};
-
-const updateUser = async (req, res) => {
-  const { name, email, role, isActive } = req.body;
-
-  console.log(isActive)
-  
-  const filter = { email: email }; // Criteria to find a row
-  const update = { name: name, isActive: isActive, role: role }; // Fields to update
-
-  const updatedUser = await User.findOneAndUpdate(filter, update, {new: true});
-
-  console.log(updatedUser);
-  
-  if (updatedUser) {
-    res.status(200).json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      isActive: updatedUser.isActive,
-    });
-  } else {
-    res.status(400).send({
-      message: 'Cannot update the user'
-    });
+    console.log(newUser);
+    if (newUser) {
+      res.status(201).json({
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        token: generateToken(newUser._id),
+      });
+    } else {
+      res.status(400).send({
+        message: "Cannot add the user",
+      });
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
+const updateUser = async (req, res, next) => {
+  try {
+    const { name, email, role, isActive } = req.body;
+
+    console.log(isActive);
+
+    const filter = { email: email }; // Criteria to find a row
+    const update = { name: name, isActive: isActive, role: role }; // Fields to update
+
+    const updatedUser = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    console.log(updatedUser);
+
+    if (updatedUser) {
+      res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        isActive: updatedUser.isActive,
+      });
+    } else {
+      res.status(400).send({
+        message: "Cannot update the user",
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
 
 const deleteUser = async (req, res, next) => {
   const id = req.params.id;
@@ -71,14 +80,14 @@ const deleteUser = async (req, res, next) => {
       res.send({ id: id });
     } else {
       res.status(400).send({
-        message: 'Nothing to delete'
+        message: "Nothing to delete",
       });
     }
     // res.send(objToSend);
   } catch (error) {
     console.log(error);
     return res.status(400).send({
-      message: `Cannot delete the user. ${error}`
+      message: `Cannot delete the user. ${error}`,
     });
   }
 };

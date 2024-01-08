@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { GraveType } from "../interfaces/GraveTypeInterfaces";
 import axios from "axios";
 import _ from "lodash";
 
@@ -14,8 +13,14 @@ export const useCreateRow = (queryKey: string, path: string) => {
           "Content-Type": "application/json",
         },
       };
-      const response = await axios.post(path, { ...row }, config);
-      return response.data;
+      try {
+        const response = await axios.post(path, { ...row }, config);
+        return response.data;
+      } catch (error: any) {
+        console.error(error.response.data.message);
+        return Promise.reject(new Error(error.message + ' <- ' + error.response.data.message))
+      }
+      
     },
     //client side optimistic update
     onSuccess: (newRowInfo: any) => {
