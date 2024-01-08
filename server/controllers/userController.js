@@ -25,6 +25,8 @@ const registerUser = async (req, res, next) => { //When an error is thrown insid
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
+        isActive: newUser.isActive,
+        password: newUser.password,
         token: generateToken(newUser._id),
       });
     } else {
@@ -59,6 +61,7 @@ const updateUser = async (req, res, next) => {
         email: updatedUser.email,
         role: updatedUser.role,
         isActive: updatedUser.isActive,
+        password: updatedUser.password,
       });
     } else {
       res.status(400).send({
