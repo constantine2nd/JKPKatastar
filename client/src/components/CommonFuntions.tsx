@@ -57,9 +57,9 @@ const isActivePayer = (isActive: boolean, t: any) => {
 
 const statusOfGraveRequest = (status: string, t: any) => {
   let result = null;
-  if (status === 'ACCEPTED') {
+  if (status === "ACCEPTED") {
     result = <Chip label={t("ACCEPTED")} color="success" />;
-  } else if(status === 'DENIED') {
+  } else if (status === "DENIED") {
     result = <Chip label={t("DENIED")} color="error" />;
   } else {
     result = <Chip label={t("REQUESTED")} color="warning" />;
@@ -69,9 +69,11 @@ const statusOfGraveRequest = (status: string, t: any) => {
 
 const statusOfGrave = (status: string, t: any) => {
   let result = null;
-  if (status === 'FREE') { // Only FREE
+  if (status === "FREE") {
+    // Only FREE
     result = <Chip label={t("FREE")} color="success" />;
-  } else { // OCCUPIED or without any value
+  } else {
+    // OCCUPIED or without any value
     result = <Chip label={t("OCCUPIED")} color="warning" />;
   }
   return result;
@@ -81,4 +83,26 @@ const capacityExt = (renderedValue: string) => {
   return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
 };
 
-export { expiredContract, capacity, isActiveUser, isActivePayer, statusOfGraveRequest, statusOfGrave, capacityExt };
+const composeErrorMessage = (error: any) => {
+  console.error(error.response.data.message);
+  return Promise.reject(
+    new Error(error.message + " <- " + error.response.data.message)
+  );
+};
+
+const extractErrorMessage = (error: any) => {
+  console.error(error.response.data.message);
+  return error.message + " <- " + error.response.data.message;
+};
+
+export {
+  expiredContract,
+  capacity,
+  isActiveUser,
+  isActivePayer,
+  statusOfGraveRequest,
+  statusOfGrave,
+  capacityExt,
+  composeErrorMessage,
+  extractErrorMessage,
+};
