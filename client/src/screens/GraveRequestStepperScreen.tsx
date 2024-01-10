@@ -12,7 +12,6 @@ import Input from "@mui/material/Input";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
-import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
 import {
   Modal,
   Form,
@@ -27,19 +26,14 @@ import { Cemetery } from "../interfaces/CemeteryInterfaces";
 import {
   fetchCemeteries,
   selectAllCemeteries,
-  getAllCemeteriesError,
-  getAllCemeteriesStatus,
 } from "../features/cemeteriesSlice";
 import {
-  getGravesError,
-  getGravesStatus,
   fetchGravesForCemetary,
   selectAllGraves,
 } from "../features/gravesSlice";
 import MapStepperComponent from "../components/MapStepperComponent";
 import { Grave } from "../interfaces/GraveIntefaces";
 import {
-  composeErrorMessageIntoPromise,
   composeErrorMessage,
 } from "../components/CommonFuntions";
 

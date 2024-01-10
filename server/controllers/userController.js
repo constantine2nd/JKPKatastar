@@ -77,7 +77,7 @@ const deleteUser = async (req, res, next) => {
   const id = req.params.id;
   try {
     const result = await User.deleteOne({ _id: id });
-    console.log(res);
+    console.log(result);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
       res.send({ id: id });
@@ -89,10 +89,8 @@ const deleteUser = async (req, res, next) => {
     // res.send(objToSend);
   } catch (error) {
     console.log(error);
-    return res.status(400).send({
-      message: `Cannot delete the user. ${error}`,
-    });
-  }
+    next(error);
+    }
 };
 
 const authUser = async (req, res, next) => {
