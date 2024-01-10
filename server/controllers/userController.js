@@ -21,12 +21,7 @@ const registerUser = async (req, res, next) => { //When an error is thrown insid
     console.log(newUser);
     if (newUser) {
       res.status(201).json({
-        _id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-        isActive: newUser.isActive,
-        password: newUser.password,
+        ...newUser._doc,
         token: generateToken(newUser._id),
       });
     } else {
@@ -56,12 +51,7 @@ const updateUser = async (req, res, next) => {
 
     if (updatedUser) {
       res.status(200).json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        role: updatedUser.role,
-        isActive: updatedUser.isActive,
-        password: updatedUser.password,
+        ...updatedUser._doc
       });
     } else {
       res.status(400).send({
@@ -100,10 +90,7 @@ const authUser = async (req, res, next) => {
 
     if (user && (await user.matchPassword(password))) {
       res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        ...user._doc,
         token: generateToken(user._id),
       });
     } else {
