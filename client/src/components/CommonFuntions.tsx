@@ -86,15 +86,17 @@ const capacityExt = (renderedValue: string) => {
 function composeErrorMessageCommon(error: any) {
   console.log(error);
   let errorMessage = "";
-  if (error.response.data.message) {
-    errorMessage = error.message + " <- " + error.response.data.message;
-  } else {
+  if (error?.response?.data?.message) {
+    errorMessage = errorMessage + " <- " + error.response.data.message;
+  } else if (error?.response && error?.request?.responseURL) {
     errorMessage =
       error.message +
       " <- " +
       error.response.statusText +
       " " +
       error.request.responseURL;
+  } else {
+    errorMessage = error.message;
   }
   return errorMessage;
 }
