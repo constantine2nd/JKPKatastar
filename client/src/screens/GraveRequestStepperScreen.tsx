@@ -39,8 +39,8 @@ import {
 import MapStepperComponent from "../components/MapStepperComponent";
 import { Grave } from "../interfaces/GraveIntefaces";
 import {
+  composeErrorMessageIntoPromise,
   composeErrorMessage,
-  extractErrorMessage,
 } from "../components/CommonFuntions";
 
 const mapStyles = {
@@ -117,7 +117,7 @@ const GraveRequestStepperScreen: React.FC = () => {
     await axios
       .post(path, dataToSend, config)
       .then((response) => console.log(response.data))
-      .catch((error) => console.log(window.alert(extractErrorMessage(error))));
+      .catch((error) => console.log(window.alert(composeErrorMessage(error))));
   };
   return (
     <>

@@ -83,16 +83,28 @@ const capacityExt = (renderedValue: string) => {
   return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
 };
 
-const composeErrorMessage = (error: any) => {
-  console.error(error.response.data.message);
-  return Promise.reject(
-    new Error(error.message + " <- " + error.response.data.message)
-  );
+function composeErrorMessageCommon(error: any) {
+  console.log(error);
+  let errorMessage = "";
+  if (error.response.data.message) {
+    errorMessage = error.message + " <- " + error.response.data.message;
+  } else {
+    errorMessage =
+      error.message +
+      " <- " +
+      error.response.statusText +
+      " " +
+      error.request.responseURL;
+  }
+  return errorMessage;
+}
+
+const composeErrorMessageIntoPromise = (error: any) => {
+  return Promise.reject(new Error(composeErrorMessageCommon(error)));
 };
 
-const extractErrorMessage = (error: any) => {
-  console.error(error.response.data.message);
-  return error.message + " <- " + error.response.data.message;
+const composeErrorMessage = (error: any) => {
+  return composeErrorMessageCommon(error);
 };
 
 export {
@@ -103,6 +115,6 @@ export {
   statusOfGraveRequest,
   statusOfGrave,
   capacityExt,
+  composeErrorMessageIntoPromise,
   composeErrorMessage,
-  extractErrorMessage,
 };

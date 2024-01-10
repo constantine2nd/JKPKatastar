@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import _ from "lodash";
-import { composeErrorMessage } from "../components/CommonFuntions";
+import { composeErrorMessageIntoPromise } from "../components/CommonFuntions";
 
 // CREATE hook (post a new row to api)
 export const useCreateRow = (queryKey: string, path: string) => {
@@ -18,7 +18,7 @@ export const useCreateRow = (queryKey: string, path: string) => {
         const response = await axios.post(path, { ...row }, config);
         return response.data;
       } catch (error: any) {
-        return composeErrorMessage(error);
+        return composeErrorMessageIntoPromise(error);
       }
     },
     //client side optimistic update
@@ -42,7 +42,7 @@ export const useGetRows = (queryKey: string, path: string) => {
         const response = await axios.get(path);
         return response.data;
       } catch (error: any) {
-        return composeErrorMessage(error);
+        return composeErrorMessageIntoPromise(error);
       }
     },
     refetchOnWindowFocus: true,
@@ -64,7 +64,7 @@ export const useUpdateRow = (queryKey: string, path: string) => {
         const response = await axios.put(path, { ...row }, config);
         return response.data;
       } catch (error: any) {
-        return composeErrorMessage(error);
+        return composeErrorMessageIntoPromise(error);
       }
     },
     //client side optimistic update
@@ -95,7 +95,7 @@ export const useDeleteRow = (queryKey: string, path: string) => {
         const response = await axios.delete(`${path}/${id}`);
         return response.data;
       } catch (error: any) {
-        return composeErrorMessage(error);
+        return composeErrorMessageIntoPromise(error);
       }
     },
     // client side optimistic update
