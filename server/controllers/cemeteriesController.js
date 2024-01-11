@@ -29,11 +29,7 @@ const addCemetery = async (req, res, next) => {
     console.log(newCemetery);
     if (newCemetery) {
       res.status(201).json({
-        _id: newCemetery._id,
-        name: newCemetery.name,
-        LAT: newCemetery.LAT,
-        LON: newCemetery.LON,
-        zoom: newCemetery.zoom,
+        ...newCemetery._doc
       });
     } else {
       res.status(400).send({
@@ -56,11 +52,7 @@ const updateCemetery = async (req, res, next) => {
 
     if (updatedCemetery) {
       res.status(200).json({
-        _id: updatedCemetery._id,
-        name: updatedCemetery.name,
-        LAT: updatedCemetery.LAT,
-        LON: updatedCemetery.LON,
-        zoom: updatedCemetery.zoom,
+        ...updatedCemetery._doc
       });
     } else {
       res.status(400).send({
