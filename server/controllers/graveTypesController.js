@@ -16,52 +16,55 @@ const getAllGraveTypes = async (req, res, next) => {
   }
 };
 
-const addGraveType = async (req, res) => {
-  const { name, capacity, description } = req.body;
-
-  const newGraveType = await GraveType.create({
-    name,
-    capacity,
-    description,
-  });
-  console.log(newGraveType);
-  if (newGraveType) {
-    res.status(201).json({
-      _id: newGraveType._id,
-      name: newGraveType.name,
-      capacity: newGraveType.capacity,
-      description: newGraveType.description,
+const addGraveType = async (req, res, next) => {
+  try {
+    const { name, capacity, description } = req.body;
+    const newGraveType = await GraveType.create({
+      name,
+      capacity,
+      description,
     });
-  } else {
-    res.status(400).send({
-      message: "Invalid grave type data",
-    });
+    console.log(newGraveType);
+    if (newGraveType) {
+      res.status(201).json({
+        _id: newGraveType._id,
+        name: newGraveType.name,
+        capacity: newGraveType.capacity,
+        description: newGraveType.description,
+      });
+    } else {
+      res.status(400).send({
+        message: "Invalid grave type data",
+      });
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
-const updateGraveType = async (req, res) => {
-  const { _id, name, capacity, description } = req.body;
-  console.log(req.body);
-  const filter = { _id: _id }; // Criteria to find a row
-  const update = { name: name, capacity: capacity, description: description }; // Fields to update
-
-  const updatedGraveType = await GraveType.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-
-  console.log(updatedGraveType);
-
-  if (updatedGraveType) {
-    res.status(200).json({
-      _id: updatedGraveType._id,
-      name: updatedGraveType.name,
-      capacity: updatedGraveType.capacity,
-      description: updatedGraveType.description,
+const updateGraveType = async (req, res, next) => {
+  try {
+    const { _id, name, capacity, description } = req.body;
+    console.log(req.body);
+    const filter = { _id: _id }; // Criteria to find a row
+    const update = { name: name, capacity: capacity, description: description }; // Fields to update
+    const updatedGraveType = await GraveType.findOneAndUpdate(filter, update, {
+      new: true,
     });
-  } else {
-    res.status(400).send({
-      message: "Cannot update the grave type",
-    });
+    if (updatedGraveType) {
+      res.status(200).json({
+        _id: updatedGraveType._id,
+        name: updatedGraveType.name,
+        capacity: updatedGraveType.capacity,
+        description: updatedGraveType.description,
+      });
+    } else {
+      res.status(400).send({
+        message: "Cannot update the grave type",
+      });
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -93,12 +96,8 @@ const deleteGraveType = async (req, res, next) => {
         message: "Nothing to delete",
       });
     }
-    // res.send(objToSend);
-  } catch (error) {
-    console.log(error);
-    return res.status(400).send({
-      message: `Cannot delete the grave type. ${error}`,
-    });
+  } catch (err) {
+    next(err);
   }
 };
 

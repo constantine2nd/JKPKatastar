@@ -26,8 +26,9 @@ app.use("/api/grave-types", graveTypesRoutes);
 app.use("/api/grave-requests", graveRequestRoutes);
 
 app.use((err, req, res, next) => {
+  console.log("app.use");
   console.log(err.message);
-  res.status(500).send(err.message);
+  res.status(500).send({message: err.message});
 });
 
 app.listen(5000);

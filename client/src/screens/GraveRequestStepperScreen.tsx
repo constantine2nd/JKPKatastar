@@ -12,7 +12,6 @@ import Input from "@mui/material/Input";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
-import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
 import {
   Modal,
   Form,
@@ -27,17 +26,16 @@ import { Cemetery } from "../interfaces/CemeteryInterfaces";
 import {
   fetchCemeteries,
   selectAllCemeteries,
-  getAllCemeteriesError,
-  getAllCemeteriesStatus,
 } from "../features/cemeteriesSlice";
 import {
-  getGravesError,
-  getGravesStatus,
   fetchGravesForCemetary,
   selectAllGraves,
 } from "../features/gravesSlice";
 import MapStepperComponent from "../components/MapStepperComponent";
 import { Grave } from "../interfaces/GraveIntefaces";
+import {
+  composeErrorMessage,
+} from "../components/CommonFuntions";
 
 const mapStyles = {
   width: "70%",
@@ -110,8 +108,10 @@ const GraveRequestStepperScreen: React.FC = () => {
       status: "REQUSTED",
       createdAt: new Date(),
     };
-    const response = await axios.post(path, dataToSend, config);
-    console.log(response.data);
+    await axios
+      .post(path, dataToSend, config)
+      .then((response) => console.log(response.data))
+      .catch((error) => console.log(window.alert(composeErrorMessage(error))));
   };
   return (
     <>

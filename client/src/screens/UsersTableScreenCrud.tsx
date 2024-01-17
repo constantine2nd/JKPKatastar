@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -11,7 +11,6 @@ import {
 import {
   Box,
   Button,
-  Chip,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -21,21 +20,13 @@ import {
 import {
   QueryClient,
   QueryClientProvider,
-  useMutation,
-  useQuery,
-  useQueryClient,
 } from '@tanstack/react-query';
 import { User } from "../interfaces/UserInterfaces";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { updateUser, deleteUser, getAllUsers, getAllUsersStatus, getAllUsersError, selectAllUsers } from '../features/allUsersSlice';
-import axios from 'axios';
 import { getLanguage } from "../utils/languageSelector";
 import { isActiveUser } from "../components/CommonFuntions"
-//Import Material React Table Translations
-import { MRT_Localization_ES } from 'material-react-table/locales/es';
 import { useCreateRow, useDeleteRow, useGetRows, useUpdateRow } from '../hooks/useCrudHooks';
 
 // Defines the name of the react query
@@ -52,16 +43,6 @@ const UsersTableScreenCrud = () => {
   >({});
 
   const { t, i18n } = useTranslation();
-  // const users: User[] = useSelector(selectAllUsers);
-  const dispatch = useDispatch<any>();
-  const usersStatus = useSelector(getAllUsersStatus);
-  const error = useSelector(getAllUsersError);
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      console.log("UPAO");
-      dispatch(getAllUsers());
-    }
-  }, [usersStatus, dispatch]);
 
   const roles = [
     'ADMIN',
@@ -210,19 +191,19 @@ const UsersTableScreenCrud = () => {
     const newValidationErrors = validateUser(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
-      return;
+      return
     }
     setValidationErrors({});
-    await updateRow(values).catch((error) => console.log(error));
-    table.setEditingRow(null); //exit editing mode
-  };
+    await updateRow(values).catch((error) => console.log(error))
+    table.setEditingRow(null) //exit editing mode
+  }
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<User>) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteRow(row.original._id);
+      deleteRow(row.original._id).catch((error) => console.log(error))
     }
-  };
+  }
 
   const table = useMaterialReactTable({
     columns,
@@ -315,100 +296,6 @@ const UsersTableScreenCrud = () => {
 
   return <MaterialReactTable table={table} />;
 };
-
-//CREATE hook (post new user to api)
-function useCreateUser() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (user: User) => {
-      //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-      return Promise.resolve();
-    },
-    //client side optimistic update
-    onMutate: (newUserInfo: User) => {
-      queryClient.setQueryData(
-        ['users-all'],
-        (prevUsers: any) =>
-          [
-            ...prevUsers,
-            {
-              ...newUserInfo,
-              id: (Math.random() + 1).toString(36).substring(7),
-            },
-          ] as User[],
-      );
-    },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
-  });
-}
-
-//READ hook (get users from api)
-function useGetUsers(users: User[]) {
-  return useQuery<User[]>({
-    queryKey: ['users-all'],
-    queryFn: async () => {
-      //send api request here 
-      return Promise.resolve(users);
-    },
-    refetchOnWindowFocus: false,
-  });
-}
-
-//UPDATE hook (put user in api)
-function useUpdateUser(dispatch: any) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (user: User) => {
-      //send api update request here
-      const handleSubmit = async (values: Object) => {
-        dispatch(updateUser(values));
-      };
-      return handleSubmit({
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive,
-      });
-    },
-    //client side optimistic update
-    onMutate: (newUserInfo: User) => {
-      queryClient.setQueryData(
-        ['users-all'],
-        (prevUsers: any) =>
-          prevUsers?.map((prevUser: User) =>
-            prevUser._id === newUserInfo._id ? newUserInfo : prevUser,
-          ),
-      );
-    },
-    // onSettled: () => queryClient.refetchQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
-  });
-}
-
-//DELETE hook (delete user in api)
-function useDeleteUser(dispatch: any) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (userId: string) => {
-      //send api update request here
-      await new Promise((resolve) => setTimeout(resolve, 0)); //fake api call
-      // return Promise.resolve();
-      const handleSubmit = async (id: string) => {
-        dispatch(deleteUser(id));
-      };
-      return handleSubmit(userId);
-    },
-    //client side optimistic update
-    onMutate: (userId: string) => {
-      queryClient.setQueryData(
-        ['users-all'],
-        (prevUsers: any) =>
-          prevUsers?.filter((user: User) => user._id !== userId),
-      );
-    },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
-  });
-}
 
 const queryClient = new QueryClient();
 
