@@ -3,6 +3,20 @@ import axios from "axios";
 import _ from "lodash";
 import { composeErrorMessageIntoPromise } from "../components/CommonFuntions";
 
+axios.interceptors.request.use(
+  config => {
+    let userInfoFromStorage = null;
+    if (sessionStorage.getItem("userInfo") !== null) {
+      userInfoFromStorage = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
+    }
+    config.headers['Authorization'] = `Bearer ${userInfoFromStorage?.token}`;
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
+
 // CREATE hook (post a new row to api)
 export const useCreateRow = (queryKey: string, path: string) => {
   const queryClient = useQueryClient();
