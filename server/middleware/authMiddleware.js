@@ -12,12 +12,12 @@ const protect = (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      console.log("dekodovani TOKEN", decoded);
+      console.log("Decoded TOKEN", decoded);
 
       if (!decoded) {
         console.log(err);
         console.log("ERROR");
-        res.status(401).send({ error: "You are not loggged" });
+        res.status(401).send({ message: "You are not loggged. Authorization token cannot be verified." });
       } else {
         console.log("DALJE");
         //  console.log('userName: ', decoded?.userName)
@@ -26,17 +26,15 @@ const protect = (req, res, next) => {
       }
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
-        console.log("UPAO U TOKEN EXPIRED");
-        res.status(401);
-        throw new Error("Token Expired");
+        console.log("Authorization token Expired");
+        res.status(401).send({ message: "You are not loggged. Token Expired." });
       }
       res.status(401);
       throw new Error("Not authorized, token failed");
     }
   } else {
-    console.log("NEMA TOKENA");
-    res.status(401);
-    throw new Error("Not authorized, no token");
+    console.log("There is no authorization token.");
+    res.status(401).send({ message: "You are not loggged. There is no authorization token." });
   }
 };
 
