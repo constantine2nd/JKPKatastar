@@ -27,6 +27,7 @@ import Test3Screen from "./screens/Test3Screen";
 import GraveRequestTableScreenCrud from "./screens/GraveRequestTableScreenCrud";
 import GraveRequestStepperScreen from "./screens/GraveRequestStepperScreen";
 import GravesTableScreenCrudWithProviders from "./screens/GravesTableScreenCrud";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -37,14 +38,28 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/landing" element={<LandingScreen />} />
-            <Route path="/add-grave" element={<AddGraveScreen />} />
+
+            {/* <Route path="/add-grave" element={<AddGraveScreen />} /> */}
+            <Route
+              element={
+                <ProtectedRoute
+                  isAuthenticated={false}
+                  redirectPath={"/login-user"}
+                />
+              }
+            >
+              <Route path="/add-grave" element={<AddGraveScreen />} />
+            </Route>
             <Route path="/single-grave" element={<SingleGraveScreen />} />
             <Route path="/add-deceased" element={<AddDeceasedScreen />} />
             <Route path="/add-payer" element={<AddPayerScreen />} />
             <Route path="/add-user" element={<AddUserScreen />} />
             <Route path="/login-user" element={<LoginScreen />} />
             <Route path="/graves-table" element={<GravesTableScreen />} />
-            <Route path="/graves-table-crud" element={<GravesTableScreenCrudWithProviders />} />
+            <Route
+              path="/graves-table-crud"
+              element={<GravesTableScreenCrudWithProviders />}
+            />
             <Route path="/deceased-table" element={<DeceasedTableScreen />} />
             <Route path="/users-table" element={<UsersTableScreen />} />
             <Route

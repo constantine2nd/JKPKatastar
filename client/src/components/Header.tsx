@@ -50,7 +50,10 @@ const Header = () => {
               <Nav.Link>Pregled pokojnika</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/graves-table">
-              <Nav.Link>Pregled grobnih mesta</Nav.Link>
+              <Nav.Link>Pregled GM</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/graves-table-crud">
+              <Nav.Link>Pregled GM CRUD</Nav.Link>
             </LinkContainer>
             {user && user.role === "SUPER_ADMIN" && (
               <>
@@ -59,6 +62,9 @@ const Header = () => {
                 </LinkContainer>
                 <LinkContainer to="/grave-types-table">
                   <Nav.Link>Grave Types MGM</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/grave-types-crud">
+                  <Nav.Link>Grave Types MGM CRUD</Nav.Link>
                 </LinkContainer>
               </>
             )}
