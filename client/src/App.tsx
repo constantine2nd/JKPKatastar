@@ -38,8 +38,23 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/landing" element={<LandingScreen />} />
+            <Route path="/single-grave" element={<SingleGraveScreen />} />
+            <Route path="/login-user" element={<LoginScreen />} />
+            <Route path="/graves-table" element={<GravesTableScreen />} />
+            <Route
+              path="/graves-table-crud"
+              element={<GravesTableScreenCrudWithProviders />}
+            />
+            <Route path="/deceased-table" element={<DeceasedTableScreen />} />
+            <Route
+              path="/grave-requests-stepper"
+              element={<GraveRequestStepperScreen />}
+            />
+            <Route path="/test" element={<TestScreen />} />
+            <Route path="/test2" element={<Test2Screen />} />
+            <Route path="/test3" element={<Test3Screen />} />
 
-            {/* <Route path="/add-grave" element={<AddGraveScreen />} /> */}
+            {/* Routes which require a logged in user START OF SECTION */}
             <Route
               element={
                 <ProtectedRoute
@@ -49,46 +64,33 @@ function App() {
               }
             >
               <Route path="/add-grave" element={<AddGraveScreen />} />
+              <Route path="/users-table" element={<UsersTableScreen />} />
+              <Route
+                path="/users-table-crud"
+                element={<UsersTableScreenCrudWithProviders />}
+              />
+              <Route
+                path="/grave-types-table"
+                element={<GraveTypesTableScreen />}
+              />
+              <Route
+                path="/grave-types-crud"
+                element={<GraveTypesTableScreenCrud />}
+              />
+              <Route
+                path="/cemeteries-table-crud"
+                element={<CemeteriesTableScreenCrud />}
+              />
+
+              <Route
+                path="/grave-requests-crud"
+                element={<GraveRequestTableScreenCrud />}
+              />
+              <Route path="/add-deceased" element={<AddDeceasedScreen />} />
+              <Route path="/add-payer" element={<AddPayerScreen />} />
+              <Route path="/add-user" element={<AddUserScreen />} />
             </Route>
-            <Route path="/single-grave" element={<SingleGraveScreen />} />
-            <Route path="/add-deceased" element={<AddDeceasedScreen />} />
-            <Route path="/add-payer" element={<AddPayerScreen />} />
-            <Route path="/add-user" element={<AddUserScreen />} />
-            <Route path="/login-user" element={<LoginScreen />} />
-            <Route path="/graves-table" element={<GravesTableScreen />} />
-            <Route
-              path="/graves-table-crud"
-              element={<GravesTableScreenCrudWithProviders />}
-            />
-            <Route path="/deceased-table" element={<DeceasedTableScreen />} />
-            <Route path="/users-table" element={<UsersTableScreen />} />
-            <Route
-              path="/users-table-crud"
-              element={<UsersTableScreenCrudWithProviders />}
-            />
-            <Route
-              path="/cemeteries-table-crud"
-              element={<CemeteriesTableScreenCrud />}
-            />
-            <Route
-              path="/grave-types-table"
-              element={<GraveTypesTableScreen />}
-            />
-            <Route
-              path="/grave-types-crud"
-              element={<GraveTypesTableScreenCrud />}
-            />
-            <Route
-              path="/grave-requests-crud"
-              element={<GraveRequestTableScreenCrud />}
-            />
-            <Route
-              path="/grave-requests-stepper"
-              element={<GraveRequestStepperScreen />}
-            />
-            <Route path="/test" element={<TestScreen />} />
-            <Route path="/test2" element={<Test2Screen />} />
-            <Route path="/test3" element={<Test3Screen />} />
+            {/* Routes which require a logged in user END OF SECTION*/}
           </Routes>
         </main>
       </LocalizationProvider>
