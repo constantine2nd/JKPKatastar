@@ -28,6 +28,7 @@ import GraveRequestTableScreenCrud from "./screens/GraveRequestTableScreenCrud";
 import GraveRequestStepperScreen from "./screens/GraveRequestStepperScreen";
 import GravesTableScreenCrudWithProviders from "./screens/GravesTableScreenCrud";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import ExcelToJsonConverter from "./screens/ConvertExcelScreen";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
             <Route path="/test" element={<TestScreen />} />
             <Route path="/test2" element={<Test2Screen />} />
             <Route path="/test3" element={<Test3Screen />} />
+            <Route path="/excel-to-json" element={<ExcelToJsonConverter />} />
           </Routes>
         </main>
       </LocalizationProvider>
