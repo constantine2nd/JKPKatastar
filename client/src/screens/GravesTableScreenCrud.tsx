@@ -89,10 +89,13 @@ const GravesTableScreenCrud = () => {
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
-      accessorKey: "_id",
-      header: "Id",
-      enableEditing: false,
-      size: 80,
+      accessorKey: "cemetery._id",
+      header: t("Cemetery"),
+      editVariant: "select",
+      editSelectOptions: myCemeteries,
+      enableEditing: true,
+      Cell: ({ row }) =>
+        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name,
     },
     {
       accessorKey: "number",
@@ -156,6 +159,12 @@ const GravesTableScreenCrud = () => {
           ?.name,
     },
     {
+      accessorKey: "_id",
+      header: "Id",
+      enableEditing: false,
+      size: 80,
+    },
+    {
       accessorFn: (row) => new Date(row.contractTo),
       id: "contractTo",
       filterFn: "between",
@@ -182,15 +191,6 @@ const GravesTableScreenCrud = () => {
       editVariant: "select",
       editSelectOptions: statuses,
       Cell: ({ row }) => statusOfGrave(row.original.status, t),
-    },
-    {
-      accessorKey: "cemetery._id",
-      header: t("Cemetery"),
-      editVariant: "select",
-      editSelectOptions: myCemeteries,
-      enableEditing: true,
-      Cell: ({ row }) =>
-        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name,
     },
   ];
 
@@ -252,6 +252,8 @@ const GravesTableScreenCrud = () => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
+    enableColumnResizing: true,
+    initialState: { columnVisibility: { _id: false } }, //hide _id column by default
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
