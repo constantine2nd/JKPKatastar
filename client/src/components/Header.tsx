@@ -6,6 +6,11 @@ import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "../features/userSlice";
 
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+
 const Header = () => {
   const { i18n } = useTranslation();
   const [language, setLanguage] = useState("sr");
@@ -46,26 +51,73 @@ const Header = () => {
           </LinkContainer>
 
           <Nav className="ml-auto">
-            <LinkContainer to="/deceased-table">
-              <Nav.Link>Pregled pokojnika</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/graves-table">
-              <Nav.Link>Pregled GM</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/graves-table-crud">
-              <Nav.Link>Pregled GM CRUD</Nav.Link>
-            </LinkContainer>
+            <PopupState variant="popover" popupId="graves-popup-menu">
+              {(popupState) => (
+                <React.Fragment>
+                  <Button variant="contained" {...bindTrigger(popupState)}>
+                    Dashboard
+                  </Button>
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem onClick={popupState.close}>
+                      <LinkContainer to="/grave-requests-crud">
+                        <Nav.Link>Zahtev za grobno mesto</Nav.Link>
+                      </LinkContainer>
+                    </MenuItem>
+                    <MenuItem onClick={popupState.close}>
+                      <LinkContainer to="/deceased-table">
+                        <Nav.Link>Pregled pokojnika</Nav.Link>
+                      </LinkContainer>
+                    </MenuItem>
+                    <MenuItem onClick={popupState.close}>
+                      <LinkContainer to="/graves-table">
+                        <Nav.Link>Pregled GM</Nav.Link>
+                      </LinkContainer>
+                    </MenuItem>
+                    <MenuItem onClick={popupState.close}>
+                      <LinkContainer to="/graves-table-crud">
+                        <Nav.Link>Pregled GM CRUD</Nav.Link>
+                      </LinkContainer>
+                    </MenuItem>
+                  </Menu>
+                </React.Fragment>
+              )}
+            </PopupState>
             {user && user.role === "SUPER_ADMIN" && (
               <>
-                <LinkContainer to="/users-table">
-                  <Nav.Link>User management</Nav.Link>
-                </LinkContainer>
-                <LinkContainer to="/grave-types-table">
-                  <Nav.Link>Grave Types MGM</Nav.Link>
-                </LinkContainer>
-                <LinkContainer to="/grave-types-crud">
-                  <Nav.Link>Grave Types MGM CRUD</Nav.Link>
-                </LinkContainer>
+                <PopupState
+                  variant="popover"
+                  popupId="administration-popup-menu"
+                >
+                  {(popupState) => (
+                    <React.Fragment>
+                      <Button variant="contained" {...bindTrigger(popupState)}>
+                        Administration
+                      </Button>
+                      <Menu {...bindMenu(popupState)}>
+                        <MenuItem onClick={popupState.close}>
+                          <LinkContainer to="/cemeteries-table-crud">
+                            <Nav.Link>Cemeteries management</Nav.Link>
+                          </LinkContainer>
+                        </MenuItem>
+                        <MenuItem onClick={popupState.close}>
+                          <LinkContainer to="/users-table-crud">
+                            <Nav.Link>User management</Nav.Link>
+                          </LinkContainer>
+                        </MenuItem>
+                        <MenuItem onClick={popupState.close}>
+                          <LinkContainer to="/grave-types-table">
+                            <Nav.Link>Grave Types MGM</Nav.Link>
+                          </LinkContainer>
+                        </MenuItem>
+                        <MenuItem onClick={popupState.close}>
+                          <LinkContainer to="/grave-types-crud">
+                            <Nav.Link>Grave Types MGM CRUD</Nav.Link>
+                          </LinkContainer>
+                        </MenuItem>
+                      </Menu>
+                    </React.Fragment>
+                  )}
+                </PopupState>
               </>
             )}
             {user && (
