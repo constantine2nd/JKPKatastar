@@ -71,5 +71,8 @@
   "Enter LATITUDE of the grave": "Unesite LATITUDE grobnog mesta",
   "Enter LONGITUDE of the grave": "Unesite LONGITUDE grobnog mesta",
   "Enter expiration date of contract": "Unesite datum isteka ugovora",
-  "Are you sure you want to delete the row?": "Da li ste sigurni da želite da obrišete red?"
+  "Are you sure you want to delete the row?": "Da li ste sigurni da želite da obrišete red?",
+  "ADMINISTRATOR": "Administrator",
+  "OFFICER": "Službenik",
+  "VISITOR": "Posetilac"
 }

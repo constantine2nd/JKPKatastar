@@ -72,5 +72,8 @@
   "Enter LATITUDE of the grave": "Adja meg a sír LATITUDE-ját",
   "Enter LONGITUDE of the grave": "LONGITUDE a sírból",
   "Enter expiration date of contract": "Adja meg a szerződés lejárati dátumát",
-  "Are you sure you want to delete the row?": "Biztosan törli a sort?"
+  "Are you sure you want to delete the row?": "Biztosan törli a sort?",
+  "ADMINISTRATOR": "Kaiwhakahaere",
+  "OFFICER": "Apiha",
+  "VISITOR": "Manuhiri"
 }

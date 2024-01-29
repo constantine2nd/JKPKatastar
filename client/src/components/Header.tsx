@@ -82,7 +82,7 @@ const Header = () => {
                 </React.Fragment>
               )}
             </PopupState>
-            {user && user.role === "SUPER_ADMIN" && (
+            {user && user.role === "ADMINISTRATOR" && (
               <>
                 <PopupState
                   variant="popover"

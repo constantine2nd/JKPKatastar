@@ -286,7 +286,7 @@ const CemeteriesTableScreenCrud = () => {
             <EditIcon />
           </IconButton>
         </Tooltip>
-        {user?.role === "SUPER_ADMIN" && (
+        {user?.role === "ADMINISTRATOR" && (
           <Tooltip title={t("Delete")}>
             <IconButton
               color="error"
