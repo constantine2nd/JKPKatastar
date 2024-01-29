@@ -75,5 +75,9 @@
   "Are you sure you want to delete the row?": "Biztosan törli a sort?",
   "ADMINISTRATOR": "Kaiwhakahaere",
   "OFFICER": "Apiha",
-  "VISITOR": "Manuhiri"
+  "VISITOR": "Manuhiri",
+  "Remember me": "Kia mahara ki ahau",
+  "Sign in": "Takiuru",
+  "Forgot password?": "Kua wareware te kupuhipa?",
+  "Don't have an account? Sign Up": "Karekau he kaute? Waitohu"
 }

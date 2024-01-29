@@ -17,7 +17,7 @@
   "name": "Ime",
   "surname": "Prezime",
   "email": "Email",
-  "password": "Password",
+  "password": "Lozinka",
   "token": "Token",
   "dateBirth": "Datum rođenja",
   "dateDeath": "Datum smrti",
@@ -74,5 +74,9 @@
   "Are you sure you want to delete the row?": "Da li ste sigurni da želite da obrišete red?",
   "ADMINISTRATOR": "Administrator",
   "OFFICER": "Službenik",
-  "VISITOR": "Posetilac"
+  "VISITOR": "Posetilac",
+  "Remember me": "Zapamti",
+  "Sign in": "Ulogujte se",
+  "Forgot password?": "Zaboravljena lozinka?",
+  "Don't have an account? Sign Up": "Nemate nalog? Registrujte se"
 }

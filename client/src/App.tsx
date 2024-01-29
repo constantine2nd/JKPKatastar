@@ -28,6 +28,7 @@ import GraveRequestTableScreenCrud from "./screens/GraveRequestTableScreenCrud";
 import GraveRequestStepperScreen from "./screens/GraveRequestStepperScreen";
 import GravesTableScreenCrudWithProviders from "./screens/GravesTableScreenCrud";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import LoginScreenMUI from "./screens/LoginScreenMUI";
 
 function App() {
   return (
@@ -39,7 +40,7 @@ function App() {
             <Route path="/" element={<HomeScreen />} />
             <Route path="/landing" element={<LandingScreen />} />
             <Route path="/single-grave" element={<SingleGraveScreen />} />
-            <Route path="/login-user" element={<LoginScreen />} />
+            <Route path="/login-user" element={<LoginScreenMUI />} />
             <Route path="/graves-table" element={<GravesTableScreen />} />
             <Route
               path="/graves-table-crud"
