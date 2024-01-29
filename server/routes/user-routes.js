@@ -10,6 +10,7 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+router.route("/adduservisitor").post(registerUser);
 router.route("/adduser").post(protect, registerUser);
 router.route("/updateuser").put(protect, updateUser);
 router.route("/:id").delete(protect, deleteUser);

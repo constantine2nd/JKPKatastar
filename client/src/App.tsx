@@ -8,7 +8,7 @@ import AddDeceasedScreen from "./screens/AddDeceasedScreen";
 import AddPayerScreen from "./screens/AddPayerScreen";
 import SingleGraveScreen from "./screens/SingleGraveScreen";
 import GravesTableScreen from "./screens/GravesTableScreen";
-import AddUserScreen from "./screens/AddUserScreen";
+import AddUserScreenMUI from "./screens/AddUserScreenMUI";
 import LoginScreen from "./screens/LoginScreen";
 import UsersTableScreen from "./screens/UsersTableScreen";
 import UsersTableScreenCrudWithProviders from "./screens/UsersTableScreenCrud";
@@ -54,6 +54,7 @@ function App() {
             <Route path="/test" element={<TestScreen />} />
             <Route path="/test2" element={<Test2Screen />} />
             <Route path="/test3" element={<Test3Screen />} />
+            <Route path="/add-user" element={<AddUserScreenMUI />} />
 
             {/* Routes which require a logged in user START OF SECTION */}
             <Route
@@ -89,7 +90,6 @@ function App() {
               />
               <Route path="/add-deceased" element={<AddDeceasedScreen />} />
               <Route path="/add-payer" element={<AddPayerScreen />} />
-              <Route path="/add-user" element={<AddUserScreen />} />
             </Route>
             {/* Routes which require a logged in user END OF SECTION*/}
           </Routes>
