@@ -58,12 +58,6 @@ const UsersTableScreenCrud = () => {
 
   const columns: MRT_ColumnDef<User>[] = [
     {
-      accessorKey: "_id",
-      header: "Id",
-      enableEditing: false,
-      size: 80,
-    },
-    {
       accessorKey: "name",
       header: t("name"),
       muiEditTextFieldProps: {
@@ -98,11 +92,6 @@ const UsersTableScreenCrud = () => {
       },
     },
     {
-      accessorKey: "password",
-      header: "password",
-      enableEditing: true,
-    },
-    {
       accessorKey: "role",
       header: t("role"),
       editVariant: "select",
@@ -118,6 +107,16 @@ const UsersTableScreenCrud = () => {
         select: true,
       },
       Cell: ({ row }) => isActiveUser(row.original.isActive, t),
+    },
+    {
+      accessorKey: "_id",
+      header: "Id",
+      enableEditing: false,
+    },
+    {
+      accessorKey: "password",
+      header: "password",
+      enableEditing: true,
     },
   ];
 
@@ -209,6 +208,7 @@ const UsersTableScreenCrud = () => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
+    enableColumnResizing: true,
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)

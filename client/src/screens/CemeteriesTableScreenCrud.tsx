@@ -72,12 +72,6 @@ const CemeteriesTableScreenCrud = () => {
 
   const columns: MRT_ColumnDef<Cemetery>[] = [
     {
-      accessorKey: "_id",
-      header: "Id",
-      enableEditing: false,
-      size: 80,
-    },
-    {
       accessorKey: "name",
       header: t("name"),
       muiEditTextFieldProps: {
@@ -144,6 +138,11 @@ const CemeteriesTableScreenCrud = () => {
           }),
         //optionally add validation checking for onBlur or onChange
       },
+    },
+    {
+      accessorKey: "_id",
+      header: "Id",
+      enableEditing: false,
     },
   ];
 
@@ -231,6 +230,7 @@ const CemeteriesTableScreenCrud = () => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
+    enableColumnResizing: true,
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)

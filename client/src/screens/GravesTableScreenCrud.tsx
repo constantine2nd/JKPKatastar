@@ -162,7 +162,6 @@ const GravesTableScreenCrud = () => {
       accessorKey: "_id",
       header: "Id",
       enableEditing: false,
-      size: 80,
     },
     {
       accessorFn: (row) => new Date(row.contractTo),
