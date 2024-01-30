@@ -252,6 +252,7 @@ const GravesTableScreenCrud = () => {
     columns,
     data: fetchedData,
     enableColumnResizing: true,
+    layoutMode: "semantic",
     initialState: { columnVisibility: { _id: false } }, //hide _id column by default
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)

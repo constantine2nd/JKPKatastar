@@ -231,6 +231,7 @@ const CemeteriesTableScreenCrud = () => {
     columns,
     data: fetchedData,
     enableColumnResizing: true,
+    layoutMode: "grid",
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
