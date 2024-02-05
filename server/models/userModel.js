@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { pseudoRandomToken } from "../utils/pseudoRandomGenerator.js";
 
 const userSchema = mongoose.Schema({
   name: {
@@ -24,6 +25,21 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     required: true,
     default: true,
+  },
+  isVerified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  pseudoRandomToken: {
+    type: String,
+    required: true,
+    default: pseudoRandomToken(128),
+  },
+  pseudoRandomTokenTillDate: {
+    type: Date,
+    required: true,
+    default: Date.now(),
   },
 });
 

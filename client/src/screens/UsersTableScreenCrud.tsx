@@ -109,6 +109,16 @@ const UsersTableScreenCrud = () => {
       Cell: ({ row }) => isActiveUser(row.original.isActive, t),
     },
     {
+      accessorKey: "isVerified",
+      header: t("Verified"),
+      editVariant: "select",
+      editSelectOptions: active,
+      muiEditTextFieldProps: {
+        select: true,
+      },
+      Cell: ({ row }) => isActiveUser(row.original.isVerified, t),
+    },
+    {
       accessorKey: "_id",
       header: "Id",
       enableEditing: false,
@@ -209,6 +219,7 @@ const UsersTableScreenCrud = () => {
     columns,
     data: fetchedData,
     enableColumnResizing: true,
+    initialState: { columnVisibility: { _id: false, password: false } }, //hide _id column by default
     layoutMode: "grid",
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)

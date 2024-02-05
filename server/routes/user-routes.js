@@ -3,6 +3,7 @@ import {
   registerUser,
   updateUser,
   deleteUser,
+  verifyEmail,
   authUser,
   getAllUsers,
 } from "../controllers/userController.js";
@@ -13,6 +14,7 @@ const router = express.Router();
 router.route("/adduservisitor").post(registerUser);
 router.route("/adduser").post(protect, registerUser);
 router.route("/updateuser").put(protect, updateUser);
+router.route("/verify-email").put(verifyEmail);
 router.route("/:id").delete(protect, deleteUser);
 router.route("/login").post(authUser);
 router.route("/").get(protect, getAllUsers);
