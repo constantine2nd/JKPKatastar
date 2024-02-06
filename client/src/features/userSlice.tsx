@@ -16,6 +16,19 @@ export const addUser = createAsyncThunk(
   }
 );
 
+export const addUserVisitor = createAsyncThunk(
+  "users/addUserVisitor",
+  async (dataToSend: any) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(`/api/users/adduservisitor`, dataToSend, config);
+    return response.data;
+  }
+);
+
 
 
 export const loginUser = createAsyncThunk(

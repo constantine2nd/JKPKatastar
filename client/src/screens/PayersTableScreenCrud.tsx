@@ -60,7 +60,6 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       accessorKey: "_id",
       header: "Id",
       enableEditing: false,
-      size: 80,
     },
     {
       accessorKey: "name",

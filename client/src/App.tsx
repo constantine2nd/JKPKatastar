@@ -28,9 +28,43 @@ import GraveRequestTableScreenCrud from "./screens/GraveRequestTableScreenCrud";
 import GraveRequestStepperScreen from "./screens/GraveRequestStepperScreen";
 import GravesTableScreenCrudWithProviders from "./screens/GravesTableScreenCrud";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import LoginScreenMUI from "./screens/LoginScreenMUI";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import EmailVerificationScreen from "./screens/EmailVerificationScreen";
+
+export const ColorModeContext = React.createContext({
+  toggleColorMode: () => {},
+});
 import ExcelToJsonConverterScreen from "./screens/ConvertExcelScreen";
 
 function App() {
+  // Get the last user selection if any otherwise use light theme
+  const defaultMode: "light" | "dark" =
+    localStorage.getItem("color-mode") === "dark" ? "dark" : "light";
+  const [mode, setMode] = React.useState<"light" | "dark">(defaultMode);
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => {
+          const mode = prevMode === "light" ? "dark" : "light";
+          // Set the last user selection
+          localStorage.setItem("color-mode", mode);
+          return mode;
+        });
+      },
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode]
+  );
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -58,6 +92,35 @@ function App() {
             <Route path="/test" element={<TestScreen />} />
             <Route path="/test2" element={<Test2Screen />} />
             <Route path="/test3" element={<Test3Screen />} />
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Header />
+            <main>
+              <Routes>
+                <Route path="/" element={<HomeScreen />} />
+                <Route path="/landing" element={<LandingScreen />} />
+                <Route path="/single-grave" element={<SingleGraveScreen />} />
+                <Route path="/login-user" element={<LoginScreenMUI />} />
+                <Route path="/graves-table" element={<GravesTableScreen />} />
+                <Route
+                  path="/graves-table-crud"
+                  element={<GravesTableScreenCrudWithProviders />}
+                />
+                <Route
+                  path="/deceased-table"
+                  element={<DeceasedTableScreen />}
+                />
+                <Route
+                  path="/grave-requests-stepper"
+                  element={<GraveRequestStepperScreen />}
+                />
+                <Route path="/verify-email" element={<EmailVerificationScreen />} />
+                <Route path="/test" element={<TestScreen />} />
+                <Route path="/test2" element={<Test2Screen />} />
+                <Route path="/test3" element={<Test3Screen />} />
+                <Route path="/add-user" element={<AddUserScreenMUI />} />
 
             {/* Routes which require a logged in user START OF SECTION */}
             <Route

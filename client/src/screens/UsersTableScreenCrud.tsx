@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -7,7 +7,7 @@ import {
   type MRT_Row,
   type MRT_TableOptions,
   useMaterialReactTable,
-} from 'material-react-table';
+} from "material-react-table";
 import {
   Box,
   Button,
@@ -16,18 +16,20 @@ import {
   DialogTitle,
   IconButton,
   Tooltip,
-} from '@mui/material';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+} from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { User } from "../interfaces/UserInterfaces";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../utils/languageSelector";
-import { isActiveUser } from "../components/CommonFuntions"
-import { useCreateRow, useDeleteRow, useGetRows, useUpdateRow } from '../hooks/useCrudHooks';
+import { isActiveUser } from "../components/CommonFuntions";
+import {
+  useCreateRow,
+  useDeleteRow,
+  useGetRows,
+  useUpdateRow,
+} from "../hooks/useCrudHooks";
 
 // Defines the name of the react query
 const queryFunction = "users-all";
@@ -45,80 +47,88 @@ const UsersTableScreenCrud = () => {
   const { t, i18n } = useTranslation();
 
   const roles = [
-    'ADMIN',
-    'SUPER_ADMIN',
-    'USER',
-  ] 
+    { label: t("ADMINISTRATOR"), value: "ADMINISTRATOR" },
+    { label: t("OFFICER"), value: "OFFICER" },
+    { label: t("VISITOR"), value: "VISITOR" },
+  ];
   const active = [
-    { label: t('yes'), value: true },
-    { label: t('no'), value: false },
-  ]
+    { label: t("yes"), value: true },
+    { label: t("no"), value: false },
+  ];
 
   const columns: MRT_ColumnDef<User>[] = [
-      {
-        accessorKey: '_id',
-        header: 'Id',
-        enableEditing: false,
-        size: 80,
+    {
+      accessorKey: "name",
+      header: t("name"),
+      muiEditTextFieldProps: {
+        type: "text",
+        required: true,
+        error: !!validationErrors?.name,
+        helperText: validationErrors?.name,
+        //remove any previous validation errors when user focuses on the input
+        onFocus: () =>
+          setValidationErrors({
+            ...validationErrors,
+            name: undefined,
+          }),
+        //optionally add validation checking for onBlur or onChange
       },
-      {
-        accessorKey: 'name',
-        header: t('name'),
-        muiEditTextFieldProps: {
-          type: 'text',
-          required: true,
-          error: !!validationErrors?.name,
-          helperText: validationErrors?.name,
-          //remove any previous validation errors when user focuses on the input
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              name: undefined,
-            }),
-          //optionally add validation checking for onBlur or onChange
-        },
+    },
+    {
+      accessorKey: "email",
+      header: t("email"),
+      enableEditing: true,
+      muiEditTextFieldProps: {
+        type: "email",
+        required: true,
+        error: !!validationErrors?.email,
+        helperText: validationErrors?.email,
+        //remove any previous validation errors when user focuses on the input
+        onFocus: () =>
+          setValidationErrors({
+            ...validationErrors,
+            email: undefined,
+          }),
       },
-      {
-        accessorKey: 'email',
-        header: t('email'),
-        enableEditing: true,
-        muiEditTextFieldProps: {
-          type: 'email',
-          required: true,
-          error: !!validationErrors?.email,
-          helperText: validationErrors?.email,
-          //remove any previous validation errors when user focuses on the input
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              email: undefined,
-            }),
-        },
+    },
+    {
+      accessorKey: "role",
+      header: t("role"),
+      editVariant: "select",
+      editSelectOptions: roles,
+      Cell: ({ row }) => t(row.original.role),
+    },
+    {
+      accessorKey: "isActive",
+      header: t("Active"),
+      editVariant: "select",
+      editSelectOptions: active,
+      muiEditTextFieldProps: {
+        select: true,
       },
-      {
-        accessorKey: 'password',
-        header: 'password',
-        enableEditing: true,
+      Cell: ({ row }) => isActiveUser(row.original.isActive, t),
+    },
+    {
+      accessorKey: "isVerified",
+      header: t("Verified"),
+      editVariant: "select",
+      editSelectOptions: active,
+      muiEditTextFieldProps: {
+        select: true,
       },
-      {
-        accessorKey: 'role',
-        header: t('role'),
-        editVariant: 'select',
-        editSelectOptions: roles,
-      },
-      {
-        accessorKey: 'isActive',
-        header: t('Active'),
-        editVariant: 'select',
-        editSelectOptions: active,
-        muiEditTextFieldProps: {
-          select: true,
-        },
-        Cell: ({ row }) => (
-          isActiveUser(row.original.isActive, t)
-        ),
-      },
-    ];
+      Cell: ({ row }) => isActiveUser(row.original.isVerified, t),
+    },
+    {
+      accessorKey: "_id",
+      header: "Id",
+      enableEditing: false,
+    },
+    {
+      accessorKey: "password",
+      header: "password",
+      enableEditing: true,
+    },
+  ];
 
   // call CREATE hook
   const {
@@ -169,7 +179,7 @@ const UsersTableScreenCrud = () => {
   }
 
   //CREATE action
-  const handleCreateUser: MRT_TableOptions<User>['onCreatingRowSave'] = async ({
+  const handleCreateUser: MRT_TableOptions<User>["onCreatingRowSave"] = async ({
     values,
     table,
   }) => {
@@ -184,33 +194,36 @@ const UsersTableScreenCrud = () => {
   };
 
   //UPDATE action
-  const handleSaveUser: MRT_TableOptions<User>['onEditingRowSave'] = async ({
+  const handleSaveUser: MRT_TableOptions<User>["onEditingRowSave"] = async ({
     values,
     table,
   }) => {
     const newValidationErrors = validateUser(values);
     if (Object.values(newValidationErrors).some((error) => error)) {
       setValidationErrors(newValidationErrors);
-      return
+      return;
     }
     setValidationErrors({});
-    await updateRow(values).catch((error) => console.log(error))
-    table.setEditingRow(null) //exit editing mode
-  }
+    await updateRow(values).catch((error) => console.log(error));
+    table.setEditingRow(null); //exit editing mode
+  };
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<User>) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteRow(row.original._id).catch((error) => console.log(error))
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      deleteRow(row.original._id).catch((error) => console.log(error));
     }
-  }
+  };
 
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
+    enableColumnResizing: true,
+    initialState: { columnVisibility: { _id: false, password: false } }, //hide _id column by default
+    layoutMode: "grid",
     localization: getLanguage(i18n),
-    createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
-    editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
+    createDisplayMode: "modal", //default ('row', and 'custom' are also available)
+    editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row._id,
     muiToolbarAlertBannerProps: errorOccuried()
@@ -221,7 +234,7 @@ const UsersTableScreenCrud = () => {
       : undefined,
     muiTableContainerProps: {
       sx: {
-        minHeight: '500px',
+        minHeight: "500px",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
@@ -233,11 +246,11 @@ const UsersTableScreenCrud = () => {
       <>
         <DialogTitle variant="h3">{t("Create New User")}</DialogTitle>
         <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+          sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
           {internalEditComponents} {/* or render custom edit components here */}
         </DialogContent>
-        <DialogActions >
+        <DialogActions>
           <MRT_EditActionButtons variant="text" table={table} row={row} />
         </DialogActions>
       </>
@@ -247,7 +260,7 @@ const UsersTableScreenCrud = () => {
       <>
         <DialogTitle variant="h3">{t("Edit User")}</DialogTitle>
         <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+          sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
           {internalEditComponents} {/* or render custom edit components here */}
         </DialogContent>
@@ -257,7 +270,7 @@ const UsersTableScreenCrud = () => {
       </>
     ),
     renderRowActions: ({ row, table }) => (
-      <Box sx={{ display: 'flex', gap: '1rem' }}>
+      <Box sx={{ display: "flex", gap: "1rem" }}>
         <Tooltip title={t("Edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
@@ -314,12 +327,12 @@ const validateEmail = (email: string) =>
   email
     .toLowerCase()
     .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 
 function validateUser(user: User) {
   return {
-    name: !validateRequired(user.name) ? 'Name is Required' : '',
-    email: !validateEmail(user.email) ? 'Incorrect Email Format' : '',
+    name: !validateRequired(user.name) ? "Name is Required" : "",
+    email: !validateEmail(user.email) ? "Incorrect Email Format" : "",
   };
 }

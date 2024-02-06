@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-
+import { emailClient } from "../utils/emailClient.js";
 import generateToken from "../utils/generateToken.js";
 
 const registerUser = async (req, res, next) => { //When an error is thrown inside asynchronous code you, you need to tell express to handle the error by passing it to the next function:
@@ -20,6 +20,23 @@ const registerUser = async (req, res, next) => { //When an error is thrown insid
     });
     console.log(newUser);
     if (newUser) {
+      
+      // Send email
+      const mailOptions = {
+        from: "marko.milic.srbija@gmail.com",
+        to: "marko.milic@yahoo.com",
+        subject: "Hello from Nodemailer",
+        text: `The magic link is: ${newUser.pseudoRandomToken}.`,
+      };
+      emailClient().sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email: ", error);
+        } else {
+          console.log("Email sent: ", info.response);
+        }
+      });
+
+      // Return successful respponse
       res.status(201).json({
         ...newUser._doc,
         token: generateToken(newUser._id),
@@ -31,17 +48,19 @@ const registerUser = async (req, res, next) => { //When an error is thrown insid
     }
   } catch (err) {
     next(err); // Inside async code you have to pass the error to the next function, else your api will crash
+  } finally {
+    
   }
 };
 
 const updateUser = async (req, res, next) => {
   try {
-    const { name, email, role, isActive } = req.body;
+    const { name, email, role, isActive, isVerified } = req.body;
 
     console.log(isActive);
 
     const filter = { email: email }; // Criteria to find a row
-    const update = { name: name, isActive: isActive, role: role }; // Fields to update
+    const update = { name: name, isActive: isActive, role: role, isVerified: isVerified }; // Fields to update
 
     const updatedUser = await User.findOneAndUpdate(filter, update, {
       new: true,
@@ -83,6 +102,32 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
+const verifyEmail = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    const filter = { pseudoRandomToken: token}; // Criteria to find a row
+    const update = { isVerified: true }; // Fields to update
+
+    const verifyUser = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    console.log(verifyUser);
+
+    if (verifyUser) {
+      res.status(200).json({
+        ...verifyUser._doc
+      });
+    } else {
+      res.status(400).send({
+        message: "Cannot verify the email address",
+      });
+    }
+  } catch (err) {
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
+  }
+};
+
 const authUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
@@ -117,4 +162,4 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-export { registerUser, updateUser, deleteUser, authUser, getAllUsers };
+export { registerUser, updateUser, deleteUser, verifyEmail, authUser, getAllUsers };
