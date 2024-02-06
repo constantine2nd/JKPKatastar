@@ -1,14 +1,29 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
+import axios from "axios";
 import * as XLSX from "xlsx";
+import { Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  fetchCemeteries,
+  selectAllCemeteries,
+} from "../features/cemeteriesSlice";
 
 function ExcelToJsonConverter() {
   const [file, setFile] = useState<File | null>(null);
   const [jsonData, setJsonData] = useState("");
+  const [selectedCemeteryId, setSelectedCemeteryId] = useState("");
+
+  const dispatch = useDispatch<any>();
+  const cemeteries = useSelector(selectAllCemeteries);
+
+  useEffect(() => {
+    dispatch(fetchCemeteries());
+  }, []);
 
   const handleConvert = () => {
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         const data = e.target?.result;
         const workbook = XLSX.read(data, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
@@ -44,6 +59,21 @@ function ExcelToJsonConverter() {
         }, []);
 
         setJsonData(JSON.stringify(res, null, 2));
+        //sending data to backend
+        const dataToSend = { graves: res, cemeteryId: selectedCemeteryId };
+
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        const response = await axios.post(
+          `/api/graves/new-from-excel`,
+          dataToSend,
+          config
+        );
+        ///////////////
       };
       reader.readAsBinaryString(file);
     }
@@ -58,8 +88,31 @@ function ExcelToJsonConverter() {
     }
   };
 
+  const handleSelectCemetery = (event: any) => {
+    console.log(event.target.value);
+    setSelectedCemeteryId(event.target.value);
+  };
+
   return (
     <div>
+      <Box sx={{ maxWidth: 120 }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Cemeteries</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={selectedCemeteryId}
+            label="Cemetery"
+            onChange={handleSelectCemetery}
+          >
+            {cemeteries.map((cemetery) => (
+              <MenuItem key={cemetery._id} value={cemetery._id}>
+                {cemetery.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
       <input type="file" accept=".xls,.xlsx" onChange={handleFileChange} />
       <button onClick={handleConvert}>Convert</button>
       <pre>{jsonData}</pre>

@@ -6,6 +6,7 @@ import {
   deleteSingleGrave,
   getGravesForCemetery,
   updateGrave,
+  saveGravesFromExcel,
 } from "../controllers/gravesController.js";
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.route("/single/:id").delete(deleteSingleGrave);
 router.route("/updategrave").put(updateGrave);
 
 router.route("/single").post(saveGrave);
+router.route("/new-from-excel").post(saveGravesFromExcel);
 
 export default router;
