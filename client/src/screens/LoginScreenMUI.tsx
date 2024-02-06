@@ -17,6 +17,8 @@ import { getUserError, getUserStatus, loginUser } from "../features/userSlice";
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
+import { Alert, Collapse, Snackbar } from "@mui/material";
+import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 
 function Copyright(props: any) {
   return (
@@ -84,11 +86,22 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           {t("Sign in")}
         </Typography>
+        <Collapse
+          in={triggerOnErrors(error, ["SERVER_ERR_INVALID_EMAIL_OR_PASSWORD"])}
+        >
+          <Alert severity="error">
+            {t(showOnErrors(error, ["SERVER_ERR_INVALID_EMAIL_OR_PASSWORD"]))}
+          </Alert>
+        </Collapse>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
+            error={triggerOnErrors(error, ["SERVER_ERR_USERNAME_IS_MANDATORY"])}
+            helperText={t(
+              showOnErrors(error, ["SERVER_ERR_USERNAME_IS_MANDATORY"])
+            )}
             id="email"
             label={t("email")}
             name="email"
@@ -99,6 +112,10 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
+            error={triggerOnErrors(error, ["SERVER_ERR_PASSWORD_IS_MANDATORY"])}
+            helperText={t(
+              showOnErrors(error, ["SERVER_ERR_PASSWORD_IS_MANDATORY"])
+            )}
             name="password"
             label={t("password")}
             type="password"

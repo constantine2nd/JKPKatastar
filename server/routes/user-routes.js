@@ -1,6 +1,7 @@
 import express from "express";
 import {
   registerUser,
+  addUser,
   updateUser,
   deleteUser,
   verifyEmail,
@@ -12,7 +13,7 @@ import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.route("/adduservisitor").post(registerUser);
-router.route("/adduser").post(protect, registerUser);
+router.route("/adduser").post(protect, addUser);
 router.route("/updateuser").put(protect, updateUser);
 router.route("/verify-email").put(verifyEmail);
 router.route("/:id").delete(protect, deleteUser);

@@ -1,14 +1,12 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -20,6 +18,7 @@ import {
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
+import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 
 function Copyright(props: any) {
   return (
@@ -51,7 +50,7 @@ export default function SignUp() {
     if (userStatus === "succeeded") {
       navigate("/landing");
     }
-  }, [navigate, userStatus]);
+  }, [navigate, userStatus, error]);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -59,12 +58,14 @@ export default function SignUp() {
       name: data.get("name"),
       email: data.get("email"),
       password: data.get("password"),
+      repeatedPassword: data.get("repeated-password"),
     });
     dispatch(
       addUserVisitor({
         name: data.get("name"),
         email: data.get("email"),
         password: data.get("password"),
+        repeatedPassword: data.get("repeated-password"),
       })
     );
   };
@@ -103,6 +104,10 @@ export default function SignUp() {
           <TextField
             margin="normal"
             required
+            error={triggerOnErrors(error, ["SERVER_ERR_USER_ALREADY_EXISTS"])}
+            helperText={t(
+              showOnErrors(error, ["SERVER_ERR_USER_ALREADY_EXISTS"])
+            )}
             fullWidth
             id="email"
             label={t("email")}
@@ -112,11 +117,25 @@ export default function SignUp() {
           <TextField
             margin="normal"
             required
+            error={triggerOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"])}
+            helperText={t(showOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"]))}
             fullWidth
             name="password"
             label={t("password")}
             type="password"
             id="password"
+            autoComplete="current-password"
+          />
+          <TextField
+            margin="normal"
+            required
+            error={triggerOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"])}
+            helperText={t(showOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"]))}
+            fullWidth
+            name="repeated-password"
+            label={t("repeat-password")}
+            type="password"
+            id="repeated-password"
             autoComplete="current-password"
           />
           <Button
