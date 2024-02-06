@@ -10,8 +10,15 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { IconButton, useTheme } from "@mui/material";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { ColorModeContext } from "../App";
 
 const Header = () => {
+  const theme = useTheme();
+  const colorMode = React.useContext(ColorModeContext);
+
   const { i18n } = useTranslation();
   const [language, setLanguage] = useState("sr");
   const user = useSelector(selectUser);
@@ -82,7 +89,7 @@ const Header = () => {
                 </React.Fragment>
               )}
             </PopupState>
-            {user && user.role === "SUPER_ADMIN" && (
+            {user && user.role === "ADMINISTRATOR" && (
               <>
                 <PopupState
                   variant="popover"
@@ -148,6 +155,17 @@ const Header = () => {
                 HU
               </NavDropdown.Item>
             </NavDropdown>
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={colorMode.toggleColorMode}
+              color="inherit"
+            >
+              {theme.palette.mode === "dark" ? (
+                <Brightness7Icon />
+              ) : (
+                <Brightness4Icon />
+              )}
+            </IconButton>
           </Nav>
         </Container>
       </Navbar>

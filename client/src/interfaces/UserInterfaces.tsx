@@ -5,5 +5,6 @@ export interface User {
   password: string;
   role: string;
   isActive: boolean;
+  isVerified: boolean;
   token: string;
 }

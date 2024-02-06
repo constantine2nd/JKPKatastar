@@ -30,7 +30,7 @@ const DeleteAndMaybeRemoveButton = (
       >
         {t("details")}
       </ButtonMUI>
-      {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
+      {(user?.role === "OFFICER" || user?.role === "ADMINISTRATOR") && (
         <ButtonMUI
           variant="contained"
           color="secondary"

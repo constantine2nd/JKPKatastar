@@ -56,12 +56,6 @@ const GraveRequestTableScreenCrud = () => {
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
-      accessorKey: "_id",
-      header: "Id",
-      enableEditing: false,
-      size: 80,
-    },
-    {
       accessorKey: "name",
       header: t("name"),
       muiEditTextFieldProps: {
@@ -148,6 +142,11 @@ const GraveRequestTableScreenCrud = () => {
       Cell: ({ cell }) => dateFormatter(cell.getValue<string>()),
     },
     {
+      accessorKey: "_id",
+      header: "Id",
+      enableEditing: false,
+    },
+    {
       accessorKey: "grave",
       header: t("Grave ID"),
     },
@@ -215,6 +214,8 @@ const GraveRequestTableScreenCrud = () => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
+    enableColumnResizing: true,
+    layoutMode: "grid",
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)

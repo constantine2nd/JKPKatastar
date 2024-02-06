@@ -187,7 +187,7 @@ const DeceasedTableScreen: React.FC = () => {
       >
         <div>{t("graves-table-screen")}</div>
         <br />
-        {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
+        {(user?.role === "OFFICER" || user?.role === "ADMINISTRATOR") && (
           <ButtonMUI
             variant="contained"
             sx={{ m: 2 }}
