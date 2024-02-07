@@ -1,6 +1,11 @@
 import User from "../models/userModel.js";
-import { emailClient } from "../utils/emailClient.js";
+import {
+  sendVerifyEmail,
+  sendResetPasswordEmail,
+} from "../utils/emailClient.js";
 import generateToken from "../utils/generateToken.js";
+import { pseudoRandomToken } from "../utils/pseudoRandomGenerator.js";
+import bcrypt from "bcryptjs";
 
 const registerUser = async (req, res, next) => {
   //When an error is thrown inside asynchronous code you, you need to tell express to handle the error by passing it to the next function:
@@ -30,19 +35,7 @@ const registerUser = async (req, res, next) => {
     console.log(newUser);
     if (newUser) {
       // Send email
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "User's email verification",
-        text: `The magic link is: ${newUser.pseudoRandomToken}.`,
-      };
-      emailClient().sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error("Error sending email: ", error);
-        } else {
-          console.log("Email sent: ", info.response);
-        }
-      });
+      sendVerifyEmail(email, newUser.pseudoRandomToken);
 
       // Return successful respponse
       res.status(201).json({
@@ -192,7 +185,7 @@ const authUser = async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
-    if(user.isVerified === false) {
+    if (user.isVerified === false) {
       res.status(401).send({
         message: "SERVER_ERR_USER_IS_NOT_VERIFIED",
       });
@@ -206,6 +199,68 @@ const authUser = async (req, res, next) => {
     } else {
       res.status(401);
       throw new Error("SERVER_ERR_INVALID_EMAIL_OR_PASSWORD");
+    }
+  } catch (err) {
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
+  }
+};
+
+const resetPasswordInitiation = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const filter = { email: email }; // Criteria to find a row
+    const update = { pseudoRandomToken: pseudoRandomToken(128) }; // Fields to update
+    
+    const user = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    if (user) {
+      // Send email
+      sendResetPasswordEmail(email, user.pseudoRandomToken);
+      res.status(200).json({
+        ...user._doc,
+      });
+    } else {
+      res.status(400).send({
+        message: "SERVER_ERR_CANNOT_RESET_PASSWORD",
+      });
+    }
+  } catch (err) {
+    next(err); // Inside async code you have to pass the error to the next function, else your api will crash
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password, repeatedPassword } = req.body;
+    const filter = { pseudoRandomToken: token }; // Criteria to find a row
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const update = { password: hashedPassword }; // Fields to update
+
+    if (repeatedPassword != null && password == repeatedPassword) {
+      // All good
+    } else {
+      res.status(400).send({
+        message: "SERVER_ERR_CONFIRM_PASSWORD",
+      });
+    }
+
+    const resetPasswordUser = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    console.log(resetPasswordUser);
+
+    if (resetPasswordUser) {
+      res.status(200).json({
+        ...resetPasswordUser._doc,
+      });
+    } else {
+      res.status(400).send({
+        message: "SERVER_ERR_CANNOT_RESET_PASSWORD",
+      });
     }
   } catch (err) {
     next(err); // Inside async code you have to pass the error to the next function, else your api will crash
@@ -233,6 +288,8 @@ export {
   updateUser,
   deleteUser,
   verifyEmail,
+  resetPasswordInitiation,
+  resetPassword,
   authUser,
   getAllUsers,
 };

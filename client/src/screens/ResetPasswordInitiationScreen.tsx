@@ -13,7 +13,7 @@ import Container from "@mui/material/Container";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { getUserError, getUserStatus, loginUser } from "../features/userSlice";
+import { getUserError, getUserStatus, loginUser, resetPasswordInitiation } from "../features/userSlice";
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
@@ -38,7 +38,7 @@ function Copyright(props: any) {
   );
 }
 
-export default function SignIn() {
+export default function ResetPasswordInitiation() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch<any>();
 
@@ -47,21 +47,17 @@ export default function SignIn() {
   const error = useSelector(getUserError);
 
   useEffect(() => {
-    if (userStatus === "succeeded") {
-      navigate("/landing");
-    }
+
   }, [navigate, userStatus]);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get("email"),
-      password: data.get("password"),
     });
     dispatch(
-      loginUser({
+      resetPasswordInitiation({
         email: data.get("email"),
-        password: data.get("password"),
       })
     );
   };
@@ -83,56 +79,24 @@ export default function SignIn() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          {t("Sign in")}
-        </Typography>
-        <Collapse
-          in={triggerOnErrors(error, [
-            "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
-            "SERVER_ERR_USER_IS_NOT_VERIFIED",
-          ])}
-        >
-          <Alert severity="error">
-            {t(
-              showOnErrors(error, [
-                "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
-                "SERVER_ERR_USER_IS_NOT_VERIFIED",
-              ])
-            )}
-          </Alert>
+        <Collapse in={triggerOnErrors(error, ["SERVER_ERR_CANNOT_RESET_PASSWORD"])}>
+          <Alert severity="error">{t(showOnErrors(error, ["SERVER_ERR_CANNOT_RESET_PASSWORD"]))}</Alert>
+        </Collapse>
+        <Collapse in={userStatus === "succeeded" ? true : false}>
+          <Alert severity="info">"Reset password initiated. Please check you email."</Alert>
         </Collapse>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
-            error={triggerOnErrors(error, ["SERVER_ERR_USERNAME_IS_MANDATORY"])}
-            helperText={t(
-              showOnErrors(error, ["SERVER_ERR_USERNAME_IS_MANDATORY"])
-            )}
+            error={triggerOnErrors(error, [])}
+            helperText={t(showOnErrors(error, []))}
             id="email"
             label={t("email")}
             name="email"
             autoComplete="email"
             autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            error={triggerOnErrors(error, ["SERVER_ERR_PASSWORD_IS_MANDATORY"])}
-            helperText={t(
-              showOnErrors(error, ["SERVER_ERR_PASSWORD_IS_MANDATORY"])
-            )}
-            name="password"
-            label={t("password")}
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label={t("Remember me")}
           />
           <Button
             type="submit"
@@ -140,20 +104,8 @@ export default function SignIn() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Sign in")}
+            {t("Submit")}
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/reset-password-initiation" variant="body2">
-                {t("Forgot password?")}
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/add-user" variant="body2">
-                {t("Don't have an account? Sign Up")}
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />

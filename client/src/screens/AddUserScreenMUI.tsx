@@ -54,12 +54,6 @@ export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get("name"),
-      email: data.get("email"),
-      password: data.get("password"),
-      repeatedPassword: data.get("repeated-password"),
-    });
     dispatch(
       addUserVisitor({
         name: data.get("name"),

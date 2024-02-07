@@ -31,6 +31,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import LoginScreenMUI from "./screens/LoginScreenMUI";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import EmailVerificationScreen from "./screens/EmailVerificationScreen";
+import ResetPasswordInitiation from "./screens/ResetPasswordInitiationScreen";
+import ResetPassword from "./screens/ResetPasswordScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -91,6 +93,8 @@ function App() {
                   element={<GraveRequestStepperScreen />}
                 />
                 <Route path="/verify-email" element={<EmailVerificationScreen />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/reset-password-initiation" element={<ResetPasswordInitiation />} />
                 <Route path="/test" element={<TestScreen />} />
                 <Route path="/test2" element={<Test2Screen />} />
                 <Route path="/test3" element={<Test3Screen />} />
