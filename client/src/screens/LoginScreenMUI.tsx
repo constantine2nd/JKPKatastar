@@ -87,10 +87,18 @@ export default function SignIn() {
           {t("Sign in")}
         </Typography>
         <Collapse
-          in={triggerOnErrors(error, ["SERVER_ERR_INVALID_EMAIL_OR_PASSWORD"])}
+          in={triggerOnErrors(error, [
+            "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+            "SERVER_ERR_USER_IS_NOT_VERIFIED",
+          ])}
         >
           <Alert severity="error">
-            {t(showOnErrors(error, ["SERVER_ERR_INVALID_EMAIL_OR_PASSWORD"]))}
+            {t(
+              showOnErrors(error, [
+                "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+                "SERVER_ERR_USER_IS_NOT_VERIFIED",
+              ])
+            )}
           </Alert>
         </Collapse>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>

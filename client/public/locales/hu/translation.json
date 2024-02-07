@@ -25,6 +25,7 @@
   "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD": "Rossz email cím vagy jelszó",
   "SERVER_ERR_USERNAME_IS_MANDATORY": "A felhasználónév kötelező",
   "SERVER_ERR_PASSWORD_IS_MANDATORY": "A jelszó kötelező",
+  "SERVER_ERR_USER_IS_NOT_VERIFIED": "A felhasználó nincs ellenőrizve",
   "token": "Token",
   "dateBirth": "Születési dátum",
   "dateDeath": "Halál dátuma",

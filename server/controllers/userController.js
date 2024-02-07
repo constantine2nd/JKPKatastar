@@ -179,18 +179,24 @@ const authUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     if (!email) {
-      res.status(400).send({
+      res.status(401).send({
         message: "SERVER_ERR_USERNAME_IS_MANDATORY",
       });
     }
 
     if (!password) {
-      res.status(400).send({
+      res.status(401).send({
         message: "SERVER_ERR_PASSWORD_IS_MANDATORY",
       });
     }
 
     const user = await User.findOne({ email });
+
+    if(user.isVerified === false) {
+      res.status(401).send({
+        message: "SERVER_ERR_USER_IS_NOT_VERIFIED",
+      });
+    }
 
     if (user && (await user.matchPassword(password))) {
       res.json({
