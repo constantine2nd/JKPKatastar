@@ -23,6 +23,7 @@ import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { useSearchParams } from "react-router-dom";
 
 function Copyright(props: any) {
+  const { t } = useTranslation();
   return (
     <Typography
       variant="body2"
@@ -32,7 +33,7 @@ function Copyright(props: any) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        {t("CLIENT_YOUR_WEBSITE")}
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

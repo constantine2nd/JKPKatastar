@@ -17,10 +17,11 @@ import { getUserError, getUserStatus, loginUser } from "../features/userSlice";
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
-import { Alert, Collapse, Snackbar } from "@mui/material";
+import { Alert, Collapse } from "@mui/material";
 import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 
 function Copyright(props: any) {
+  const { t } = useTranslation();
   return (
     <Typography
       variant="body2"
@@ -30,7 +31,7 @@ function Copyright(props: any) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        {t("CLIENT_YOUR_WEBSITE")}
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
