@@ -2,12 +2,10 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import {
@@ -19,25 +17,7 @@ import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
 import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
-
-function Copyright(props: any) {
-  const { t } = useTranslation();
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        {t("CLIENT_YOUR_WEBSITE")}
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { Copyright } from "../components/Copyright";
 
 export default function SignUp() {
   const { t, i18n } = useTranslation();

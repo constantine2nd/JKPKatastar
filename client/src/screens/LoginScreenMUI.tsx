@@ -10,7 +10,6 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { getUserError, getUserStatus, loginUser } from "../features/userSlice";
@@ -19,25 +18,7 @@ import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
 import { Alert, Collapse } from "@mui/material";
 import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
-
-function Copyright(props: any) {
-  const { t } = useTranslation();
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        {t("CLIENT_YOUR_WEBSITE")}
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { Copyright } from "../components/Copyright";
 
 export default function SignIn() {
   const { t, i18n } = useTranslation();
@@ -55,10 +36,6 @@ export default function SignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
     dispatch(
       loginUser({
         email: data.get("email"),
