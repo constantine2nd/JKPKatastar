@@ -1,8 +1,52 @@
 import Grave from "../models/graveModel.js";
 import Deceased from "../models/deceasedModel.js";
 import Payer from "../models/payerModel.js";
+import GraveType from "../models/graveTypeModel.js";
 //import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
+
+const createDateFromString = (dateString) => {
+  const [day, month, year] = dateString.split("/");
+  return new Date(
+    parseInt(year, 10),
+    parseInt(month, 10) - 1,
+    parseInt(day, 10)
+  );
+};
+
+const saveGravesFromExcel = async (req, res, next) => {
+  // console.log(req.body);
+  const { graves, cemeteryId } = req.body;
+  // console.log(graves);
+  graves.forEach(async (grave) => {
+    const graveType = await GraveType.find({ name: grave.type });
+    console.log(graveType[0]);
+    console.log(graveType[0]._id);
+    const newGrave = new Grave({
+      number: grave.number,
+      row: grave.row,
+      field: grave.field,
+      LAT: grave.LAT,
+      LON: grave.LON,
+      graveType: new mongoose.Types.ObjectId(graveType[0]._id),
+      cemetery: new mongoose.Types.ObjectId(cemeteryId),
+    });
+    const createdGrave = await newGrave.save();
+
+    if (grave.deceased && createdGrave) {
+      grave.deceased.forEach(async (dec) => {
+        const deacesed = new Deceased({
+          name: dec.name,
+          surname: dec.surname,
+          dateBirth: createDateFromString(dec.birth),
+          dateDeath: createDateFromString(dec.death),
+          grave: new mongoose.Types.ObjectId(createdGrave._id),
+        });
+        const savedDeceased = await deacesed.save();
+      });
+    }
+  });
+};
 
 const saveGrave = async (req, res, next) => {
   console.log(req.body);
@@ -98,8 +142,8 @@ const getGravesForCemetery = async (req, res, next) => {
   // let cemeteryId = new ObjectId(req.params.id);
   try {
     //let cemeteryId = ObjectId(req.params.id);
-    //const foundGraves = await Grave.find();
-    const foundGraves = await Grave.aggregate([
+    const foundGraves = await Grave.find({ cemetery: cemeteryId });
+    /*  const foundGraves = await Grave.aggregate([
       { $match: { cemetery: cemeteryId } },
       {
         $lookup: {
@@ -137,8 +181,8 @@ const getGravesForCemetery = async (req, res, next) => {
           number: 1, // Sačuvajte ime groba
           row: 1, // Sačuvajte ime groba
           field: 1, // Sačuvajte ime groba
-          capacity: 1, // Sačuvajte ime groba
-          contractTo: 1, // Sačuvajte ime groba
+          //   capacity: 1, // Sačuvajte ime groba
+          //   contractTo: 1, // Sačuvajte ime groba
           LAT: 1, // Sačuvajte ime groba
           LON: 1, // Sačuvajte ime groba
           numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
@@ -147,7 +191,7 @@ const getGravesForCemetery = async (req, res, next) => {
           cemetery: 1,
         },
       },
-    ]);
+    ]); */
     res.json(foundGraves);
   } catch (error) {
     console.log(error);
@@ -249,4 +293,5 @@ export {
   deleteSingleGrave,
   getGravesForCemetery,
   updateGrave,
+  saveGravesFromExcel,
 };
