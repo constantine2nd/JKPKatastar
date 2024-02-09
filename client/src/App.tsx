@@ -8,7 +8,7 @@ import AddDeceasedScreen from "./screens/AddDeceasedScreen";
 import AddPayerScreen from "./screens/AddPayerScreen";
 import SingleGraveScreen from "./screens/SingleGraveScreen";
 import GravesTableScreen from "./screens/GravesTableScreen";
-import AddUserScreen from "./screens/AddUserScreen";
+import AddUserScreenMUI from "./screens/AddUserScreenMUI";
 import LoginScreen from "./screens/LoginScreen";
 import UsersTableScreen from "./screens/UsersTableScreen";
 import UsersTableScreenCrudWithProviders from "./screens/UsersTableScreenCrud";
@@ -33,11 +33,12 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import EmailVerificationScreen from "./screens/EmailVerificationScreen";
 import ResetPasswordInitiation from "./screens/ResetPasswordInitiationScreen";
 import ResetPassword from "./screens/ResetPasswordScreen";
+import ExcelToJsonConverterScreen from "./screens/ConvertExcelScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
-import ExcelToJsonConverterScreen from "./screens/ConvertExcelScreen";
+
 
 function App() {
   // Get the last user selection if any otherwise use light theme
@@ -69,31 +70,6 @@ function App() {
   );
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/landing" element={<LandingScreen />} />
-            <Route path="/single-grave" element={<SingleGraveScreen />} />
-            <Route path="/login-user" element={<LoginScreen />} />
-            <Route path="/graves-table" element={<GravesTableScreen />} />
-            <Route
-              path="/graves-table-crud"
-              element={<GravesTableScreenCrudWithProviders />}
-            />
-            <Route path="/deceased-table" element={<DeceasedTableScreen />} />
-            <Route
-              path="/grave-requests-stepper"
-              element={<GraveRequestStepperScreen />}
-            />
-            <Route
-              path="/excel-to-json"
-              element={<ExcelToJsonConverterScreen />}
-            />
-            <Route path="/test" element={<TestScreen />} />
-            <Route path="/test2" element={<Test2Screen />} />
-            <Route path="/test3" element={<Test3Screen />} />
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -118,6 +94,10 @@ function App() {
                   path="/grave-requests-stepper"
                   element={<GraveRequestStepperScreen />}
                 />
+                <Route
+              path="/excel-to-json"
+              element={<ExcelToJsonConverterScreen />}
+            />
                 <Route path="/verify-email" element={<EmailVerificationScreen />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/reset-password-initiation" element={<ResetPasswordInitiation />} />
@@ -126,46 +106,47 @@ function App() {
                 <Route path="/test3" element={<Test3Screen />} />
                 <Route path="/add-user" element={<AddUserScreenMUI />} />
 
-            {/* Routes which require a logged in user START OF SECTION */}
-            <Route
-              element={
-                <ProtectedRoute
-                  isAuthenticated={false}
-                  redirectPath={"/login-user"}
-                />
-              }
-            >
-              <Route path="/add-grave" element={<AddGraveScreen />} />
-              <Route path="/users-table" element={<UsersTableScreen />} />
-              <Route
-                path="/users-table-crud"
-                element={<UsersTableScreenCrudWithProviders />}
-              />
-              <Route
-                path="/grave-types-table"
-                element={<GraveTypesTableScreen />}
-              />
-              <Route
-                path="/grave-types-crud"
-                element={<GraveTypesTableScreenCrud />}
-              />
-              <Route
-                path="/cemeteries-table-crud"
-                element={<CemeteriesTableScreenCrud />}
-              />
+                {/* Routes which require a logged in user START OF SECTION */}
+                <Route
+                  element={
+                    <ProtectedRoute
+                      isAuthenticated={false}
+                      redirectPath={"/login-user"}
+                    />
+                  }
+                >
+                  <Route path="/add-grave" element={<AddGraveScreen />} />
+                  <Route path="/users-table" element={<UsersTableScreen />} />
+                  <Route
+                    path="/users-table-crud"
+                    element={<UsersTableScreenCrudWithProviders />}
+                  />
+                  <Route
+                    path="/grave-types-table"
+                    element={<GraveTypesTableScreen />}
+                  />
+                  <Route
+                    path="/grave-types-crud"
+                    element={<GraveTypesTableScreenCrud />}
+                  />
+                  <Route
+                    path="/cemeteries-table-crud"
+                    element={<CemeteriesTableScreenCrud />}
+                  />
 
-              <Route
-                path="/grave-requests-crud"
-                element={<GraveRequestTableScreenCrud />}
-              />
-              <Route path="/add-deceased" element={<AddDeceasedScreen />} />
-              <Route path="/add-payer" element={<AddPayerScreen />} />
-              <Route path="/add-user" element={<AddUserScreen />} />
-            </Route>
-            {/* Routes which require a logged in user END OF SECTION*/}
-          </Routes>
-        </main>
-      </LocalizationProvider>
+                  <Route
+                    path="/grave-requests-crud"
+                    element={<GraveRequestTableScreenCrud />}
+                  />
+                  <Route path="/add-deceased" element={<AddDeceasedScreen />} />
+                  <Route path="/add-payer" element={<AddPayerScreen />} />
+                </Route>
+                {/* Routes which require a logged in user END OF SECTION*/}
+              </Routes>
+            </main>
+          </LocalizationProvider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
     </>
   );
 }
