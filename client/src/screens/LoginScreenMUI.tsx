@@ -19,10 +19,40 @@ import { useTranslation } from "react-i18next";
 import { Alert, Collapse } from "@mui/material";
 import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { Copyright } from "../components/Copyright";
+import { object, string, number, date, InferType } from "yup";
+import { useFormik } from "formik";
+
 
 export default function SignIn() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch<any>();
+
+  interface IFormValues {
+    email: string;
+    password: string;
+  }
+  
+  const initialValues: IFormValues = {
+    email: "",
+    password: "",
+  };
+
+  const validationSchema = object({
+    password: string().required(t("The field is Required")),
+    email: string().email().required(t("The field is Required")),
+  });
+
+  const onSubmit = (values: IFormValues) => {
+    console.log(values);
+    dispatch(loginUser(values));
+  };
+
+  const formik = useFormik<IFormValues>({
+    validationSchema,
+    initialValues,
+    onSubmit,
+  
+  });
 
   let navigate = useNavigate();
   const userStatus = useSelector(getUserStatus);
@@ -33,16 +63,6 @@ export default function SignIn() {
       navigate("/landing");
     }
   }, [navigate, userStatus]);
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    dispatch(
-      loginUser({
-        email: data.get("email"),
-        password: data.get("password"),
-      })
-    );
-  };
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -68,6 +88,8 @@ export default function SignIn() {
           in={triggerOnErrors(error, [
             "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
             "SERVER_ERR_USER_IS_NOT_VERIFIED",
+            "SERVER_ERR_PASSWORD_IS_MANDATORY",
+            "SERVER_ERR_USERNAME_IS_MANDATORY",
           ])}
         >
           <Alert severity="error">
@@ -75,38 +97,42 @@ export default function SignIn() {
               showOnErrors(error, [
                 "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
                 "SERVER_ERR_USER_IS_NOT_VERIFIED",
+                "SERVER_ERR_PASSWORD_IS_MANDATORY",
+                "SERVER_ERR_USERNAME_IS_MANDATORY",
               ])
             )}
           </Alert>
         </Collapse>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
-            error={triggerOnErrors(error, ["SERVER_ERR_USERNAME_IS_MANDATORY"])}
-            helperText={t(
-              showOnErrors(error, ["SERVER_ERR_USERNAME_IS_MANDATORY"])
-            )}
             id="email"
             label={t("email")}
             name="email"
             autoComplete="email"
             autoFocus
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            error={triggerOnErrors(error, ["SERVER_ERR_PASSWORD_IS_MANDATORY"])}
-            helperText={t(
-              showOnErrors(error, ["SERVER_ERR_PASSWORD_IS_MANDATORY"])
-            )}
             name="password"
             label={t("password")}
             type="password"
             id="password"
             autoComplete="current-password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
