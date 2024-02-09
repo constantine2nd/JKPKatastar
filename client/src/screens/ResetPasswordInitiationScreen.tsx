@@ -18,9 +18,34 @@ import { useTranslation } from "react-i18next";
 import { Alert, Collapse } from "@mui/material";
 import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { Copyright } from "../components/Copyright";
+import { object, string } from "yup";
+import { useFormik } from "formik";
 
 export default function ResetPasswordInitiation() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+
+  interface IFormValues {
+    password: string;
+  }
+
+  const initialValues: IFormValues = {
+    password: "",
+  };
+
+  const validationSchema = object({
+    password: string().required(t("The field is Required")),
+  });
+
+  const onSubmit = (values: IFormValues) => {
+    dispatch(resetPasswordInitiation(values));
+  };
+
+  const formik = useFormik<IFormValues>({
+    validationSchema,
+    initialValues,
+    onSubmit,
+  });
+
   const dispatch = useDispatch<any>();
 
   let navigate = useNavigate();
@@ -28,15 +53,6 @@ export default function ResetPasswordInitiation() {
   const error = useSelector(getUserError);
 
   useEffect(() => {}, [navigate, userStatus]);
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    dispatch(
-      resetPasswordInitiation({
-        email: data.get("email"),
-      })
-    );
-  };
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -67,18 +83,26 @@ export default function ResetPasswordInitiation() {
             "Reset password initiated. Please check you email."
           </Alert>
         </Collapse>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
-            error={triggerOnErrors(error, [])}
-            helperText={t(showOnErrors(error, []))}
-            id="email"
-            label={t("email")}
-            name="email"
-            autoComplete="email"
+            id="password"
+            label={t("password")}
+            name="password"
+            autoComplete="password"
             autoFocus
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <Button
             type="submit"
