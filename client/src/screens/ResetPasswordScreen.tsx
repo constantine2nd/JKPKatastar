@@ -19,30 +19,48 @@ import { Alert, Collapse } from "@mui/material";
 import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { useSearchParams } from "react-router-dom";
 import { Copyright } from "../components/Copyright";
+import { object, string } from "yup";
+import { useFormik } from "formik";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("token");
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch<any>();
+
+  interface IFormValues {
+    'repeated-password': string;
+    password: string;
+  }
+  
+  const initialValues: IFormValues = {
+    'repeated-password': "",
+    password: "",
+  };
+
+  const validationSchema = object({
+    password: string().required(t("The field is Required")),
+    'repeated-password': string().required(t("The field is Required")),
+  });
+
+  const onSubmit = (values: IFormValues) => {
+    console.log(values);
+    dispatch(resetPassword({token: query, ...values}));
+  };
+
+  const formik = useFormik<IFormValues>({
+    validationSchema,
+    initialValues,
+    onSubmit,
+  });
 
   let navigate = useNavigate();
   const userStatus = useSelector(getUserStatus);
   const error = useSelector(getUserError);
 
   useEffect(() => {}, [navigate, userStatus]);
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    dispatch(
-      resetPassword({
-        token: query,
-        password: data.get("password"),
-        repeatedPassword: data.get("repeated-password"),
-      })
-    );
-  };
+
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -81,30 +99,36 @@ export default function ResetPassword() {
             "Reset password initiated. Please check you email."
           </Alert>
         </Collapse>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
-            error={triggerOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"])}
-            helperText={t(showOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"]))}
             fullWidth
             name="password"
             label={t("password")}
             type="password"
             id="password"
             autoComplete="current-password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <TextField
             margin="normal"
             required
-            error={triggerOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"])}
-            helperText={t(showOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"]))}
             fullWidth
             name="repeated-password"
             label={t("repeat-password")}
             type="password"
             id="repeated-password"
             autoComplete="current-password"
+            value={formik.values['repeated-password']}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched['repeated-password'] && Boolean(formik.errors['repeated-password'])}
+            helperText={formik.touched['repeated-password'] && formik.errors['repeated-password']}
           />
           <Button
             type="submit"
