@@ -22,6 +22,12 @@ import { Copyright } from "../components/Copyright";
 import { object, string, number, date, InferType } from "yup";
 import { useFormik } from "formik";
 
+const watchServerErrors: string[] = [
+  "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+  "SERVER_ERR_USER_IS_NOT_VERIFIED",
+  "SERVER_ERR_PASSWORD_IS_MANDATORY",
+  "SERVER_ERR_USERNAME_IS_MANDATORY",
+];
 
 export default function SignIn() {
   const { t, i18n } = useTranslation();
@@ -31,7 +37,7 @@ export default function SignIn() {
     email: string;
     password: string;
   }
-  
+
   const initialValues: IFormValues = {
     email: "",
     password: "",
@@ -51,7 +57,6 @@ export default function SignIn() {
     validationSchema,
     initialValues,
     onSubmit,
-  
   });
 
   let navigate = useNavigate();
@@ -84,26 +89,17 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           {t("Sign in")}
         </Typography>
-        <Collapse
-          in={triggerOnErrors(error, [
-            "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
-            "SERVER_ERR_USER_IS_NOT_VERIFIED",
-            "SERVER_ERR_PASSWORD_IS_MANDATORY",
-            "SERVER_ERR_USERNAME_IS_MANDATORY",
-          ])}
-        >
+        <Collapse in={triggerOnErrors(error, watchServerErrors)}>
           <Alert severity="error">
-            {t(
-              showOnErrors(error, [
-                "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
-                "SERVER_ERR_USER_IS_NOT_VERIFIED",
-                "SERVER_ERR_PASSWORD_IS_MANDATORY",
-                "SERVER_ERR_USERNAME_IS_MANDATORY",
-              ])
-            )}
+            {t(showOnErrors(error, watchServerErrors))}
           </Alert>
         </Collapse>
-        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required

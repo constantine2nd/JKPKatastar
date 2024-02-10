@@ -22,6 +22,11 @@ import { Copyright } from "../components/Copyright";
 import { object, string } from "yup";
 import { useFormik } from "formik";
 
+const watchServerErrors: string[] = [
+  "SERVER_ERR_CANNOT_RESET_PASSWORD",
+  "SERVER_ERR_CONFIRM_PASSWORD",
+];
+
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("token");
@@ -30,23 +35,23 @@ export default function ResetPassword() {
   const dispatch = useDispatch<any>();
 
   interface IFormValues {
-    'repeated-password': string;
+    "repeated-password": string;
     password: string;
   }
-  
+
   const initialValues: IFormValues = {
-    'repeated-password': "",
+    "repeated-password": "",
     password: "",
   };
 
   const validationSchema = object({
     password: string().required(t("The field is Required")),
-    'repeated-password': string().required(t("The field is Required")),
+    "repeated-password": string().required(t("The field is Required")),
   });
 
   const onSubmit = (values: IFormValues) => {
     console.log(values);
-    dispatch(resetPassword({token: query, ...values}));
+    dispatch(resetPassword({ token: query, ...values }));
   };
 
   const formik = useFormik<IFormValues>({
@@ -60,7 +65,6 @@ export default function ResetPassword() {
   const error = useSelector(getUserError);
 
   useEffect(() => {}, [navigate, userStatus]);
-
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -79,19 +83,9 @@ export default function ResetPassword() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Collapse
-          in={triggerOnErrors(error, [
-            "SERVER_ERR_CANNOT_RESET_PASSWORD",
-            "SERVER_ERR_CONFIRM_PASSWORD",
-          ])}
-        >
+        <Collapse in={triggerOnErrors(error, watchServerErrors)}>
           <Alert severity="error">
-            {t(
-              showOnErrors(error, [
-                "SERVER_ERR_CANNOT_RESET_PASSWORD",
-                "SERVER_ERR_CONFIRM_PASSWORD",
-              ])
-            )}
+            {t(showOnErrors(error, watchServerErrors))}
           </Alert>
         </Collapse>
         <Collapse in={userStatus === "succeeded" ? true : false}>
@@ -99,7 +93,12 @@ export default function ResetPassword() {
             "Reset password initiated. Please check you email."
           </Alert>
         </Collapse>
-        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required
@@ -124,11 +123,17 @@ export default function ResetPassword() {
             type="password"
             id="repeated-password"
             autoComplete="current-password"
-            value={formik.values['repeated-password']}
+            value={formik.values["repeated-password"]}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched['repeated-password'] && Boolean(formik.errors['repeated-password'])}
-            helperText={formik.touched['repeated-password'] && formik.errors['repeated-password']}
+            error={
+              formik.touched["repeated-password"] &&
+              Boolean(formik.errors["repeated-password"])
+            }
+            helperText={
+              formik.touched["repeated-password"] &&
+              formik.errors["repeated-password"]
+            }
           />
           <Button
             type="submit"
