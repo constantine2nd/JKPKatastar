@@ -44,7 +44,7 @@ const registerUser = async (req, res, next) => {
       });
     } else {
       res.status(400).send({
-        message: "Cannot add the user",
+        message: "SERVER_ERR_CANNOT_ADD_USER",
       });
     }
   } catch (err) {

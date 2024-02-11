@@ -16,12 +16,54 @@ import {
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
-import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { Copyright } from "../components/Copyright";
+import { useFormik } from "formik";
+import { object, string } from "yup";
+import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
+import { Alert, Collapse } from "@mui/material";
+
+
+const watchServerErrors: string[] = [
+  "SERVER_ERR_USER_ALREADY_EXISTS",
+  "SERVER_ERR_CONFIRM_PASSWORD",
+  "SERVER_ERR_CANNOT_ADD_USER",
+];
 
 export default function SignUp() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch<any>();
+
+  interface IFormValues {
+    name: string;
+    email: string;
+    password: string;
+    "repeated-password": string;
+  }
+
+  const initialValues: IFormValues = {
+    name: "",
+    email: "",
+    "repeated-password": "",
+    password: "",
+  };
+
+  const validationSchema = object({
+    name: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    "repeated-password": string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+  });
+
+  const onSubmit = (values: IFormValues) => {
+    console.log(values);
+    dispatch(addUserVisitor(values));
+  };
+
+  const formik = useFormik<IFormValues>({
+    validationSchema,
+    initialValues,
+    onSubmit,
+  });
 
   let navigate = useNavigate();
   const userStatus = useSelector(getUserStatus);
@@ -32,18 +74,6 @@ export default function SignUp() {
       navigate("/landing");
     }
   }, [navigate, userStatus, error]);
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    dispatch(
-      addUserVisitor({
-        name: data.get("name"),
-        email: data.get("email"),
-        password: data.get("password"),
-        repeatedPassword: data.get("repeated-password"),
-      })
-    );
-  };
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -65,7 +95,12 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           {t("Sign up")}
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Collapse in={triggerOnErrors(error, watchServerErrors)}>
+          <Alert severity="error">
+            {t(showOnErrors(error, watchServerErrors))}
+          </Alert>
+        </Collapse>
+        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -75,43 +110,61 @@ export default function SignUp() {
             name="name"
             autoComplete="name"
             autoFocus
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
           />
           <TextField
             margin="normal"
             required
-            error={triggerOnErrors(error, ["SERVER_ERR_USER_ALREADY_EXISTS"])}
-            helperText={t(
-              showOnErrors(error, ["SERVER_ERR_USER_ALREADY_EXISTS"])
-            )}
             fullWidth
             id="email"
             label={t("email")}
             name="email"
             autoComplete="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             margin="normal"
             required
-            error={triggerOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"])}
-            helperText={t(showOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"]))}
             fullWidth
             name="password"
             label={t("password")}
             type="password"
             id="password"
             autoComplete="current-password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <TextField
             margin="normal"
             required
-            error={triggerOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"])}
-            helperText={t(showOnErrors(error, ["SERVER_ERR_CONFIRM_PASSWORD"]))}
             fullWidth
             name="repeated-password"
             label={t("repeat-password")}
             type="password"
             id="repeated-password"
             autoComplete="current-password"
+            value={formik.values["repeated-password"]}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched["repeated-password"] &&
+              Boolean(formik.errors["repeated-password"])
+            }
+            helperText={
+              formik.touched["repeated-password"] &&
+              formik.errors["repeated-password"]
+            }
           />
           <Button
             type="submit"
