@@ -27,15 +27,15 @@ export default function ResetPasswordInitiation() {
   const { t } = useTranslation();
 
   interface IFormValues {
-    password: string;
+    email: string;
   }
 
   const initialValues: IFormValues = {
-    password: "",
+    email: "",
   };
 
   const validationSchema = object({
-    password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    email: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
   });
 
   const onSubmit = (values: IFormValues) => {
@@ -93,16 +93,16 @@ export default function ResetPasswordInitiation() {
             margin="normal"
             required
             fullWidth
-            id="password"
-            label={t("password")}
-            name="password"
-            autoComplete="password"
+            id="email"
+            label={t("email")}
+            name="email"
+            autoComplete="email"
             autoFocus
-            value={formik.values.password}
+            value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <Button
             type="submit"
