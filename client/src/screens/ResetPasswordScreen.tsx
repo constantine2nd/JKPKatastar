@@ -45,8 +45,8 @@ export default function ResetPassword() {
   };
 
   const validationSchema = object({
-    password: string().required(t("The field is Required")),
-    "repeated-password": string().required(t("The field is Required")),
+    password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    "repeated-password": string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
   });
 
   const onSubmit = (values: IFormValues) => {

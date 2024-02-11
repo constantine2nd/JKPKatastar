@@ -52,7 +52,7 @@
   "Create New Cemetery": "Új temető létrehozása",
   "Edit Cemetery": "Temető szerkesztése",
   "Zoom": "Zoomolás",
-  "The field is Required": "A mező kitöltése kötelező",
+  "CLIENT_ERR_THE_FIELD_IS_REQUIRED": "A mező kitöltése kötelező",
   "Name is Required": "Név kötelező",
   "Surname is Required": "Vezetéknév kötelező",
   "Email is Required": "E-mail kötelező",
