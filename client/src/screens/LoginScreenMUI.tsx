@@ -16,11 +16,10 @@ import { getUserError, getUserStatus, loginUser } from "../features/userSlice";
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
-import { Alert, Collapse } from "@mui/material";
-import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { Copyright } from "../components/Copyright";
 import { object, string, number, date, InferType } from "yup";
 import { useFormik } from "formik";
+import { ServerErrorComponent } from "../components/ServerErrorComponent";
 
 const watchServerErrors: string[] = [
   "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
@@ -89,11 +88,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           {t("Sign in")}
         </Typography>
-        <Collapse in={triggerOnErrors(error, watchServerErrors)}>
-          <Alert severity="error">
-            {t(showOnErrors(error, watchServerErrors))}
-          </Alert>
-        </Collapse>
+        <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Box
           component="form"
           onSubmit={formik.handleSubmit}

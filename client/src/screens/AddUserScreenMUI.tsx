@@ -19,9 +19,7 @@ import { useTranslation } from "react-i18next";
 import { Copyright } from "../components/Copyright";
 import { useFormik } from "formik";
 import { object, string } from "yup";
-import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
-import { Alert, Collapse } from "@mui/material";
-
+import { ServerErrorComponent } from "../components/ServerErrorComponent";
 
 const watchServerErrors: string[] = [
   "SERVER_ERR_USER_ALREADY_EXISTS",
@@ -51,7 +49,9 @@ export default function SignUp() {
     name: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
     email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
     password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    "repeated-password": string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    "repeated-password": string().required(
+      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+    ),
   });
 
   const onSubmit = (values: IFormValues) => {
@@ -95,12 +95,13 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           {t("Sign up")}
         </Typography>
-        <Collapse in={triggerOnErrors(error, watchServerErrors)}>
-          <Alert severity="error">
-            {t(showOnErrors(error, watchServerErrors))}
-          </Alert>
-        </Collapse>
-        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 1 }}>
+        <ServerErrorComponent {...{ error, watchServerErrors }} />
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required

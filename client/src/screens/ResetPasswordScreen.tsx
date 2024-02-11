@@ -16,11 +16,11 @@ import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
 import { Alert, Collapse } from "@mui/material";
-import { showOnErrors, triggerOnErrors } from "../components/CommonFuntions";
 import { useSearchParams } from "react-router-dom";
 import { Copyright } from "../components/Copyright";
 import { object, string } from "yup";
 import { useFormik } from "formik";
+import { ServerErrorComponent } from "../components/ServerErrorComponent";
 
 const watchServerErrors: string[] = [
   "SERVER_ERR_CANNOT_RESET_PASSWORD",
@@ -46,7 +46,9 @@ export default function ResetPassword() {
 
   const validationSchema = object({
     password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    "repeated-password": string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    "repeated-password": string().required(
+      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+    ),
   });
 
   const onSubmit = (values: IFormValues) => {
@@ -83,11 +85,7 @@ export default function ResetPassword() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Collapse in={triggerOnErrors(error, watchServerErrors)}>
-          <Alert severity="error">
-            {t(showOnErrors(error, watchServerErrors))}
-          </Alert>
-        </Collapse>
+        <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Collapse in={userStatus === "succeeded" ? true : false}>
           <Alert severity="info">
             "Reset password initiated. Please check you email."
