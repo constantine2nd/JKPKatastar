@@ -12,7 +12,7 @@ export function ServerErrorComponent({ error, watchServerErrors }: Props) {
   return (
     <Collapse in={triggerOnErrors(error, watchServerErrors)}>
       <Alert severity="error">
-        {t(showOnErrors(error, watchServerErrors))}
+        {t(`server.${showOnErrors(error, watchServerErrors)}`)}
       </Alert>
     </Collapse>
   );
