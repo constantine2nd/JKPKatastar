@@ -31,16 +31,30 @@ import Login from "@mui/icons-material/Login";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 
 const pages = [
-  { item: "Zahtev za grobno mesto", link: "grave-requests-crud" },
-  { item: "Pregled pokojnika", link: "deceased-table" },
+  { item: "Pregled pokojnika", link: "deceased-table", roles: [] },
   // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
-  { item: "Pregled GM CRUD", link: "graves-table-crud" },
-];
-const adminPages = [
-  { item: "Cemeteries managment", link: "cemeteries-table-crud" },
-  { item: "User management", link: "users-table-crud" },
+  { item: "Pregled GM CRUD", link: "graves-table-crud", roles: [] },
+  {
+    item: "Zahtev za grobno mesto",
+    link: "grave-requests-crud",
+    roles: ["VISITOR", "OFFICER", "ADMINISTRATOR"],
+  },
+  {
+    item: "Cemeteries managment",
+    link: "cemeteries-table-crud",
+    roles: ["OFFICER", "ADMINISTRATOR"],
+  },
+  {
+    item: "User management",
+    link: "users-table-crud",
+    roles: ["ADMINISTRATOR"],
+  },
   // { item: "Grave Types MGM", link: "grave-types-table" },
-  { item: "Grave Types MGM CRUD", link: "grave-types-crud" },
+  {
+    item: "Grave Types MGM CRUD",
+    link: "grave-types-crud",
+    roles: ["OFFICER", "ADMINISTRATOR"],
+  },
 ];
 
 const Header = () => {
@@ -152,18 +166,13 @@ const Header = () => {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page.item} href={page.link} component={Link}>
-                    <Typography textAlign="center">{page.item}</Typography>
-                  </MenuItem>
-                ))}
-                {user &&
-                  user.role === "ADMINISTRATOR" &&
-                  adminPages.map((page) => (
-                    <MenuItem key={page.item} href={page.link} component={Link}>
-                      <Typography textAlign="center">{page.item}</Typography>
-                    </MenuItem>
-                  ))}
+                {pages
+                  .filter(
+                    (page) =>
+                      page.roles?.length === 0 ||
+                      page.roles?.find((role) => user?.role === role)
+                  )
+                  .map((page) => navBarMenuItem(page))}
               </Menu>
             </Box>
 
@@ -187,28 +196,13 @@ const Header = () => {
               KATASTAR
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page.item}
-                  href={page.link}
-                  component={Link}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  {page.item}
-                </Button>
-              ))}
-              {user &&
-                user.role === "ADMINISTRATOR" &&
-                adminPages.map((page) => (
-                  <Button
-                    key={page.item}
-                    href={page.link}
-                    component={Link}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    {page.item}
-                  </Button>
-                ))}
+              {pages
+                .filter(
+                  (page) =>
+                    page.roles?.length === 0 ||
+                    page.roles?.find((role) => user?.role === role)
+                )
+                .map((page) => navBarButton(page))}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
@@ -291,6 +285,27 @@ const Header = () => {
       </AppBar>
     </header>
   );
+
+  function navBarButton(page: { item: string; link: string }) {
+    return (
+      <Button
+        key={page.item}
+        href={page.link}
+        component={Link}
+        sx={{ my: 2, color: "white", display: "block" }}
+      >
+        {page.item}
+      </Button>
+    );
+  }
+
+  function navBarMenuItem(page: { item: string; link: string }) {
+    return (
+      <MenuItem key={page.item} href={page.link} component={Link}>
+        <Typography textAlign="center">{page.item}</Typography>
+      </MenuItem>
+    );
+  }
 };
 
 export default Header;
