@@ -1,4 +1,5 @@
 import Deceased from "../models/deceasedModel.js";
+import mongoose from "mongoose";
 
 const saveDeceased = async (req, res, next) => {
   const sentDeacesed = req.body;
@@ -187,6 +188,111 @@ const getDeceasedForGrave = async (req, res, next) => {
   }
 };
 
+const getDeceasedSearch = async (req, res, next) => {
+  console.log(req.query);
+  const { cemeteryId, name, surname, birthYear, deathYearFrom, deathYearTo } =
+    req.query;
+  const filterArray = [];
+
+  if (name) {
+    filterArray.push({ name: { $regex: name, $options: "i" } });
+  }
+  if (surname) {
+    filterArray.push({ surname: { $regex: surname, $options: "i" } });
+  }
+
+  if (birthYear) {
+    let startDateBirth = new Date(Number(birthYear), 0, 1);
+    let endDateBirth = new Date(Number(birthYear) + 1, 0, 1);
+    filterArray.push({
+      dateBirth: {
+        $gte: startDateBirth, // Veće ili jednako početnom datumu
+        $lt: endDateBirth, // Manje od kraja godine
+      },
+    });
+  }
+
+  if (deathYearFrom) {
+    let startDateDeath = new Date(Number(deathYearFrom), 0, 1);
+    filterArray.push({
+      dateDeath: {
+        $gte: startDateDeath, // Veće ili jednako početnom datumu
+      },
+    });
+  }
+  if (deathYearTo) {
+    let endDateDeath = new Date(Number(deathYearTo) + 1, 0, 1);
+    filterArray.push({
+      dateDeath: {
+        $lt: endDateDeath, // Veće ili jednako početnom datumu
+      },
+    });
+  }
+  console.log(filterArray);
+
+  const aggregateArray = [];
+
+  if (filterArray.length !== 0) {
+    aggregateArray.push({
+      $match: {
+        $and: filterArray,
+      },
+    });
+  }
+  aggregateArray.push({
+    $lookup: {
+      from: "graves", // Naziv kolekcije iz koje pridružujemo podatke
+      localField: "grave", // Lokalno polje u Deceased kolekciji
+      foreignField: "_id", // Polje u Grave kolekciji
+      as: "graveInfo", // Naziv polja u rezultatima koji sadrže informacije o grobu
+    },
+  });
+  aggregateArray.push({
+    $lookup: {
+      from: "cemeteries", // Naziv kolekcije iz koje pridružujemo podatke
+      localField: "graveInfo.cemetery", // Lokalno polje u rezultatima prethodne faze
+      foreignField: "_id", // Polje u Cemetery kolekciji
+      as: "cemeteryInfo", // Naziv polja u rezultatima koji sadrže informacije o groblju
+    },
+  });
+
+  const filterForCemetery = {};
+  if (cemeteryId) {
+    filterForCemetery["graveInfo.cemetery"] = new mongoose.Types.ObjectId(
+      cemeteryId
+    );
+  }
+
+  console.log(filterForCemetery);
+
+  aggregateArray.push({
+    $match: filterForCemetery, // Filtriranje po row-u groba
+  });
+
+  try {
+    const deceased = await Deceased.aggregate(aggregateArray);
+    console.log("NUMBER OF DECEASED: ", deceased.length);
+    if (deceased) {
+      let deceasedToSend = deceased.map((item) => {
+        return {
+          _id: item._id,
+          name: item.name,
+          surname: item.surname,
+          dateBirth: item.dateBirth,
+          dateDeath: item.dateDeath,
+          cemetery: item.cemeteryInfo[0].name,
+        };
+      });
+      res.send(deceasedToSend);
+    } else {
+      res.status(401);
+      throw new Error("Invalid email or password");
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export {
   saveDeceased,
   getDeceased,
@@ -194,4 +300,5 @@ export {
   deleteSingleDeceased,
   updateDeceased,
   getDeceasedForGrave,
+  getDeceasedSearch,
 };

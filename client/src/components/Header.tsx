@@ -32,6 +32,7 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 
 const pages = [
   { item: "Pregled pokojnika", link: "deceased-table", roles: [] },
+  { item: "Pretraga pokojnika", link: "search-deceased", roles: [] },
   // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
   { item: "Pregled GM CRUD", link: "graves-table-crud", roles: [] },
   {

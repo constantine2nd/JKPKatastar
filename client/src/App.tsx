@@ -34,11 +34,11 @@ import EmailVerificationScreen from "./screens/EmailVerificationScreen";
 import ResetPasswordInitiation from "./screens/ResetPasswordInitiationScreen";
 import ResetPassword from "./screens/ResetPasswordScreen";
 import ExcelToJsonConverterScreen from "./screens/ConvertExcelScreen";
+import DeceasedSearchScreen from "./screens/DeceasedSearchScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
 });
-
 
 function App() {
   // Get the last user selection if any otherwise use light theme
@@ -83,6 +83,10 @@ function App() {
                 <Route path="/login-user" element={<LoginScreenMUI />} />
                 <Route path="/graves-table" element={<GravesTableScreen />} />
                 <Route
+                  path="/search-deceased"
+                  element={<DeceasedSearchScreen />}
+                />
+                <Route
                   path="/graves-table-crud"
                   element={<GravesTableScreenCrudWithProviders />}
                 />
@@ -95,12 +99,18 @@ function App() {
                   element={<GraveRequestStepperScreen />}
                 />
                 <Route
-              path="/excel-to-json"
-              element={<ExcelToJsonConverterScreen />}
-            />
-                <Route path="/verify-email" element={<EmailVerificationScreen />} />
+                  path="/excel-to-json"
+                  element={<ExcelToJsonConverterScreen />}
+                />
+                <Route
+                  path="/verify-email"
+                  element={<EmailVerificationScreen />}
+                />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/reset-password-initiation" element={<ResetPasswordInitiation />} />
+                <Route
+                  path="/reset-password-initiation"
+                  element={<ResetPasswordInitiation />}
+                />
                 <Route path="/test" element={<TestScreen />} />
                 <Route path="/test2" element={<Test2Screen />} />
                 <Route path="/test3" element={<Test3Screen />} />

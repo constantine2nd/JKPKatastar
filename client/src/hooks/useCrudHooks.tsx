@@ -4,17 +4,19 @@ import _ from "lodash";
 import { composeErrorMessageIntoPromise } from "../components/CommonFuntions";
 
 axios.interceptors.request.use(
-  config => {
+  (config) => {
     let userInfoFromStorage = null;
     if (sessionStorage.getItem("userInfo") !== null) {
-      userInfoFromStorage = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
+      userInfoFromStorage = JSON.parse(
+        sessionStorage.getItem("userInfo") || "{}"
+      );
     }
-    config.headers['Authorization'] = `Bearer ${userInfoFromStorage?.token}`;
-        return config;
-    },
-    error => {
-        return Promise.reject(error);
-    }
+    config.headers["Authorization"] = `Bearer ${userInfoFromStorage?.token}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 // CREATE hook (post a new row to api)
