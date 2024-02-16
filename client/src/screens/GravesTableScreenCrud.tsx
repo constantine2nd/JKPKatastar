@@ -348,9 +348,9 @@ const validateRequired = (value: string) => {
 function validateCrudTable(tableRow: CrudTableType) {
   return {
     number: !validateRequired(tableRow.number)
-      ? t("The field is Required")
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
       : "",
-    field: !validateRequired(tableRow.field) ? t("The field is Required") : "",
-    row: !validateRequired(tableRow.row) ? t("The field is Required") : "",
+    field: !validateRequired(tableRow.field) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
+    row: !validateRequired(tableRow.row) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
   };
 }

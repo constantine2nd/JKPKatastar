@@ -2,54 +2,58 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { getUserError, getUserStatus, loginUser } from "../features/userSlice";
+import {
+  getUserError,
+  getUserStatus,
+  resetPassword,
+} from "../features/userSlice";
 import { useEffect } from "react";
 import Loader from "../components/Loader";
 import { useTranslation } from "react-i18next";
+import { Alert, Collapse } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
 import { Copyright } from "../components/Copyright";
-import { object, string, number, date, InferType } from "yup";
+import { object, string } from "yup";
 import { useFormik } from "formik";
 import { ServerErrorComponent } from "../components/ServerErrorComponent";
 
 const watchServerErrors: string[] = [
-  "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
-  "SERVER_ERR_USER_IS_NOT_VERIFIED",
-  "SERVER_ERR_PASSWORD_IS_MANDATORY",
-  "SERVER_ERR_USERNAME_IS_MANDATORY",
+  "SERVER_ERR_CANNOT_RESET_PASSWORD",
+  "SERVER_ERR_CONFIRM_PASSWORD",
 ];
 
-export default function SignIn() {
-  const { t, i18n } = useTranslation();
+export default function ResetPassword() {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("token");
+
+  const { t } = useTranslation();
   const dispatch = useDispatch<any>();
 
   interface IFormValues {
-    email: string;
+    "repeated-password": string;
     password: string;
   }
 
   const initialValues: IFormValues = {
-    email: "",
+    "repeated-password": "",
     password: "",
   };
 
   const validationSchema = object({
     password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    "repeated-password": string().required(
+      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+    ),
   });
 
   const onSubmit = (values: IFormValues) => {
     console.log(values);
-    dispatch(loginUser(values));
+    dispatch(resetPassword({ token: query, ...values }));
   };
 
   const formik = useFormik<IFormValues>({
@@ -62,11 +66,7 @@ export default function SignIn() {
   const userStatus = useSelector(getUserStatus);
   const error = useSelector(getUserError);
 
-  useEffect(() => {
-    if (userStatus === "succeeded") {
-      navigate("/landing");
-    }
-  }, [navigate, userStatus]);
+  useEffect(() => {}, [navigate, userStatus]);
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -85,31 +85,18 @@ export default function SignIn() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          {t("Sign in")}
-        </Typography>
         <ServerErrorComponent {...{ error, watchServerErrors }} />
+        <Collapse in={userStatus === "succeeded" ? true : false}>
+          <Alert severity="info">
+            "Reset password initiated. Please check you email."
+          </Alert>
+        </Collapse>
         <Box
           component="form"
           onSubmit={formik.handleSubmit}
           noValidate
           sx={{ mt: 1 }}
         >
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label={t("email")}
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
           <TextField
             margin="normal"
             required
@@ -125,9 +112,26 @@ export default function SignIn() {
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label={t("Remember me")}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="repeated-password"
+            label={t("repeat-password")}
+            type="password"
+            id="repeated-password"
+            autoComplete="current-password"
+            value={formik.values["repeated-password"]}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched["repeated-password"] &&
+              Boolean(formik.errors["repeated-password"])
+            }
+            helperText={
+              formik.touched["repeated-password"] &&
+              formik.errors["repeated-password"]
+            }
           />
           <Button
             type="submit"
@@ -135,20 +139,8 @@ export default function SignIn() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Sign in")}
+            {t("Submit")}
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/reset-password-initiation" variant="body2">
-                {t("Forgot password?")}
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/add-user" variant="body2">
-                {t("Don't have an account? Sign Up")}
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />

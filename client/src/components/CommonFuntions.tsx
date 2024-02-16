@@ -83,6 +83,28 @@ const capacityExt = (renderedValue: string) => {
   return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
 };
 
+function matchError(value: string, error: string) {
+  return error?.includes(value);
+}
+
+const triggerOnErrors = (error: string, triggerErrors: string[]) => {
+  const hasError = triggerErrors.find((te) => matchError(te, error));
+  if (hasError) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const showOnErrors = (error: string, triggerErrors: string[]) => {
+  const errorText = triggerErrors.find((te) => matchError(te, error));
+  if (errorText) {
+    return errorText;
+  } else {
+    return "";
+  }
+};
+
 function composeErrorMessageCommon(error: any) {
   console.log(error);
   let errorMessage = "";
@@ -119,4 +141,6 @@ export {
   capacityExt,
   composeErrorMessageIntoPromise,
   composeErrorMessage,
+  triggerOnErrors,
+  showOnErrors,
 };

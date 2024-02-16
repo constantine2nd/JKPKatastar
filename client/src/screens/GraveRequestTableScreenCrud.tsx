@@ -309,9 +309,9 @@ const validateRequired = (value: string) => !!value.length;
 
 function validateGraveType(row: CrudTableType) {
   return {
-    name: !validateRequired(row.name) ? t("The field is Required") : "",
-    surname: !validateRequired(row.surname) ? t("The field is Required") : "",
-    email: !validateRequired(row.email) ? t("The field is Required") : "",
-    phone: !validateRequired(row.phone) ? t("The field is Required") : "",
+    name: !validateRequired(row.name) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
+    surname: !validateRequired(row.surname) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
+    email: !validateRequired(row.email) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
+    phone: !validateRequired(row.phone) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
   };
 }

@@ -1,4 +1,5 @@
 {
+  "CLIENT_YOUR_WEBSITE": "Vaš internet portal",
   "Landing page screen": "Ekran odredišne ​​stranice",
   "Cemetery": "Groblje",
   "add grave": "Dodaj grobno mesto",
@@ -18,6 +19,15 @@
   "surname": "Prezime",
   "email": "Email",
   "password": "Lozinka",
+  "repeat-password": "Ponovite lozinku",
+  "server": {
+    "SERVER_ERR_USER_ALREADY_EXISTS": "Korisnik več postoji",
+    "SERVER_ERR_CONFIRM_PASSWORD": "Lozinka nije potvrđena",
+    "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD": "Pogrešna lozinka ili imejl",
+    "SERVER_ERR_USERNAME_IS_MANDATORY": "Korisničko ime je obavezno",
+    "SERVER_ERR_PASSWORD_IS_MANDATORY": "Lozinka je obavezna",
+    "SERVER_ERR_USER_IS_NOT_VERIFIED": "Korisnik nije verifikovan"
+  },
   "token": "Token",
   "dateBirth": "Datum rođenja",
   "dateDeath": "Datum smrti",
@@ -43,7 +53,7 @@
   "Create New Cemetery": "Kreiraj novo groblje",
   "Edit Cemetery": "Uredi groblje",
   "Zoom": "Zum",
-  "The field is Required": "Polje je obavezno",
+  "CLIENT_ERR_THE_FIELD_IS_REQUIRED": "Polje je obavezno",
   "Name is Required": "Ime je obavezno",
   "Email is Required": "Email je obavezan",
   "Phone is Required": "Broj telefona je obavezan",

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { User } from "../interfaces/UserInterfaces";
 import { RootState } from "../store";
+import { composeErrorMessage } from "../components/CommonFuntions";
 
 export const addUser = createAsyncThunk(
   "users/addUser",
@@ -18,14 +19,23 @@ export const addUser = createAsyncThunk(
 
 export const addUserVisitor = createAsyncThunk(
   "users/addUserVisitor",
-  async (dataToSend: any) => {
+  async (dataToSend: any, { rejectWithValue }) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(`/api/users/adduservisitor`, dataToSend, config);
-    return response.data;
+    try {
+      const response = await axios.post(
+        `/api/users/adduservisitor`,
+        dataToSend,
+        config
+      );
+      return response.data;
+    } catch (error: any) {
+      console.log(composeErrorMessage(error));
+      return rejectWithValue(composeErrorMessage(error));
+    }
   }
 );
 
@@ -43,11 +53,44 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post(`/api/users/login`, dataToSend, config);
       return response.data;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 500) {
-        return rejectWithValue(error.response?.data);
-      } else {
-        throw error;
-      }
+      console.log(composeErrorMessage(error));
+      return rejectWithValue(composeErrorMessage(error));
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "users/resetPassword",
+  async (dataToSend: any, { rejectWithValue }) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const response = await axios.put(`/api/users/reset-password`, dataToSend, config);
+      return response.data;
+    } catch (error) {
+      console.log(composeErrorMessage(error));
+      return rejectWithValue(composeErrorMessage(error));
+    }
+  }
+);
+
+export const resetPasswordInitiation = createAsyncThunk(
+  "users/resetPasswordInitiation",
+  async (dataToSend: any, { rejectWithValue }) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const response = await axios.post(`/api/users/reset-password-initiation`, dataToSend, config);
+      return response.data;
+    } catch (error) {
+      console.log(composeErrorMessage(error));
+      return rejectWithValue(composeErrorMessage(error));
     }
   }
 );
@@ -93,6 +136,42 @@ const singleUserSlice = createSlice({
         state.user = null;
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(addUserVisitor.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(addUserVisitor.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(addUserVisitor.rejected, (state, action) => {
+        state.user = null;
+        state.status = "failed";
+        state.error = action.payload || null;
+      })
+      .addCase(resetPasswordInitiation.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(resetPasswordInitiation.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(resetPasswordInitiation.rejected, (state, action) => {
+        state.user = null;
+        state.status = "failed";
+        state.error = action.payload || null;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.user = null;
+        state.status = "failed";
+        state.error = action.payload || null;
       })
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "../features/userSlice";
@@ -9,17 +8,82 @@ import { selectUser, logoutUser } from "../features/userSlice";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import { IconButton, useTheme } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Container,
+  IconButton,
+  Link,
+  ListItemIcon,
+  Toolbar,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { ColorModeContext } from "../App";
+import AdbIcon from "@mui/icons-material/Adb";
+import Logout from "@mui/icons-material/Logout";
+import Login from "@mui/icons-material/Login";
+import PersonAdd from "@mui/icons-material/PersonAdd";
+
+const pages = [
+  { item: "Pregled pokojnika", link: "deceased-table", roles: [] },
+  // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
+  { item: "Pregled GM CRUD", link: "graves-table-crud", roles: [] },
+  {
+    item: "Zahtev za grobno mesto",
+    link: "grave-requests-crud",
+    roles: ["VISITOR", "OFFICER", "ADMINISTRATOR"],
+  },
+  {
+    item: "Cemeteries managment",
+    link: "cemeteries-table-crud",
+    roles: ["OFFICER", "ADMINISTRATOR"],
+  },
+  {
+    item: "User management",
+    link: "users-table-crud",
+    roles: ["ADMINISTRATOR"],
+  },
+  // { item: "Grave Types MGM", link: "grave-types-table" },
+  {
+    item: "Grave Types MGM CRUD",
+    link: "grave-types-crud",
+    roles: ["OFFICER", "ADMINISTRATOR"],
+  },
+];
 
 const Header = () => {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
 
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState("sr");
   const user = useSelector(selectUser);
 
@@ -51,126 +115,197 @@ const Header = () => {
   };
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
-        <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand>Katastar</Navbar.Brand>
-          </LinkContainer>
+      <AppBar position="static">
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              KATASTAR
+            </Typography>
 
-          <Nav className="ml-auto">
-            <PopupState variant="popover" popupId="graves-popup-menu">
-              {(popupState) => (
-                <React.Fragment>
-                  <Button variant="contained" {...bindTrigger(popupState)}>
-                    Dashboard
-                  </Button>
-                  <Menu {...bindMenu(popupState)}>
-                    <MenuItem onClick={popupState.close}>
-                      <LinkContainer to="/grave-requests-crud">
-                        <Nav.Link>Zahtev za grobno mesto</Nav.Link>
-                      </LinkContainer>
-                    </MenuItem>
-                    <MenuItem onClick={popupState.close}>
-                      <LinkContainer to="/deceased-table">
-                        <Nav.Link>Pregled pokojnika</Nav.Link>
-                      </LinkContainer>
-                    </MenuItem>
-                    <MenuItem onClick={popupState.close}>
-                      <LinkContainer to="/graves-table">
-                        <Nav.Link>Pregled GM</Nav.Link>
-                      </LinkContainer>
-                    </MenuItem>
-                    <MenuItem onClick={popupState.close}>
-                      <LinkContainer to="/graves-table-crud">
-                        <Nav.Link>Pregled GM CRUD</Nav.Link>
-                      </LinkContainer>
-                    </MenuItem>
-                  </Menu>
-                </React.Fragment>
-              )}
-            </PopupState>
-            {user && user.role === "ADMINISTRATOR" && (
-              <>
-                <PopupState
-                  variant="popover"
-                  popupId="administration-popup-menu"
-                >
-                  {(popupState) => (
-                    <React.Fragment>
-                      <Button variant="contained" {...bindTrigger(popupState)}>
-                        Administration
-                      </Button>
-                      <Menu {...bindMenu(popupState)}>
-                        <MenuItem onClick={popupState.close}>
-                          <LinkContainer to="/cemeteries-table-crud">
-                            <Nav.Link>Cemeteries management</Nav.Link>
-                          </LinkContainer>
-                        </MenuItem>
-                        <MenuItem onClick={popupState.close}>
-                          <LinkContainer to="/users-table-crud">
-                            <Nav.Link>User management</Nav.Link>
-                          </LinkContainer>
-                        </MenuItem>
-                        <MenuItem onClick={popupState.close}>
-                          <LinkContainer to="/grave-types-table">
-                            <Nav.Link>Grave Types MGM</Nav.Link>
-                          </LinkContainer>
-                        </MenuItem>
-                        <MenuItem onClick={popupState.close}>
-                          <LinkContainer to="/grave-types-crud">
-                            <Nav.Link>Grave Types MGM CRUD</Nav.Link>
-                          </LinkContainer>
-                        </MenuItem>
-                      </Menu>
-                    </React.Fragment>
-                  )}
-                </PopupState>
-              </>
-            )}
-            {user && (
-              <NavDropdown title={user.name} id="profile">
-                <NavDropdown.Item onClick={logoutHandler}>
-                  Logout
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages
+                  .filter(
+                    (page) =>
+                      page.roles?.length === 0 ||
+                      page.roles?.find((role) => user?.role === role)
+                  )
+                  .map((page) => navBarMenuItem(page))}
+              </Menu>
+            </Box>
+
+            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: "flex", md: "none" },
+                flexGrow: 1,
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              KATASTAR
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages
+                .filter(
+                  (page) =>
+                    page.roles?.length === 0 ||
+                    page.roles?.find((role) => user?.role === role)
+                )
+                .map((page) => navBarButton(page))}
+            </Box>
+
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src="https://lh3.googleusercontent.com/a/ACg8ocKWqj_up9F4XokZoXC_VOmIi1HJ4ZuBMsc9MVioEu-AuqU=s576-c-no"
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {!user && (
+                  <MenuItem key={"Login"} href="/login-user" component={Link}>
+                    <ListItemIcon>
+                      <Login fontSize="small" />
+                    </ListItemIcon>
+                    {t("Sign in")}
+                  </MenuItem>
+                )}
+                {!user && (
+                  <MenuItem key={"Register"} href="/add-user" component={Link}>
+                    <ListItemIcon>
+                      <PersonAdd fontSize="small" />
+                    </ListItemIcon>
+                    {t("Sign up")}
+                  </MenuItem>
+                )}
+                {user && (
+                  <MenuItem onClick={logoutHandler}>
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    {t("Logout")}
+                  </MenuItem>
+                )}
+              </Menu>
+            </Box>
+
+            <Box>
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={colorMode.toggleColorMode}
+                color="inherit"
+              >
+                {theme.palette.mode === "dark" ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
+              </IconButton>
+            </Box>
+            <Box>
+              <NavDropdown title={`(${language.toLocaleUpperCase()})`}>
+                <NavDropdown.Item onClick={() => selectLangugeHandler("sr")}>
+                  SR
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => selectLangugeHandler("hu")}>
+                  HU
                 </NavDropdown.Item>
               </NavDropdown>
-            )}
-            {!user && (
-              <LinkContainer to="/login-user">
-                <Nav.Link>Login</Nav.Link>
-              </LinkContainer>
-            )}
-            {!user && (
-              <LinkContainer to="/add-user">
-                <Nav.Link>Register</Nav.Link>
-              </LinkContainer>
-            )}
-            <NavDropdown
-              title={`Select Language (${language.toLocaleUpperCase()})`}
-              id="profile"
-            >
-              <NavDropdown.Item onClick={() => selectLangugeHandler("sr")}>
-                SR
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => selectLangugeHandler("hu")}>
-                HU
-              </NavDropdown.Item>
-            </NavDropdown>
-            <IconButton
-              sx={{ ml: 1 }}
-              onClick={colorMode.toggleColorMode}
-              color="inherit"
-            >
-              {theme.palette.mode === "dark" ? (
-                <Brightness7Icon />
-              ) : (
-                <Brightness4Icon />
-              )}
-            </IconButton>
-          </Nav>
+            </Box>
+          </Toolbar>
         </Container>
-      </Navbar>
+      </AppBar>
     </header>
   );
+
+  function navBarButton(page: { item: string; link: string }) {
+    return (
+      <Button
+        key={page.item}
+        href={page.link}
+        component={Link}
+        sx={{ my: 2, color: "white", display: "block" }}
+      >
+        {page.item}
+      </Button>
+    );
+  }
+
+  function navBarMenuItem(page: { item: string; link: string }) {
+    return (
+      <MenuItem key={page.item} href={page.link} component={Link}>
+        <Typography textAlign="center">{page.item}</Typography>
+      </MenuItem>
+    );
+  }
 };
 
 export default Header;

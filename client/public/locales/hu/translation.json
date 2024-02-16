@@ -1,4 +1,5 @@
 {
+  "CLIENT_YOUR_WEBSITE": "To paetukutuku",
   "Landing page screen": "Céloldal képernyő",
   "Cemetery": "Temető",
   "add grave": "Adj hozzá egy sírt",
@@ -19,6 +20,15 @@
   "surname": "Vezetéknév",
   "email": "E-mail",
   "password": "Jelszó",
+  "repeat-password": "Jelszó újra",
+  "server": {
+    "SERVER_ERR_USER_ALREADY_EXISTS": "A felhasználó már létezik",
+    "SERVER_ERR_CONFIRM_PASSWORD": "A jelszó nincs megerősítve",
+    "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD": "Rossz email cím vagy jelszó",
+    "SERVER_ERR_USERNAME_IS_MANDATORY": "A felhasználónév kötelező",
+    "SERVER_ERR_PASSWORD_IS_MANDATORY": "A jelszó kötelező",
+    "SERVER_ERR_USER_IS_NOT_VERIFIED": "A felhasználó nincs ellenőrizve"
+  },
   "token": "Token",
   "dateBirth": "Születési dátum",
   "dateDeath": "Halál dátuma",
@@ -44,7 +54,7 @@
   "Create New Cemetery": "Új temető létrehozása",
   "Edit Cemetery": "Temető szerkesztése",
   "Zoom": "Zoomolás",
-  "The field is Required": "A mező kitöltése kötelező",
+  "CLIENT_ERR_THE_FIELD_IS_REQUIRED": "A mező kitöltése kötelező",
   "Name is Required": "Név kötelező",
   "Surname is Required": "Vezetéknév kötelező",
   "Email is Required": "E-mail kötelező",
