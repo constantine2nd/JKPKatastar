@@ -46,6 +46,7 @@ import {
 } from "../features/cemeteriesSlice";
 import { GraveType } from "../interfaces/GraveTypeInterfaces";
 import { Cemetery } from "../interfaces/CemeteryInterfaces";
+import { FREE, OCCUPIED } from "../utils/constant";
 
 // Defines the name of the react query
 const queryFunction = "graves-all";
@@ -69,8 +70,8 @@ const GravesTableScreenCrud = () => {
     dispatch(fetchCemeteries());
   }, []);
   const statuses = [
-    { label: t("FREE"), value: "FREE" },
-    { label: t("OCCUPIED"), value: "OCCUPIED" },
+    { label: t(FREE), value: FREE },
+    { label: t(OCCUPIED), value: OCCUPIED },
   ];
 
   const myGraveTypes = graveTypes.map((item) => {

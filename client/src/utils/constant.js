@@ -8,3 +8,7 @@ const ACCEPTED = "ACCEPTED";
 const DENIED = "DENIED";
 export { REQUESTED, ACCEPTED, DENIED };
 
+const FREE = "FREE";
+const OCCUPIED = "OCCUPIED";
+export { FREE, OCCUPIED };
+

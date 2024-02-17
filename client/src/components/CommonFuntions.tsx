@@ -1,6 +1,6 @@
 import { Chip } from "@mui/material";
 import { dateFormatter } from "../utils/dateFormatter";
-import { ACCEPTED, DENIED, REQUESTED } from "../utils/constant";
+import { ACCEPTED, DENIED, FREE, OCCUPIED, REQUESTED } from "../utils/constant";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -70,12 +70,12 @@ const statusOfGraveRequest = (status: string, t: any) => {
 
 const statusOfGrave = (status: string, t: any) => {
   let result = null;
-  if (status === "FREE") {
+  if (status === FREE) {
     // Only FREE
-    result = <Chip label={t("FREE")} color="success" />;
+    result = <Chip label={t(FREE)} color="success" />;
   } else {
     // OCCUPIED or without any value
-    result = <Chip label={t("OCCUPIED")} color="warning" />;
+    result = <Chip label={t(OCCUPIED)} color="warning" />;
   }
   return result;
 };
