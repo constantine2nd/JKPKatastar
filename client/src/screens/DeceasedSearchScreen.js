@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+import TextField, { OutlinedTextFieldProps } from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import { Autocomplete, AutocompleteRenderInputParams } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 import { useSelector, useDispatch } from "react-redux";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -21,19 +23,19 @@ import {
 
 import { Cemetery } from "../interfaces/CemeteryInterfaces";
 
-const DeceasedSearchScreen: React.FC = () => {
-  const [cemeteryId, setCemeteryId] = React.useState("");
-  const [name, setName] = React.useState<string>("");
-  const [surname, setSurname] = React.useState<string>("");
-  const [birthYear, setBirthYear] = React.useState<number>();
-  const [deathYearFrom, setDeathYearFrom] = React.useState<number>();
-  const [deathYearTo, setDeathYearTo] = React.useState<number>();
-  const [showTable, setShowTable] = React.useState<boolean>(false);
-  const [path, setPath] = React.useState<string>("");
-  const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
+const DeceasedSearchScreen = () => {
+  const [cemeteryIds, setCemeteryIds] = React.useState("");
+  const [name, setName] = React.useState("");
+  const [surname, setSurname] = React.useState("");
+  const [birthYear, setBirthYear] = React.useState();
+  const [deathYearFrom, setDeathYearFrom] = React.useState();
+  const [deathYearTo, setDeathYearTo] = React.useState();
+  const [showTable, setShowTable] = React.useState(false);
+  const [path, setPath] = React.useState("");
+  const cemeteries = useSelector(selectAllCemeteries);
   const usersStatus = useSelector(getAllCemeteriesStatus);
   const error = useSelector(getAllCemeteriesError);
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (usersStatus === "idle") {
@@ -42,14 +44,15 @@ const DeceasedSearchScreen: React.FC = () => {
     }
   }, [usersStatus, dispatch]);
 
-  const handleChangeCemetery = (event: SelectChangeEvent) => {
-    setCemeteryId(event.target.value);
+  const handleChangeCemetery = (event, value) => {
+    let slelectedCemeteriesIds = value.map((cemetery) => cemetery._id);
+    setCemeteryIds(slelectedCemeteriesIds);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const obj = {
-      cemeteryId,
+      cemeteryIds,
       name,
       surname,
       birthYear: birthYear?.toString() || "",
@@ -60,6 +63,7 @@ const DeceasedSearchScreen: React.FC = () => {
     const queryParams = new URLSearchParams({
       ...obj,
     }).toString();
+    console.log(queryParams);
     setPath(`/api/deceased/search?${queryParams}`);
     setShowTable(true);
   };
@@ -103,21 +107,34 @@ const DeceasedSearchScreen: React.FC = () => {
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
           />
+
           <FormControl fullWidth>
-            <InputLabel id="cemetery-select-label">{"Cemetery"}</InputLabel>
-            <Select
-              labelId="cemetery-select-label"
-              id="demo-simple-select"
-              value={cemeteryId}
-              label="Cemetery"
+            <Autocomplete
               onChange={handleChangeCemetery}
-            >
-              {cemeteries?.map((cemetery) => (
-                <MenuItem key={cemetery._id} value={cemetery._id}>
-                  {cemetery.name}
+              multiple
+              options={cemeteries}
+              getOptionLabel={(option) => option.name}
+              disableCloseOnSelect
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="Multiple Autocomplete"
+                  placeholder="Multiple Autocomplete"
+                />
+              )}
+              renderOption={(props, option, { selected }) => (
+                <MenuItem
+                  {...props}
+                  key={option._id}
+                  value={option._id}
+                  sx={{ justifyContent: "space-between" }}
+                >
+                  {option.name}
+                  {selected ? <CheckIcon color="info" /> : null}
                 </MenuItem>
-              ))}
-            </Select>
+              )}
+            />
           </FormControl>
 
           <TextField
