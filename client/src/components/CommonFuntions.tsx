@@ -1,5 +1,6 @@
 import { Chip } from "@mui/material";
 import { dateFormatter } from "../utils/dateFormatter";
+import { ACCEPTED, DENIED, REQUESTED } from "../utils/constant";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -57,12 +58,12 @@ const isActivePayer = (isActive: boolean, t: any) => {
 
 const statusOfGraveRequest = (status: string, t: any) => {
   let result = null;
-  if (status === "ACCEPTED") {
-    result = <Chip label={t("ACCEPTED")} color="success" />;
-  } else if (status === "DENIED") {
-    result = <Chip label={t("DENIED")} color="error" />;
+  if (status === ACCEPTED) {
+    result = <Chip label={t(ACCEPTED)} color="success" />;
+  } else if (status === DENIED) {
+    result = <Chip label={t(DENIED)} color="error" />;
   } else {
-    result = <Chip label={t("REQUESTED")} color="warning" />;
+    result = <Chip label={t(REQUESTED)} color="warning" />;
   }
   return result;
 };
