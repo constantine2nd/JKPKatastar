@@ -4,6 +4,7 @@ export interface User {
   email: string;
   password: string;
   role: string;
+  avatarUrl: string;
   isActive: boolean;
   isVerified: boolean;
   token: string;

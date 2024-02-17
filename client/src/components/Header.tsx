@@ -210,8 +210,8 @@ const Header = () => {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
-                    alt="Remy Sharp"
-                    src="https://lh3.googleusercontent.com/a/ACg8ocKWqj_up9F4XokZoXC_VOmIi1HJ4ZuBMsc9MVioEu-AuqU=s576-c-no"
+                    alt={user?.name}
+                    src={user?.avatarUrl}
                   />
                 </IconButton>
               </Tooltip>

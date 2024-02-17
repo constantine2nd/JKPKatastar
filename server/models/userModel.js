@@ -21,6 +21,11 @@ const userSchema = mongoose.Schema({
     required: true,
     default: "VISITOR",
   },
+  avatarUrl: {
+    type: String,
+    required: true,
+    default: "",
+  },
   isActive: {
     type: Boolean,
     required: true,

@@ -119,13 +119,18 @@ const UsersTableScreenCrud = () => {
       Cell: ({ row }) => isActiveUser(row.original.isVerified, t),
     },
     {
+      accessorKey: "avatarUrl",
+      header: t("Avatar"),
+      enableEditing: true,
+    },
+    {
       accessorKey: "_id",
       header: "Id",
       enableEditing: false,
     },
     {
       accessorKey: "password",
-      header: "password",
+      header: t("password"),
       enableEditing: true,
     },
   ];
