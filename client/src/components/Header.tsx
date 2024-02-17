@@ -29,6 +29,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import Logout from "@mui/icons-material/Logout";
 import Login from "@mui/icons-material/Login";
 import PersonAdd from "@mui/icons-material/PersonAdd";
+import { ADMINISTRATOR, OFFICER, VISITOR } from "../utils/constant.js";
 
 const pages = [
   { item: "Pregled pokojnika", link: "deceased-table", roles: [] },
@@ -38,23 +39,23 @@ const pages = [
   {
     item: "Zahtev za grobno mesto",
     link: "grave-requests-crud",
-    roles: ["VISITOR", "OFFICER", "ADMINISTRATOR"],
+    roles: [VISITOR, OFFICER, ADMINISTRATOR],
   },
   {
     item: "Cemeteries managment",
     link: "cemeteries-table-crud",
-    roles: ["OFFICER", "ADMINISTRATOR"],
+    roles: [OFFICER, ADMINISTRATOR],
   },
   {
     item: "User management",
     link: "users-table-crud",
-    roles: ["ADMINISTRATOR"],
+    roles: [ADMINISTRATOR],
   },
   // { item: "Grave Types MGM", link: "grave-types-table" },
   {
     item: "Grave Types MGM CRUD",
     link: "grave-types-crud",
-    roles: ["OFFICER", "ADMINISTRATOR"],
+    roles: [OFFICER, ADMINISTRATOR],
   },
 ];
 

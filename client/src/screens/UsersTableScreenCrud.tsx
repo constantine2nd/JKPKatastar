@@ -30,6 +30,7 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../hooks/useCrudHooks";
+import { ADMINISTRATOR, OFFICER, VISITOR } from "../utils/constant.js";
 
 // Defines the name of the react query
 const queryFunction = "users-all";
@@ -47,9 +48,9 @@ const UsersTableScreenCrud = () => {
   const { t, i18n } = useTranslation();
 
   const roles = [
-    { label: t("ADMINISTRATOR"), value: "ADMINISTRATOR" },
-    { label: t("OFFICER"), value: "OFFICER" },
-    { label: t("VISITOR"), value: "VISITOR" },
+    { label: t(ADMINISTRATOR), value: ADMINISTRATOR },
+    { label: t(OFFICER), value: OFFICER },
+    { label: t(VISITOR), value: VISITOR },
   ];
   const active = [
     { label: t("yes"), value: true },

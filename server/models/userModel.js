@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { pseudoRandomToken } from "../utils/pseudoRandomGenerator.js";
+import { VISITOR } from "../utils/constant.js";
 
 const userSchema = mongoose.Schema({
   name: {
@@ -19,7 +20,7 @@ const userSchema = mongoose.Schema({
   role: {
     type: String,
     required: true,
-    default: "VISITOR",
+    default: VISITOR,
   },
   avatarUrl: {
     type: String,

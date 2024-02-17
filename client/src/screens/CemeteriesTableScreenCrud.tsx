@@ -35,6 +35,7 @@ import {
   useUpdateRow,
 } from "../hooks/useCrudHooks";
 import { t } from "i18next";
+import { ADMINISTRATOR } from "../utils/constant.js";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -287,7 +288,7 @@ const CemeteriesTableScreenCrud = () => {
             <EditIcon />
           </IconButton>
         </Tooltip>
-        {user?.role === "ADMINISTRATOR" && (
+        {user?.role === ADMINISTRATOR && (
           <Tooltip title={t("Delete")}>
             <IconButton
               color="error"
