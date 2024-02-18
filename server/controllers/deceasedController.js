@@ -190,8 +190,9 @@ const getDeceasedForGrave = async (req, res, next) => {
 
 const getDeceasedSearch = async (req, res, next) => {
   console.log(req.query);
-  const { cemeteryId, name, surname, birthYear, deathYearFrom, deathYearTo } =
+  const { cemeteryIds, name, surname, birthYear, deathYearFrom, deathYearTo } =
     req.query;
+  console.log(cemeteryIds);
   const filterArray = [];
 
   if (name) {
@@ -257,10 +258,11 @@ const getDeceasedSearch = async (req, res, next) => {
   });
 
   const filterForCemetery = {};
-  if (cemeteryId) {
-    filterForCemetery["graveInfo.cemetery"] = new mongoose.Types.ObjectId(
-      cemeteryId
-    );
+  if (cemeteryIds) {
+    let cemeteryIdsArray = cemeteryIds
+      .split(",")
+      .map((id) => new mongoose.Types.ObjectId(id));
+    filterForCemetery["graveInfo.cemetery"] = { $in: [...cemeteryIdsArray] };
   }
 
   console.log(filterForCemetery);
