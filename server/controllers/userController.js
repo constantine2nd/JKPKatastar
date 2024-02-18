@@ -90,7 +90,7 @@ const addUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const { name, email, role, isActive, isVerified } = req.body;
+    const { name, email, role, isActive, isVerified, avatarUrl } = req.body;
 
     console.log(isActive);
 
@@ -100,6 +100,7 @@ const updateUser = async (req, res, next) => {
       isActive: isActive,
       role: role,
       isVerified: isVerified,
+      avatarUrl: avatarUrl,
     }; // Fields to update
 
     const updatedUser = await User.findOneAndUpdate(filter, update, {

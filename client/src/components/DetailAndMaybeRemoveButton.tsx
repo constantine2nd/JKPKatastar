@@ -5,6 +5,7 @@ import ButtonMUI from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
 import { useState } from "react";
+import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
 
 const DeleteAndMaybeRemoveButton = (
   id: string,
@@ -30,7 +31,7 @@ const DeleteAndMaybeRemoveButton = (
       >
         {t("details")}
       </ButtonMUI>
-      {(user?.role === "OFFICER" || user?.role === "ADMINISTRATOR") && (
+      {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
         <ButtonMUI
           variant="contained"
           color="secondary"

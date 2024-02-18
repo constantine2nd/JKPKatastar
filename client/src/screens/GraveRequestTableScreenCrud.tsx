@@ -32,6 +32,7 @@ import {
 import { GraveRequest as CrudTableType } from "../interfaces/GraveRequestInterfaces";
 import { statusOfGraveRequest } from "../components/CommonFuntions";
 import { dateFormatter } from "../utils/dateFormatter";
+import { ACCEPTED, DENIED, REQUESTED } from "../utils/constant";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";
@@ -49,9 +50,9 @@ const GraveRequestTableScreenCrud = () => {
   const { t, i18n } = useTranslation();
 
   const statuses = [
-    { label: t('REQUESTED'), value: 'REQUESTED' },
-    { label: t('ACCEPTED'), value: 'ACCEPTED' },
-    { label: t('DENIED'), value: 'DENIED' },
+    { label: t(REQUESTED), value: REQUESTED },
+    { label: t(ACCEPTED), value: ACCEPTED },
+    { label: t(DENIED), value: DENIED },
   ] 
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [

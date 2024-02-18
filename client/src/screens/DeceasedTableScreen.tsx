@@ -30,6 +30,7 @@ import Chip from "@mui/material/Chip";
 import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
 import { getLanguage } from "../utils/languageSelector";
 import { srRS } from "@mui/material/locale";
+import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;
@@ -187,7 +188,7 @@ const DeceasedTableScreen: React.FC = () => {
       >
         <div>{t("graves-table-screen")}</div>
         <br />
-        {(user?.role === "OFFICER" || user?.role === "ADMINISTRATOR") && (
+        {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
           <ButtonMUI
             variant="contained"
             sx={{ m: 2 }}

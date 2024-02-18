@@ -37,6 +37,7 @@ import {
   type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
 } from "material-react-table";
 import { capacity, capacityExt, expiredContract, statusOfGrave } from "../components/CommonFuntions";
+import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
 
 
 const GravesTableScreen: React.FC = () => {
@@ -167,7 +168,7 @@ const GravesTableScreen: React.FC = () => {
       >
         <div>{t("graves-table-screen")}</div>
         <br />
-        {(user?.role === "OFFICER" || user?.role === "ADMINISTRATOR") && (
+        {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
           <ButtonMUI
             variant="contained"
             sx={{ m: 2 }}
