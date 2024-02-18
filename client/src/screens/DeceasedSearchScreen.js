@@ -12,6 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import DeceasedTableComponent from "../components/DeceasedTableComponent";
 import {
@@ -22,6 +23,20 @@ import {
 } from "../features/cemeteriesSlice";
 
 import { Cemetery } from "../interfaces/CemeteryInterfaces";
+
+const mobile = `"name"
+"surname"
+"cemetery"
+"birth-year"
+"death-year-from"
+"death-year-to"
+"button"`;
+
+const desktop = `"name surname"
+"cemetery cemetery"
+"birth-year birth-year"
+"death-year-from death-year-to"
+"button button"`;
 
 const DeceasedSearchScreen = () => {
   const [cemeteryIds, setCemeteryIds] = React.useState("");
@@ -37,6 +52,8 @@ const DeceasedSearchScreen = () => {
   const error = useSelector(getAllCemeteriesError);
   const dispatch = useDispatch();
 
+  const mobileView = useMediaQuery("(max-width:600px)");
+
   useEffect(() => {
     if (usersStatus === "idle") {
       console.log("UPAO");
@@ -47,6 +64,14 @@ const DeceasedSearchScreen = () => {
   const handleChangeCemetery = (event, value) => {
     let slelectedCemeteriesIds = value.map((cemetery) => cemetery._id);
     setCemeteryIds(slelectedCemeteriesIds);
+  };
+
+  const calculateGridTemplateAreas = () => {
+    if (mobileView) {
+      return mobile;
+    } else {
+      return desktop;
+    }
   };
 
   const handleSubmit = (e) => {
@@ -69,21 +94,25 @@ const DeceasedSearchScreen = () => {
   };
   return (
     <>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="sm">
         <Box
           component="form"
+          id="serach-box"
           onSubmit={handleSubmit}
           noValidate
           sx={{
             mt: 1,
             marginTop: 8,
-            display: "flex",
+            gap: "10px",
+            display: "grid",
             flexWrap: "wrap",
             alignItems: "center",
+            gridTemplateAreas: calculateGridTemplateAreas,
           }}
         >
           <TextField
             margin="normal"
+            sx={{ gridArea: "name" }}
             required
             fullWidth
             id="name"
@@ -97,6 +126,7 @@ const DeceasedSearchScreen = () => {
 
           <TextField
             margin="normal"
+            sx={{ gridArea: "surname" }}
             required
             fullWidth
             id="surname"
@@ -108,7 +138,7 @@ const DeceasedSearchScreen = () => {
             onChange={(e) => setSurname(e.target.value)}
           />
 
-          <FormControl fullWidth>
+          <FormControl margin="normal" fullWidth sx={{ gridArea: "cemetery" }}>
             <Autocomplete
               onChange={handleChangeCemetery}
               multiple
@@ -139,6 +169,7 @@ const DeceasedSearchScreen = () => {
 
           <TextField
             margin="normal"
+            sx={{ gridArea: "birth-year" }}
             required
             fullWidth
             name="birth-year"
@@ -152,6 +183,7 @@ const DeceasedSearchScreen = () => {
 
           <TextField
             margin="normal"
+            sx={{ gridArea: "death-year-from" }}
             required
             fullWidth
             name="death-year-from"
@@ -164,6 +196,7 @@ const DeceasedSearchScreen = () => {
           />
           <TextField
             margin="normal"
+            sx={{ gridArea: "death-year-to" }}
             required
             fullWidth
             name="death-year-to"
@@ -179,7 +212,7 @@ const DeceasedSearchScreen = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ gridArea: "button", mt: 3, mb: 2 }}
           >
             {"Search"}
           </Button>
