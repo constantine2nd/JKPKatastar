@@ -28,6 +28,12 @@
     "SERVER_ERR_PASSWORD_IS_MANDATORY": "Lozinka je obavezna",
     "SERVER_ERR_USER_IS_NOT_VERIFIED": "Korisnik nije verifikovan"
   },
+  "search-deceased": {
+    "search": "Pretraga",
+    "birth-year": "Godina rođenja",
+    "death-year-from": "Datum smrti od",
+    "death-year-to": "Datum smrti do"
+  },
   "token": "Token",
   "dateBirth": "Datum rođenja",
   "dateDeath": "Datum smrti",

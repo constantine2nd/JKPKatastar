@@ -1,19 +1,15 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useEffect } from "react";
 import Button from "@mui/material/Button";
-import TextField, { OutlinedTextFieldProps } from "@mui/material/TextField";
+import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { Autocomplete, AutocompleteRenderInputParams } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { useSelector, useDispatch } from "react-redux";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Grid from "@mui/material/Grid";
-import axios from "axios";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import { useTranslation } from "react-i18next";
 import DeceasedTableComponent from "../components/DeceasedTableComponent";
 import {
   fetchCemeteries,
@@ -21,8 +17,6 @@ import {
   getAllCemeteriesError,
   getAllCemeteriesStatus,
 } from "../features/cemeteriesSlice";
-
-import { Cemetery } from "../interfaces/CemeteryInterfaces";
 
 const mobile = `"name"
 "surname"
@@ -39,6 +33,7 @@ const desktop = `"name surname"
 "button button"`;
 
 const DeceasedSearchScreen = () => {
+  const { t, i18n } = useTranslation();
   const [cemeteryIds, setCemeteryIds] = React.useState("");
   const [name, setName] = React.useState("");
   const [surname, setSurname] = React.useState("");
@@ -116,7 +111,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             id="name"
-            label={"name"}
+            label={t("name")}
             name="name"
             autoComplete="name"
             autoFocus
@@ -130,7 +125,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             id="surname"
-            label={"surname"}
+            label={t("surname")}
             name="surname"
             autoComplete="surname"
             autoFocus
@@ -173,7 +168,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             name="birth-year"
-            label={"birth-year"}
+            label={t("search-deceased.birth-year")}
             id="birth-year"
             autoComplete="birth-year"
             type="number"
@@ -187,7 +182,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             name="death-year-from"
-            label={"death-year-from"}
+            label={t("search-deceased.death-year-from")}
             id="death-year-from"
             autoComplete="death-year-from"
             type="number"
@@ -200,7 +195,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             name="death-year-to"
-            label={"death-year-to"}
+            label={t("search-deceased.death-year-to")}
             id="death-year-to"
             autoComplete="death-year-to"
             type="number"
@@ -214,7 +209,7 @@ const DeceasedSearchScreen = () => {
             variant="contained"
             sx={{ gridArea: "button", mt: 3, mb: 2 }}
           >
-            {"Search"}
+            {t("search-deceased.search")}
           </Button>
         </Box>
       </Container>
