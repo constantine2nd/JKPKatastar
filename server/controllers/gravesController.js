@@ -80,57 +80,13 @@ const saveGrave = async (req, res, next) => {
 
 const getGraves = async (req, res, next) => {
   try {
-    //const foundGraves = await Grave.find();
-    const foundGraves = await Grave.aggregate([
-      {
-        $lookup: {
-          from: "deceaseds", // Ime kolekcije sa preminulima
-          localField: "_id", // Polje u grobu koje odgovara ID-ju groba
-          foreignField: "grave", // Polje u preminulima koje odgovara ID-ju groba
-          as: "deceaseds", // Naziv polja koje sadrži niz preminulih
-        },
-      },
-      {
-        $lookup: {
-          from: "gravetypes", // Ime druge kolekcije
-          localField: "graveType", // Drugo polje sa ObjectId referencom u prvoj kolekciji
-          foreignField: "_id", // Polje u drugoj kolekciji koje želite da povežete sa
-          as: "graveType", // Ime polja u rezultatu koje će sadržati druge povezane objekte
-        },
-      },
-      {
-        $unwind: "$graveType", // Razmicati drugi povezani objekat
-      },
-      {
-        $lookup: {
-          from: "cemeteries", // Ime druge kolekcije
-          localField: "cemetery", // Drugo polje sa ObjectId referencom u prvoj kolekciji
-          foreignField: "_id", // Polje u drugoj kolekciji koje želite da povežete sa
-          as: "cemetery", // Ime polja u rezultatu koje će sadržati druge povezane objekte
-        },
-      },
-      {
-        $unwind: "$cemetery", // Razmicati drugi povezani objekat
-      },
-      {
-        $project: {
-          _id: 1, // Sačuvajte ID groba
-          number: 1, // Sačuvajte ime groba
-          row: 1, // Sačuvajte ime groba
-          field: 1, // Sačuvajte ime groba
-          capacity: 1, // Sačuvajte ime groba
-          contractTo: 1, // Sačuvajte ime groba
-          LAT: 1, // Sačuvajte ime groba
-          LON: 1, // Sačuvajte ime groba
-          numberOfDeceaseds: { $size: "$deceaseds" }, // Broj preminulih
-          graveType: 1,
-          status: 1,
-          cemetery: 1,
-        },
-      },
-    ]);
+    const foundGraves = await Grave.find()
+      .populate("graveType")
+      .populate("cemetery")
+      .exec();
     res.json(foundGraves);
   } catch (error) {
+    console.log(error);
     return res.json({ message: "Cound not get data" });
   }
 };
