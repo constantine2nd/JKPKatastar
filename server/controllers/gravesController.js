@@ -2,6 +2,8 @@ import Grave from "../models/graveModel.js";
 import Deceased from "../models/deceasedModel.js";
 import Payer from "../models/payerModel.js";
 import GraveType from "../models/graveTypeModel.js";
+import Proba from "../models/probaModel.js";
+import Pok from "../models/pokModel.js";
 //import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
@@ -22,12 +24,18 @@ const saveGravesFromExcel = async (req, res, next) => {
     const graveType = await GraveType.find({ name: grave.type });
     console.log(graveType[0]);
     console.log(graveType[0]._id);
+    let status = "FREE";
+    if (grave.deceased && grave.deceased.length > 0) {
+      status = "OCCUPIED";
+    }
+
     const newGrave = new Grave({
       number: grave.number,
       row: grave.row,
       field: grave.field,
       LAT: grave.LAT,
       LON: grave.LON,
+      status: status,
       graveType: new mongoose.Types.ObjectId(graveType[0]._id),
       cemetery: new mongoose.Types.ObjectId(cemeteryId),
     });
@@ -129,6 +137,22 @@ const getGraves = async (req, res, next) => {
         },
       },
     ]);
+    /*   const transformedGraves = foundGraves.map(grave=>{
+      return{
+      _id: grave._id, 
+          number: grave.number, 
+          row: grave.row, 
+          field: grave.field, 
+          capacity: grave.capacity, 
+          contractTo: grave.contractTo, 
+          LAT: grave.LAT,
+          LON: grave.LON, 
+          numberOfDeceaseds: grave.numberOfDeceaseds,
+          graveType: grave.graveType,
+          status: 1,
+          cemetery: 1
+    }}) */
+    console.log(foundGraves.length);
     res.json(foundGraves);
   } catch (error) {
     return res.json({ message: "Cound not get data" });

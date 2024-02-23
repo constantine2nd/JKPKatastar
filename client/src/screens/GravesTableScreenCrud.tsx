@@ -90,13 +90,13 @@ const GravesTableScreenCrud = () => {
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
-      accessorKey: "cemetery._id",
+      accessorKey: "cemetery.name",
       header: t("Cemetery"),
       editVariant: "select",
       editSelectOptions: myCemeteries,
       enableEditing: true,
-      Cell: ({ row }) =>
-        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name,
+      /* Cell: ({ row }) =>
+        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name, */
     },
     {
       accessorKey: "number",
@@ -351,7 +351,11 @@ function validateCrudTable(tableRow: CrudTableType) {
     number: !validateRequired(tableRow.number)
       ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
       : "",
-    field: !validateRequired(tableRow.field) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
-    row: !validateRequired(tableRow.row) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
+    field: !validateRequired(tableRow.field)
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      : "",
+    row: !validateRequired(tableRow.row)
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      : "",
   };
 }
