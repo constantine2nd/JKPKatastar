@@ -1,22 +1,21 @@
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
-import axios from "axios";
 import {
-  useSearchParams,
-  useNavigate,
-  createSearchParams,
-} from "react-router-dom";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import {
+  Form as BootstrapForm,
+  Button,
+  Col,
   Container,
   Row,
-  Col,
-  Button,
-  Form as BootstrapForm,
 } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import * as Yup from "yup";
 
-import { addPayer } from "../features/singleGraveSlice";
+import { addPayer } from "../../features/singleGraveSlice";
 
 interface FormData {
   name: string;

@@ -1,10 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  useSearchParams,
-  useNavigate,
-  createSearchParams,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import {
@@ -15,37 +11,55 @@ import {
   Form as BootstrapForm,
 } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+import Loader from "../../../components/Loader";
+import Message from "../../../components/Message";
 
-import { addUser } from "../features/userSlice";
+import { loginUser, getUserStatus, getUserError } from "../../../features/userSlice";
 
 interface FormData {
-  name: string;
   email: string;
   password: string;
 }
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Ime je obavezno polje"),
-  email: Yup.string().required("Email je obavezno polje"),
+  email: Yup.string().required("Ime je obavezno polje"),
   password: Yup.string().required("Password je obavezno polje"),
 });
 
-const AddUser: React.FC = () => {
+const UserLogin: React.FC = () => {
   const dispatch = useDispatch<any>();
 
   let navigate = useNavigate();
+  const userStatus = useSelector(getUserStatus);
+  const error = useSelector(getUserError);
+
+  useEffect(() => {
+    if (userStatus === "succeeded") {
+      navigate("/landing");
+    }
+  }, [navigate, userStatus]);
 
   const initialValues: FormData = {
-    name: "",
     email: "",
     password: "",
   };
 
   const handleSubmit = async (values: FormData) => {
     console.log(values);
-    dispatch(addUser(values));
-    // navigate("/");
+    dispatch(loginUser(values));
   };
+
+  if (userStatus === "loading") {
+    return <Loader />;
+  }
+
+  if (userStatus === "failed") {
+    return (
+      <Message variant="danger">
+        <div>Error: {error}</div>
+      </Message>
+    );
+  }
 
   return (
     <Container>
@@ -58,29 +72,13 @@ const AddUser: React.FC = () => {
           <Form>
             <Row>
               <Col>
-                <BootstrapForm.Group controlId="name">
-                  <BootstrapForm.Label>Ime:</BootstrapForm.Label>
-                  <Field
-                    type="text"
-                    name="name"
-                    as={BootstrapForm.Control}
-                    placeholder="Unesite ime"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="text-danger"
-                  />
-                </BootstrapForm.Group>
-              </Col>
-              <Col>
                 <BootstrapForm.Group controlId="email">
                   <BootstrapForm.Label>Email:</BootstrapForm.Label>
                   <Field
                     type="text"
                     name="email"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite email"
+                    placeholder="Unesite ime"
                   />
                   <ErrorMessage
                     name="email"
@@ -121,4 +119,4 @@ const AddUser: React.FC = () => {
   );
 };
 
-export default AddUser;
+export default UserLogin;

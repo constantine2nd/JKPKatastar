@@ -2,8 +2,6 @@ import Grave from "../models/graveModel.js";
 import Deceased from "../models/deceasedModel.js";
 import Payer from "../models/payerModel.js";
 import GraveType from "../models/graveTypeModel.js";
-import Proba from "../models/probaModel.js";
-import Pok from "../models/pokModel.js";
 //import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 

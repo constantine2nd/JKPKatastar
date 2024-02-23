@@ -1,62 +1,54 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 import Container from "@mui/material/Container";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import {
-  addUserVisitor,
-  getUserError,
-  getUserStatus,
-} from "../features/userSlice";
-import { useEffect } from "react";
-import Loader from "../components/Loader";
-import { useTranslation } from "react-i18next";
-import { Copyright } from "../components/Copyright";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useFormik } from "formik";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { object, string } from "yup";
-import { ServerErrorComponent } from "../components/ServerErrorComponent";
+import { Copyright } from "../../components/Copyright";
+import Loader from "../../components/Loader";
+import { ServerErrorComponent } from "../../components/ServerErrorComponent";
+import { getUserError, getUserStatus, loginUser } from "../../features/userSlice";
 
 const watchServerErrors: string[] = [
-  "SERVER_ERR_USER_ALREADY_EXISTS",
-  "SERVER_ERR_CONFIRM_PASSWORD",
-  "SERVER_ERR_CANNOT_ADD_USER",
+  "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+  "SERVER_ERR_USER_IS_NOT_VERIFIED",
+  "SERVER_ERR_PASSWORD_IS_MANDATORY",
+  "SERVER_ERR_USERNAME_IS_MANDATORY",
 ];
 
-export default function SignUp() {
+export default function SignIn() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch<any>();
 
   interface IFormValues {
-    name: string;
     email: string;
     password: string;
-    "repeated-password": string;
   }
 
   const initialValues: IFormValues = {
-    name: "",
     email: "",
-    "repeated-password": "",
     password: "",
   };
 
   const validationSchema = object({
-    name: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
     password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    "repeated-password": string().required(
-      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
-    ),
+    email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
   });
 
   const onSubmit = (values: IFormValues) => {
     console.log(values);
-    dispatch(addUserVisitor(values));
+    dispatch(loginUser(values));
   };
 
   const formik = useFormik<IFormValues>({
@@ -73,7 +65,7 @@ export default function SignUp() {
     if (userStatus === "succeeded") {
       navigate("/landing");
     }
-  }, [navigate, userStatus, error]);
+  }, [navigate, userStatus]);
 
   if (userStatus === "loading") {
     return <Loader />;
@@ -93,7 +85,7 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {t("Sign up")}
+          {t("Sign in")}
         </Typography>
         <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Box
@@ -106,25 +98,11 @@ export default function SignUp() {
             margin="normal"
             required
             fullWidth
-            id="name"
-            label={t("name")}
-            name="name"
-            autoComplete="name"
-            autoFocus
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
             id="email"
             label={t("email")}
             name="email"
             autoComplete="email"
+            autoFocus
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -146,26 +124,9 @@ export default function SignUp() {
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="repeated-password"
-            label={t("repeat-password")}
-            type="password"
-            id="repeated-password"
-            autoComplete="current-password"
-            value={formik.values["repeated-password"]}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched["repeated-password"] &&
-              Boolean(formik.errors["repeated-password"])
-            }
-            helperText={
-              formik.touched["repeated-password"] &&
-              formik.errors["repeated-password"]
-            }
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label={t("Remember me")}
           />
           <Button
             type="submit"
@@ -173,8 +134,20 @@ export default function SignUp() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Sign up")}
+            {t("Sign in")}
           </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link href="/reset-password-initiation" variant="body2">
+                {t("Forgot password?")}
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href="/add-user" variant="body2">
+                {t("Don't have an account? Sign Up")}
+              </Link>
+            </Grid>
+          </Grid>
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />

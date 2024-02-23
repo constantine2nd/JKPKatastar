@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchCemeteries,
   selectAllCemeteries,
-} from "../features/cemeteriesSlice";
+} from "../../features/cemeteriesSlice";
 
 function ExcelToJsonConverter() {
   const [file, setFile] = useState<File | null>(null);

@@ -20,18 +20,18 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import axios from "axios";
 
-import { Cemetery } from "../interfaces/CemeteryInterfaces";
+import { Cemetery } from "../../interfaces/CemeteryInterfaces";
 import {
   fetchCemeteries,
   selectAllCemeteries,
-} from "../features/cemeteriesSlice";
+} from "../../features/cemeteriesSlice";
 import {
   fetchGravesForCemetary,
   selectAllGraves,
-} from "../features/gravesSlice";
-import MapStepperComponent from "../components/MapStepperComponent";
-import { Grave } from "../interfaces/GraveIntefaces";
-import { composeErrorMessage } from "../components/CommonFuntions";
+} from "../../features/gravesSlice";
+import MapStepperComponent from "../../components/MapStepperComponent";
+import { Grave } from "../../interfaces/GraveIntefaces";
+import { composeErrorMessage } from "../../components/CommonFuntions";
 
 const mapStyles = {
   width: "70%",

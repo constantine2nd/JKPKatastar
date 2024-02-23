@@ -20,15 +20,15 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
-import { getLanguage } from "../utils/languageSelector";
-import { GraveType } from "../interfaces/GraveTypeInterfaces";
+import { getLanguage } from "../../utils/languageSelector";
+import { GraveType } from "../../interfaces/GraveTypeInterfaces";
 import { t } from "i18next";
 import {
   useCreateRow,
   useDeleteRow,
   useGetRows,
   useUpdateRow,
-} from "../hooks/useCrudHooks";
+} from "../../hooks/useCrudHooks";
 
 // Defines the name of the react query
 const queryFunction = "grave-types-all";

@@ -1,22 +1,22 @@
-import React, { useEffect } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import { Autocomplete } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { useSelector, useDispatch } from "react-redux";
-import MenuItem from "@mui/material/MenuItem";
+import { Autocomplete } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import DeceasedTableComponent from "../components/DeceasedTableComponent";
+import { useDispatch, useSelector } from "react-redux";
+import DeceasedTableComponent from "../../components/DeceasedTableComponent";
 import {
   fetchCemeteries,
-  selectAllCemeteries,
   getAllCemeteriesError,
   getAllCemeteriesStatus,
-} from "../features/cemeteriesSlice";
+  selectAllCemeteries,
+} from "../../features/cemeteriesSlice";
 
 const mobile = `"name"
 "surname"

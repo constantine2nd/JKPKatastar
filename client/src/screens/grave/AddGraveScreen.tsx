@@ -12,9 +12,9 @@ import {
 import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { addSingleGrave } from "../features/gravesSlice";
+import { addSingleGrave } from "../../features/gravesSlice";
 import { useTranslation } from "react-i18next";
-import { getSelectedCemetery } from "../utils/cemeterySelector";
+import { getSelectedCemetery } from "../../utils/cemeterySelector";
 
 interface FormData {
   graveNumber: string;

@@ -1,43 +1,39 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import axios from "axios";
-import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 import ButtonMUI from "@mui/material/Button";
+import { Modal } from "react-bootstrap";
 
-import { dateFormatter } from "../utils/dateFormatter";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 import {
-  selectAllGraves,
-  fetchAllGraves,
-  getGravesStatus,
-  getGravesError,
   deleteSingleGrave,
-} from "../features/gravesSlice";
-import { selectUser } from "../features/userSlice";
+  fetchAllGraves,
+  getGravesError,
+  getGravesStatus,
+  selectAllGraves,
+} from "../../features/gravesSlice";
+import { selectUser } from "../../features/userSlice";
+import { GraveData } from "../../interfaces/GraveIntefaces.js";
 import "./GraveTableScreen.css";
-import { Grave, GraveData } from "../interfaces/GraveIntefaces";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
 
 // MUI Table
-import { Box, createTheme, ThemeProvider, useTheme } from "@mui/material";
-import { darken, styled } from "@mui/material/styles";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material";
+import { darken } from "@mui/material/styles";
 
 // MUI Chip
-import Chip from "@mui/material/Chip";
 import { srRS } from "@mui/material/locale";
-import { getLanguage } from "../utils/languageSelector";
-import { DeleteAndMaybeRemoveButton } from "../components/DetailAndMaybeRemoveButton";
+import { DeleteAndMaybeRemoveButton } from "../../components/DetailAndMaybeRemoveButton";
+import { getLanguage } from "../../utils/languageSelector.js";
 
 import {
   MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef, //if using TypeScript (optional, but recommended)
+  type MRT_ColumnDef
 } from "material-react-table";
-import { capacity, capacityExt, expiredContract, statusOfGrave } from "../components/CommonFuntions";
-import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
+import { capacityExt, expiredContract, statusOfGrave } from "../../components/CommonFuntions";
+import { ADMINISTRATOR, OFFICER } from "../../utils/constant.js";
 
 
 const GravesTableScreen: React.FC = () => {

@@ -12,8 +12,8 @@ import TableContainerMUI from "@mui/material/TableContainer";
 import TableHeadMUI from "@mui/material/TableHead";
 import TableRowMUI from "@mui/material/TableRow";
 import PaperMUI from "@mui/material/Paper";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 //Import Material React Table Translations
@@ -28,10 +28,10 @@ import {
   selectAllGraveTypes,
   getAllGraveTypesStatus,
   getAllGraveTypesError,
-} from "../features/graveTypesSlice";
+} from "../../features/graveTypesSlice";
 
-import { GraveType } from "../interfaces/GraveTypeInterfaces";
-import { getLanguage } from "../utils/languageSelector";
+import { GraveType } from "../../interfaces/GraveTypeInterfaces";
+import { getLanguage } from "../../utils/languageSelector";
 import { t } from "i18next";
 
 const GraveTypesTableScreen: React.FC = () => {
