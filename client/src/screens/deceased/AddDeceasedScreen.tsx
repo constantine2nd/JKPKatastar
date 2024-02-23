@@ -15,7 +15,7 @@ import {
   Form as BootstrapForm,
 } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { addDeacesed } from "../features/singleGraveSlice";
+import { addDeacesed } from "../../features/singleGraveSlice";
 
 interface FormData {
   name: string;

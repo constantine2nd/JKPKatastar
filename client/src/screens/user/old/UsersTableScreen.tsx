@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 // MUI Table
 import { darken } from "@mui/material";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
+import Loader from "../../../components/Loader";
+import Message from "../../../components/Message";
 
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 
@@ -13,11 +13,11 @@ import {
   getAllUsersError,
   getAllUsersStatus,
   getAllUsers,
-} from "../features/allUsersSlice";
+} from "../../../features/allUsersSlice";
 
-import { User } from "../interfaces/UserInterfaces";
-import { getLanguage } from "../utils/languageSelector";
-import { isActiveUser } from "../components/CommonFuntions";
+import { User } from "../../../interfaces/UserInterfaces";
+import { getLanguage } from "../../../utils/languageSelector";
+import { isActiveUser } from "../../../components/CommonFuntions";
 
 const UsersTableScreen: React.FC = () => {
   const { t, i18n } = useTranslation();

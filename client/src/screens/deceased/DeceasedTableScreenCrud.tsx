@@ -21,16 +21,16 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
-import { getLanguage } from "../utils/languageSelector";
-import { Deceased, Payer } from "../interfaces/GraveIntefaces";
+import { getLanguage } from "../../utils/languageSelector";
+import { Deceased, Payer } from "../../interfaces/GraveIntefaces";
 import { t } from "i18next";
 import {
   useCreateRow,
   useDeleteRow,
   useGetRows,
   useUpdateRow,
-} from "../hooks/useCrudHooks";
-import { dateFormatter, dateCalendarFormatter } from "../utils/dateFormatter";
+} from "../../hooks/useCrudHooks";
+import { dateFormatter, dateCalendarFormatter } from "../../utils/dateFormatter";
 
 // Defines the name of the react query
 const queryFunction = "deceased-all";

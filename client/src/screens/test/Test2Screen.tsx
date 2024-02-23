@@ -8,10 +8,10 @@ import {
   type MRT_PaginationState,
   type MRT_SortingState,
 } from "material-react-table";
-import { Grave, GraveData, Deceased } from "../interfaces/GraveIntefaces";
+import { Grave, GraveData, Deceased } from "../../interfaces/GraveIntefaces";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "react-i18next";
-import { dateFormatter } from "../utils/dateFormatter";
+import { dateFormatter } from "../../utils/dateFormatter";
 
 const dateOfBirth = (date: string) => {
   return <Chip label={dateFormatter(date)} color="success" />;

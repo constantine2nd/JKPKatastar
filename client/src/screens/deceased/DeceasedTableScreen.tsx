@@ -1,36 +1,34 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate, createSearchParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
-import axios from "axios";
-import { Modal, Form, Row, Col, Button, Table } from "react-bootstrap";
 import ButtonMUI from "@mui/material/Button";
-import Tooltip from "@mui/material";
+import { Modal } from "react-bootstrap";
 
-import { dateFormatter } from "../utils/dateFormatter";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 import {
   fetchDeceased,
-  selectAllDeceased,
-  getDeceasedStatus,
   getDeceasedError,
-} from "../features/deceasedSlice";
-import { selectUser } from "../features/userSlice";
-import "./GraveTableScreen.css";
-import { Grave, GraveData, Deceased } from "../interfaces/GraveIntefaces";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
+  getDeceasedStatus,
+  selectAllDeceased,
+} from "../../features/deceasedSlice";
+import { selectUser } from "../../features/userSlice";
+import { Deceased } from "../../interfaces/GraveIntefaces";
+import { dateFormatter } from "../../utils/dateFormatter.js";
+import "../grave/GraveTableScreen.css";
 
 // MUI Table
 import { createTheme, ThemeProvider, useTheme } from "@mui/material";
-import { darken, styled } from "@mui/material/styles";
+import { darken } from "@mui/material/styles";
 
 // MUI Chip
 import Chip from "@mui/material/Chip";
-import { MRT_ColumnDef, MaterialReactTable } from "material-react-table";
-import { getLanguage } from "../utils/languageSelector";
 import { srRS } from "@mui/material/locale";
-import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
+import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
+import { ADMINISTRATOR, OFFICER } from "../../utils/constant.js";
+import { getLanguage } from "../../utils/languageSelector.js";
 
 const capacity = (capacity: string, numberOfDeceaseds: string) => {
   let result = null;

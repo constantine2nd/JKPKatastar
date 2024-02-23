@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import MapComponent from "../components/MapComponent";
-import OpenMapComponent from "../components/OpenMapComponent";
+import MapComponent from "../../components/MapComponent";
+import OpenMapComponent from "../../components/OpenMapComponent";
 
 const Test3Screen = () => {
   return (

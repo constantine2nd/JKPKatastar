@@ -29,6 +29,12 @@
     "SERVER_ERR_PASSWORD_IS_MANDATORY": "A jelszó kötelező",
     "SERVER_ERR_USER_IS_NOT_VERIFIED": "A felhasználó nincs ellenőrizve"
   },
+  "search-deceased": {
+    "search": "Keresés",
+    "birth-year": "Születési év",
+    "death-year-from": "Halálozás éve - dátumtól számítva",
+    "death-year-to": "Halálozás éve – a mai napig"
+  },
   "token": "Token",
   "dateBirth": "Születési dátum",
   "dateDeath": "Halál dátuma",

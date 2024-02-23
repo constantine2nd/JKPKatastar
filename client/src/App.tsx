@@ -1,41 +1,40 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
-import { Route, Routes } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
-import AddGraveScreen from "./screens/AddGraveScreen";
-import AddDeceasedScreen from "./screens/AddDeceasedScreen";
-import AddPayerScreen from "./screens/AddPayerScreen";
-import SingleGraveScreen from "./screens/SingleGraveScreen";
-import GravesTableScreen from "./screens/GravesTableScreen";
-import AddUserScreenMUI from "./screens/AddUserScreenMUI";
-import LoginScreen from "./screens/LoginScreen";
-import UsersTableScreen from "./screens/UsersTableScreen";
-import UsersTableScreenCrudWithProviders from "./screens/UsersTableScreenCrud";
-import DeceasedTableScreen from "./screens/DeceasedTableScreen";
 import LandingScreen from "./screens/LandingScreen";
+import AddDeceasedScreen from "./screens/deceased/AddDeceasedScreen";
+import DeceasedTableScreen from "./screens/deceased/DeceasedTableScreen";
+import AddGraveScreen from "./screens/grave/AddGraveScreen";
+import GravesTableScreen from "./screens/grave/GravesTableScreen";
+import SingleGraveScreen from "./screens/grave/SingleGraveScreen";
+import AddPayerScreen from "./screens/payer/AddPayerScreen";
+import AddUserScreenMUI from "./screens/user/AddUserScreenMUI";
+import UsersTableScreenCrudWithProviders from "./screens/user/UsersTableScreenCrud";
+import UsersTableScreen from "./screens/user/old/UsersTableScreen";
 
 //Date Picker Imports - these should just be in your Context Provider
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import CemeteriesTableScreenCrud from "./screens/CemeteriesTableScreenCrud";
-import GraveTypesTableScreen from "./screens/GraveTypesTableScreen";
-import GraveTypesTableScreenCrud from "./screens/GraveTypesTableScreenCrud";
-import TestScreen from "./screens/TestScreen";
-import Test2Screen from "./screens/Test2Screen";
-import Test3Screen from "./screens/Test3Screen";
-import GraveRequestTableScreenCrud from "./screens/GraveRequestTableScreenCrud";
-import GraveRequestStepperScreen from "./screens/GraveRequestStepperScreen";
-import GravesTableScreenCrudWithProviders from "./screens/GravesTableScreenCrud";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import LoginScreenMUI from "./screens/LoginScreenMUI";
-import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import EmailVerificationScreen from "./screens/EmailVerificationScreen";
-import ResetPasswordInitiation from "./screens/ResetPasswordInitiationScreen";
-import ResetPassword from "./screens/ResetPasswordScreen";
-import ExcelToJsonConverterScreen from "./screens/ConvertExcelScreen";
-import DeceasedSearchScreen from "./screens/DeceasedSearchScreen";
-import ExcelToJsonConverterOnlyGraves from "./screens/ConvertExcelScreenOnlyGraves";
+import CemeteriesTableScreenCrud from "./screens/CemeteriesTableScreenCrud";
+import DeceasedSearchScreen from "./screens/deceased/DeceasedSearchScreen";
+import GravesTableScreenCrudWithProviders from "./screens/grave/GravesTableScreenCrud";
+import GraveRequestStepperScreen from "./screens/graverequest/GraveRequestStepperScreen";
+import GraveRequestTableScreenCrud from "./screens/graverequest/GraveRequestTableScreenCrud";
+import GraveTypesTableScreen from "./screens/gravetype/GraveTypesTableScreen";
+import GraveTypesTableScreenCrud from "./screens/gravetype/GraveTypesTableScreenCrud";
+import ExcelToJsonConverterScreen from "./screens/importdata/ConvertExcelScreen";
+import ExcelToJsonConverterOnlyGraves from "./screens/importdata/ConvertExcelScreenOnlyGraves";
+import Test2Screen from "./screens/test/Test2Screen";
+import Test3Screen from "./screens/test/Test3Screen";
+import TestScreen from "./screens/test/TestScreen.js";
+import EmailVerificationScreen from "./screens/user/EmailVerificationScreen";
+import LoginScreenMUI from "./screens/user/LoginScreenMUI";
+import ResetPasswordInitiation from "./screens/user/ResetPasswordInitiationScreen";
+import ResetPassword from "./screens/user/ResetPasswordScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},

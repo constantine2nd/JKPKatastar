@@ -20,16 +20,16 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
-import { getLanguage } from "../utils/languageSelector";
-import { Payer } from "../interfaces/GraveIntefaces";
+import { getLanguage } from "../../utils/languageSelector";
+import { Payer } from "../../interfaces/GraveIntefaces";
 import { t } from "i18next";
 import {
   useCreateRow,
   useDeleteRow,
   useGetRows,
   useUpdateRow,
-} from "../hooks/useCrudHooks";
-import { isActivePayer } from "../components/CommonFuntions";
+} from "../../hooks/useCrudHooks";
+import { isActivePayer } from "../../components/CommonFuntions";
 
 // Defines the name of the react query
 const queryFunction = "payer-all";

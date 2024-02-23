@@ -23,7 +23,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 import { PDFDownloadLink, usePDF } from "@react-pdf/renderer";
-import PDFRenderer from "./../components/PDFRenderer";
+import PDFRenderer from "../../components/PDFRenderer";
 import {
   Document,
   Page,
@@ -34,7 +34,7 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 
-import { dateFormatter } from "../utils/dateFormatter";
+import { dateFormatter } from "../../utils/dateFormatter";
 import "./SingleGraveScreen.css";
 import {
   getGraveError,
@@ -43,18 +43,18 @@ import {
   selectSingleGrave,
   deletePayer,
   deleteDeceased,
-} from "../features/singleGraveSlice";
-import { selectUser } from "../features/userSlice";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import MapComponent from "../components/MapComponent";
-import OpenMapComponent from "../components/OpenMapComponent";
-import PayersTableScreenCrud from "./PayersTableScreenCrud";
+} from "../../features/singleGraveSlice";
+import { selectUser } from "../../features/userSlice";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
+import MapComponent from "../../components/MapComponent";
+import OpenMapComponent from "../../components/OpenMapComponent";
+import PayersTableScreenCrud from "../payer/PayersTableScreenCrud";
 
-import { Grave } from "../interfaces/GraveIntefaces";
+import { Grave } from "../../interfaces/GraveIntefaces";
 import { useTranslation } from "react-i18next";
 import html2canvas from "html2canvas";
-import DeceasedTableScreenCrud from "./DeceasedTableScreenCrud";
+import DeceasedTableScreenCrud from "../deceased/DeceasedTableScreenCrud";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";

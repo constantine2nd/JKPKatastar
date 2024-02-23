@@ -20,33 +20,33 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
-import { getLanguage } from "../utils/languageSelector";
+import { getLanguage } from "../../utils/languageSelector";
 import { t } from "i18next";
 import {
   useCreateRow,
   useDeleteRow,
   useGetRows,
   useUpdateRow,
-} from "../hooks/useCrudHooks";
-import { GraveData as CrudTableType } from "../interfaces/GraveIntefaces";
-import { dateFormatter } from "../utils/dateFormatter";
+} from "../../hooks/useCrudHooks";
+import { GraveData as CrudTableType } from "../../interfaces/GraveIntefaces";
+import { dateFormatter } from "../../utils/dateFormatter";
 import {
   capacityExt,
   expiredContract,
   statusOfGrave,
-} from "../components/CommonFuntions";
+} from "../../components/CommonFuntions";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getAllGraveTypes,
   selectAllGraveTypes,
-} from "../features/graveTypesSlice";
+} from "../../features/graveTypesSlice";
 import {
   fetchCemeteries,
   selectAllCemeteries,
-} from "../features/cemeteriesSlice";
-import { GraveType } from "../interfaces/GraveTypeInterfaces";
-import { Cemetery } from "../interfaces/CemeteryInterfaces";
-import { FREE, OCCUPIED } from "../utils/constant";
+} from "../../features/cemeteriesSlice";
+import { GraveType } from "../../interfaces/GraveTypeInterfaces";
+import { Cemetery } from "../../interfaces/CemeteryInterfaces";
+import { FREE, OCCUPIED } from "../../utils/constant";
 
 // Defines the name of the react query
 const queryFunction = "graves-all";
