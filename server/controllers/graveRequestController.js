@@ -23,12 +23,12 @@ const addGraveRequest = async (req, res, next) => {
       req.body;
 
     const foundGrave = await Grave.findById(graveId);
-    if (foundGrave.status === OCCUPIED) {
+    if (foundGrave.status === "OCCUPIED") {
       res.status(400).send({
         message: "Grave is not free",
       });
     } else {
-      foundGrave.status = OCCUPIED;
+      foundGrave.status = "OCCUPIED";
       const updatedGrave = await foundGrave.save();
       console.log(updatedGrave);
       const newRow = await GraveRequest.create({

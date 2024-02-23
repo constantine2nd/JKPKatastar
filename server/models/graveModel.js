@@ -23,7 +23,8 @@ const graveSchema = mongoose.Schema({
     type: Date,
   },
   status: {
-    type: String, 
+    type: String,
+    default: "FREE",
   },
   cemetery: {
     type: mongoose.Schema.Types.ObjectId,

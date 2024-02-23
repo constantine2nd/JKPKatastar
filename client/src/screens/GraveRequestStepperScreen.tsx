@@ -12,14 +12,12 @@ import Input from "@mui/material/Input";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
-import {
-  Modal,
-  Form,
-  Row,
-  Col,
-  Button as BootstrapButton,
-  Card,
-} from "react-bootstrap";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 import axios from "axios";
 
 import { Cemetery } from "../interfaces/CemeteryInterfaces";
@@ -33,9 +31,7 @@ import {
 } from "../features/gravesSlice";
 import MapStepperComponent from "../components/MapStepperComponent";
 import { Grave } from "../interfaces/GraveIntefaces";
-import {
-  composeErrorMessage,
-} from "../components/CommonFuntions";
+import { composeErrorMessage } from "../components/CommonFuntions";
 
 const mapStyles = {
   width: "70%",
@@ -49,7 +45,22 @@ const iconBaseFree =
 const iconBaseFull =
   "http://maps.google.com/mapfiles/kml/paddle/red-circle-lv.png";
 
+const mobile = `
+  "paper"
+  "name"
+  "surname"
+  "email"
+  "phone"
+  "button"
+  `;
+
+const desktop = `"paper paper paper paper"
+  "name name surname surname"
+  "email email phone phone"
+  ". button button ."`;
+
 const GraveRequestStepperScreen: React.FC = () => {
+  const mobileView = useMediaQuery("(max-width:600px)");
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
   const [selectedCemetery, setSelectedCemetery] = useState<Cemetery>();
   const [selectedGrave, setSelectedGrave] = useState<Grave>();
@@ -92,6 +103,14 @@ const GraveRequestStepperScreen: React.FC = () => {
     setActiveStep(2);
   };
 
+  const calculateGridTemplateAreas = () => {
+    if (mobileView) {
+      return mobile;
+    } else {
+      return desktop;
+    }
+  };
+
   const onSendGraveRequest = async () => {
     const path = `/api/grave-requests/addgraverequest`;
     const config = {
@@ -110,7 +129,10 @@ const GraveRequestStepperScreen: React.FC = () => {
     };
     await axios
       .post(path, dataToSend, config)
-      .then((response) => console.log(response.data))
+      .then((response) => {
+        setActiveStep(3);
+        console.log(response.data);
+      })
       .catch((error) => console.log(window.alert(composeErrorMessage(error))));
   };
   return (
@@ -137,6 +159,11 @@ const GraveRequestStepperScreen: React.FC = () => {
           <Step>
             <StepButton color="inherit" onClick={() => handleStep(2)}>
               <StepLabel>{"Forma za zahtev"}</StepLabel>
+            </StepButton>
+          </Step>
+          <Step>
+            <StepButton color="inherit" onClick={() => handleStep(3)}>
+              <StepLabel>{"Potvrda uspešnog zahteva"}</StepLabel>
             </StepButton>
           </Step>
         </Stepper>
@@ -180,95 +207,108 @@ const GraveRequestStepperScreen: React.FC = () => {
         )}
         {activeStep === 2 && selectedGrave && (
           <>
-            <Card style={{ width: "60%", marginTop: "20px" }}>
-              <Card.Body>
-                <Card.Title>Podaci o grobnom mestu</Card.Title>
-                <Row>
-                  <Col>
-                    <h4>
-                      {t("number")}: {selectedGrave.number}
-                    </h4>
-                  </Col>
-                  <Col>
-                    <h4>
-                      {t("field")}: {selectedGrave.field}
-                    </h4>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <h4>
-                      {t("row")}: {selectedGrave.row}
-                    </h4>
-                  </Col>
-                  <Col>
-                    <h4>
-                      {t("capacity")}: {selectedGrave.graveType.capacity}
-                    </h4>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-            <FormControl>
-              <InputLabel htmlFor="my-input-name">Name</InputLabel>
-              <Input
-                id="my-input-name"
-                aria-describedby="my-helper-text-name"
+            <Container
+              component="main"
+              sx={{
+                display: "grid",
+                gap: "10px",
+                flexDirection: "column",
+                alignItems: "center",
+                maxWidth: "80%",
+                gridTemplateAreas: calculateGridTemplateAreas,
+              }}
+            >
+              <Paper
+                square={false}
+                sx={{
+                  width: "100%",
+                  marginTop: "20px",
+                  p: 3,
+                  gridArea: "paper",
+                }}
+              >
+                <h4>
+                  {t("number")}: {selectedGrave.number}
+                </h4>
+                <h4>
+                  {t("row")}: {selectedGrave.row}
+                </h4>
+                <h4>
+                  {t("field")}: {selectedGrave.field}
+                </h4>
+                <h4>
+                  {t("capacity")}: {selectedGrave.graveType.capacity}
+                </h4>
+              </Paper>
+
+              <TextField
+                sx={{ gridArea: "name" }}
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label={"name"}
+                name="name"
+                autoComplete="name"
+                autoFocus
                 value={name}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setName(event.target.value)
-                }
+                onChange={(e) => setName(e.target.value)}
               />
-              <FormHelperText id="my-helper-text-name">
-                Please enter your name.
-              </FormHelperText>
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="my-input-surname">Surname</InputLabel>
-              <Input
-                id="my-input-surname"
-                aria-describedby="my-helper-text-surname"
+              <TextField
+                sx={{ gridArea: "surname" }}
+                margin="normal"
+                required
+                fullWidth
+                id="surname"
+                label={"surname"}
+                name="surname"
+                autoComplete="surname"
+                autoFocus
                 value={surname}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setSurname(event.target.value)
-                }
+                onChange={(e) => setSurname(e.target.value)}
               />
-              <FormHelperText id="my-helper-text-surname">
-                Please enter your suname.
-              </FormHelperText>
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="my-input-email">Email address</InputLabel>
-              <Input
-                id="my-input-email"
-                aria-describedby="my-helper-text-email"
+              <TextField
+                sx={{ gridArea: "email" }}
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label={"email"}
+                name="email"
+                autoComplete="email"
+                autoFocus
                 value={email}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(event.target.value)
-                }
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <FormHelperText id="my-helper-text-email">
-                Please enter your email.
-              </FormHelperText>
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="my-input-phone">Phone number</InputLabel>
-              <Input
-                id="my-input-phone"
-                aria-describedby="my-helper-text-phone"
+              <TextField
+                sx={{ gridArea: "phone" }}
+                margin="normal"
+                required
+                fullWidth
+                id="phone"
+                label={"phone"}
+                name="phone"
+                autoComplete="phone"
+                autoFocus
                 value={phone}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setPhone(event.target.value)
-                }
+                onChange={(e) => setPhone(e.target.value)}
               />
-              <FormHelperText id="my-helper-text-phone">
-                Please enter your suname phone number.
-              </FormHelperText>
-            </FormControl>
-            <BootstrapButton onClick={onSendGraveRequest}>
-              Send request
-            </BootstrapButton>
+
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ gridArea: "button" }}
+                onClick={onSendGraveRequest}
+              >
+                {"Send request"}
+              </Button>
+            </Container>
           </>
+        )}
+        {activeStep === 3 && (
+          <Box sx={{ width: "50%", margin: "30px" }}>
+            <h4>Vas zahtev za grobnim mestom je poslat</h4>
+          </Box>
         )}
       </Box>
     </>

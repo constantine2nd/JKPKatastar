@@ -1,11 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
+import TextField, { OutlinedTextFieldProps } from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import { Autocomplete, AutocompleteRenderInputParams } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getAllGraveTypes,
+  selectAllGraveTypes,
+} from "../features/graveTypesSlice";
 
-import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
+import {
+  Map,
+  GoogleApiWrapper,
+  Marker,
+  Polygon,
+  InfoWindow,
+} from "google-maps-react";
 
 const mapStyles = {
   width: "70%",
   height: "70%",
-  top: "250px",
+  top: "350px",
   left: "220px",
 };
 
@@ -31,7 +49,14 @@ const getSizeOfMarker = (zoom) => {
 
 const MapStepperComponent = (props) => {
   const [currentZoom, setCurrentZoom] = useState(19);
+  const [graveTypeIds, setGraveTypeIds] = useState([]);
+  const graveTypes = useSelector(selectAllGraveTypes);
+  const dispatch = useDispatch();
   const mapRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(getAllGraveTypes());
+  }, []);
   //const mapRef = useRef(null);
   useEffect(() => {
     if (mapRef.current) {
@@ -49,8 +74,45 @@ const MapStepperComponent = (props) => {
     }
   }, []);
 
+  const handleChangeGraveType = (event, value) => {
+    let slelectedGraveTypeIds = value.map((graveType) => graveType._id);
+    setGraveTypeIds(slelectedGraveTypeIds);
+  };
+
   return (
     <>
+      <FormControl
+        margin="normal"
+        fullWidth
+        sx={{ gridArea: "cemetery", width: "400px" }}
+      >
+        <Autocomplete
+          onChange={handleChangeGraveType}
+          multiple
+          options={graveTypes}
+          getOptionLabel={(option) => `${option.name} - ${option.description}`}
+          disableCloseOnSelect
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label="Multiple Autocomplete"
+              placeholder="Multiple Autocomplete"
+            />
+          )}
+          renderOption={(props, option, { selected }) => (
+            <MenuItem
+              {...props}
+              key={option._id}
+              value={option._id}
+              sx={{ justifyContent: "space-between" }}
+            >
+              {option.name} - {option.description}
+              {selected ? <CheckIcon color="info" /> : null}
+            </MenuItem>
+          )}
+        />
+      </FormControl>
       <Map
         containerStyle={mapStyles}
         ref={mapRef}
@@ -62,27 +124,36 @@ const MapStepperComponent = (props) => {
         }}
         mapType="satellite"
       >
-        {props.graves.map((grave) => {
-          const iconUrl =
-            grave.capacity - grave.numberOfDeceaseds > 0
-              ? iconBaseFree
-              : iconBaseFull;
-          return (
-            <Marker
-              key={grave._id}
-              position={{ lat: grave.LAT, lng: grave.LON }}
-              icon={{
-                url: iconUrl,
-                scaledSize: new props.google.maps.Size(
-                  getSizeOfMarker(currentZoom),
-                  getSizeOfMarker(currentZoom)
-                ),
-                rotation: 45,
-              }}
-              onClick={() => props.onClickHandler(grave)}
-            />
-          );
-        })}
+        {props.graves
+          .filter((grave) => {
+            return (
+              graveTypeIds.length === 0 ||
+              graveTypeIds.some((id) => id === grave.graveType)
+            );
+          })
+          .map((grave) => {
+            const iconUrl =
+              grave.status !== "OCCUPIED" ? iconBaseFree : iconBaseFull;
+            return (
+              <Marker
+                key={grave._id}
+                position={{ lat: grave.LAT, lng: grave.LON }}
+                icon={{
+                  url: iconUrl,
+                  scaledSize: new props.google.maps.Size(
+                    getSizeOfMarker(currentZoom),
+                    getSizeOfMarker(currentZoom)
+                  ),
+                  rotation: 45,
+                }}
+                onClick={() => props.onClickHandler(grave)}
+              >
+                <InfoWindow>
+                  <h4>{"info"}</h4>
+                </InfoWindow>
+              </Marker>
+            );
+          })}
       </Map>
     </>
   );

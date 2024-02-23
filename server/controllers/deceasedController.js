@@ -282,7 +282,7 @@ const getDeceasedSearch = async (req, res, next) => {
           surname: item.surname,
           dateBirth: item.dateBirth,
           dateDeath: item.dateDeath,
-          cemetery: item.cemeteryInfo[0].name,
+          cemetery: item.cemeteryInfo[0]?.name,
         };
       });
       res.send(deceasedToSend);

@@ -35,6 +35,7 @@ import ResetPasswordInitiation from "./screens/ResetPasswordInitiationScreen";
 import ResetPassword from "./screens/ResetPasswordScreen";
 import ExcelToJsonConverterScreen from "./screens/ConvertExcelScreen";
 import DeceasedSearchScreen from "./screens/DeceasedSearchScreen";
+import ExcelToJsonConverterOnlyGraves from "./screens/ConvertExcelScreenOnlyGraves";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -101,6 +102,10 @@ function App() {
                 <Route
                   path="/excel-to-json"
                   element={<ExcelToJsonConverterScreen />}
+                />
+                <Route
+                  path="/excel-to-json-only-graves"
+                  element={<ExcelToJsonConverterOnlyGraves />}
                 />
                 <Route
                   path="/verify-email"
