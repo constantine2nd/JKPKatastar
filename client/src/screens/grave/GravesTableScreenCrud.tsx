@@ -190,7 +190,7 @@ const GravesTableScreenCrud = () => {
       header: t("status"),
       editVariant: "select",
       editSelectOptions: statuses,
-      Cell: ({ row }) => statusOfGrave(row.original.status, t),
+      Cell: ({ row }) => statusOfGrave(row.original.status),
     },
   ];
 

@@ -154,7 +154,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       muiEditTextFieldProps: {
         select: true,
       },
-      Cell: ({ row }) => isActivePayer(row.original.active, t),
+      Cell: ({ row }) => isActivePayer(row.original.active),
     },
   ];
 

@@ -29,6 +29,18 @@
     "SERVER_ERR_PASSWORD_IS_MANDATORY": "A jelszó kötelező",
     "SERVER_ERR_USER_IS_NOT_VERIFIED": "A felhasználó nincs ellenőrizve"
   },
+  "menu": {
+    "view-deceased": "Az elhunyt kivizsgálása",
+    "search-deceased": "Keresd az elhunytat",
+    "view-grave": "A sírhelyek áttekintése",
+    "grave-request": "Súlyos kérés",
+    "cemeteries": "Temetők",
+    "user-management": "Felhasználókezelés",
+    "grave-types": "Sírfajták"
+  },
+  "grave": {
+    "add-contract-date": "Adja hozzá a szerződés dátumát"
+  },
   "search-deceased": {
     "search": "Keresés",
     "birth-year": "Születési év",

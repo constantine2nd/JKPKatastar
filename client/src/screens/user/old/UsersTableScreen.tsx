@@ -44,7 +44,7 @@ const UsersTableScreen: React.FC = () => {
     {
       accessorKey: "isActive",
       header: t("Active"),
-      Cell: ({ row }) => isActiveUser(row.original.isActive, t),
+      Cell: ({ row }) => isActiveUser(row.original.isActive),
     },
   ];
   const usersStatus = useSelector(getAllUsersStatus);

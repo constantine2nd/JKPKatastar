@@ -130,7 +130,7 @@ const GraveRequestTableScreenCrud = () => {
       editVariant: 'select',
       editSelectOptions: statuses,
       Cell: ({ row }) => (
-        statusOfGraveRequest(row.original.status, t)
+        statusOfGraveRequest(row.original.status)
       ),
     },
     {

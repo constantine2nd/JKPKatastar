@@ -28,6 +28,18 @@
     "SERVER_ERR_PASSWORD_IS_MANDATORY": "Lozinka je obavezna",
     "SERVER_ERR_USER_IS_NOT_VERIFIED": "Korisnik nije verifikovan"
   },
+  "menu": {
+    "view-deceased": "Pregled pokojnika",
+    "search-deceased": "Pretraga pokojnika",
+    "view-grave": "Pregled grobnih mesta",
+    "grave-request": "Zahtev za grobno mesto",
+    "cemeteries": "Groblja",
+    "user-management": "Korisnici",
+    "grave-types": "Tipovi grobnih mesta"
+  },
+  "grave": {
+    "add-contract-date": "Unesite datum isteka ugovora"
+  },
   "search-deceased": {
     "search": "Pretraga",
     "birth-year": "Godina rođenja",

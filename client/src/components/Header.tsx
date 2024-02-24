@@ -31,35 +31,40 @@ import Login from "@mui/icons-material/Login";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import { ADMINISTRATOR, OFFICER, VISITOR } from "../utils/constant.js";
 
-const pages = [
-  { item: "Pregled pokojnika", link: "deceased-table", roles: [] },
-  { item: "Pretraga pokojnika", link: "search-deceased", roles: [] },
-  // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
-  { item: "Pregled GM CRUD", link: "graves-table-crud", roles: [] },
-  {
-    item: "Zahtev za grobno mesto",
-    link: "grave-requests-crud",
-    roles: [VISITOR, OFFICER, ADMINISTRATOR],
-  },
-  {
-    item: "Cemeteries managment",
-    link: "cemeteries-table-crud",
-    roles: [OFFICER, ADMINISTRATOR],
-  },
-  {
-    item: "User management",
-    link: "users-table-crud",
-    roles: [ADMINISTRATOR],
-  },
-  // { item: "Grave Types MGM", link: "grave-types-table" },
-  {
-    item: "Grave Types MGM CRUD",
-    link: "grave-types-crud",
-    roles: [OFFICER, ADMINISTRATOR],
-  },
-];
+
 
 const Header = () => {
+
+  const { t, i18n } = useTranslation();
+
+  const pages = [
+    { item: t("menu.view-deceased"), link: "deceased-table", roles: [] },
+    { item: t("menu.search-deceased"), link: "search-deceased", roles: [] },
+    // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
+    { item: t("menu.view-grave"), link: "graves-table-crud", roles: [] },
+    {
+      item: t("menu.grave-request"),
+      link: "grave-requests-crud",
+      roles: [VISITOR, OFFICER, ADMINISTRATOR],
+    },
+    {
+      item: t("menu.cemeteries"),
+      link: "cemeteries-table-crud",
+      roles: [OFFICER, ADMINISTRATOR],
+    },
+    {
+      item: t("menu.user-management"),
+      link: "users-table-crud",
+      roles: [ADMINISTRATOR],
+    },
+    // { item: "Grave Types MGM", link: "grave-types-table" },
+    {
+      item: t("menu.grave-types"),
+      link: "grave-types-crud",
+      roles: [OFFICER, ADMINISTRATOR],
+    },
+  ];
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -85,7 +90,6 @@ const Header = () => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
 
-  const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState("sr");
   const user = useSelector(selectUser);
 
@@ -210,10 +214,7 @@ const Header = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar
-                    alt={user?.name}
-                    src={user?.avatarUrl}
-                  />
+                  <Avatar alt={user?.name} src={user?.avatarUrl} />
                 </IconButton>
               </Tooltip>
               <Menu

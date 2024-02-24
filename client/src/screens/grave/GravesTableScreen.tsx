@@ -96,7 +96,7 @@ const GravesTableScreen: React.FC = () => {
       editVariant: 'select',
       editSelectOptions: statuses,
       Cell: ({ row }) => (
-        statusOfGrave(row.original.status, t)
+        statusOfGrave(row.original.status)
       ),
     },
     {

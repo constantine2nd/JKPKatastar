@@ -107,7 +107,7 @@ const UsersTableScreenCrud = () => {
       muiEditTextFieldProps: {
         select: true,
       },
-      Cell: ({ row }) => isActiveUser(row.original.isActive, t),
+      Cell: ({ row }) => isActiveUser(row.original.isActive),
     },
     {
       accessorKey: "isVerified",
@@ -117,7 +117,7 @@ const UsersTableScreenCrud = () => {
       muiEditTextFieldProps: {
         select: true,
       },
-      Cell: ({ row }) => isActiveUser(row.original.isVerified, t),
+      Cell: ({ row }) => isActiveUser(row.original.isVerified),
     },
     {
       accessorKey: "avatarUrl",
