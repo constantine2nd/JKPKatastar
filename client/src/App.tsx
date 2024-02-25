@@ -35,6 +35,7 @@ import EmailVerificationScreen from "./screens/user/EmailVerificationScreen";
 import LoginScreenMUI from "./screens/user/LoginScreenMUI";
 import ResetPasswordInitiation from "./screens/user/ResetPasswordInitiationScreen";
 import ResetPassword from "./screens/user/ResetPasswordScreen";
+import AddGraveScreenMUI from "./screens/grave/AddGraveScreenMUI";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -129,7 +130,7 @@ function App() {
                     />
                   }
                 >
-                  <Route path="/add-grave" element={<AddGraveScreen />} />
+                  <Route path="/add-grave" element={<AddGraveScreenMUI />} />
                   <Route path="/users-table" element={<UsersTableScreen />} />
                   <Route
                     path="/users-table-crud"

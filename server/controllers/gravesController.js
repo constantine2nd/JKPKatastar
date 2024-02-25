@@ -61,12 +61,10 @@ const saveGrave = async (req, res, next) => {
     number: sentGrave.graveNumber,
     row: sentGrave.graveRow,
     field: sentGrave.graveField,
-    LAT: sentGrave.LAT1,
-    LON: sentGrave.LON1,
-    capacity: sentGrave.graveCapacity,
-    contractTo: sentGrave.contractTo,
-    status: sentGrave.status,
-    cemetery: new mongoose.Types.ObjectId(sentGrave.cemeteryId),
+    LAT: sentGrave.LAT,
+    LON: sentGrave.LON,
+    graveType: new mongoose.Types.ObjectId(sentGrave.graveType),
+    cemetery: new mongoose.Types.ObjectId(sentGrave.cemetery),
   });
 
   //const createdGrave = await grave.save();
