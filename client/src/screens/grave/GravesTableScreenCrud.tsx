@@ -11,8 +11,10 @@ import {
 import {
   Box,
   Button,
+  Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   IconButton,
   Tooltip,
@@ -54,9 +56,11 @@ const queryFunction = "graves-all";
 const getPath = "/api/graves/all";
 const createPath = "/api/graves/addgraverequest";
 const updatePath = "/api/graves/updategrave";
-const deletePath = "/api/graves";
+const deletePath = "/api/graves/single";
 
 const GravesTableScreenCrud = () => {
+  const [open, setOpen] = useState(false);
+  const [idOfrowToDelete, setIdOfRowToDelete] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
@@ -244,9 +248,22 @@ const GravesTableScreenCrud = () => {
 
   // DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<CrudTableType>) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    setIdOfRowToDelete(row.original._id);
+    setOpen(true);
+    /* if (window.confirm("Are you sure you want to delete this user?")) {
       deleteRow(row.original._id);
+    } */
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleAgree = () => {
+    if (idOfrowToDelete !== "") {
+      deleteRow(idOfrowToDelete);
     }
+    setOpen(false);
   };
 
   const table = useMaterialReactTable({
@@ -335,7 +352,30 @@ const GravesTableScreenCrud = () => {
     },
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      <MaterialReactTable table={table} />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Deleting grave?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this grave?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleAgree} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 };
 
 const GravesTableScreenCrudWithProviders = () => <GravesTableScreenCrud />;

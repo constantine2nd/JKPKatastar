@@ -2,6 +2,7 @@ import Grave from "../models/graveModel.js";
 import Deceased from "../models/deceasedModel.js";
 import Payer from "../models/payerModel.js";
 import GraveType from "../models/graveTypeModel.js";
+import GraveRequest from "../models/graveRequestModel.js";
 //import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
@@ -238,8 +239,56 @@ const getSingleGrave = async (req, res, next) => {
 const deleteSingleGrave = async (req, res, next) => {
   const graveId = req.params.id;
   try {
+    //Provera da li ima pokojnika
+    const deceasedCount = await Deceased.aggregate([
+      { $match: { grave: new mongoose.Types.ObjectId(graveId) } },
+      { $count: "totalCount" },
+    ]);
+    console.log("Number of deceased: ", deceasedCount);
+    if (deceasedCount.length > 0) {
+      const [{ totalCount }] = deceasedCount;
+      if (totalCount > 0) {
+        res.status(400).send({
+          message:
+            "Cannot delete the grave, you must first delete all deceased",
+        });
+        return;
+      }
+    }
+    //Provera da li ima platioca
+    const payersCount = await Payer.aggregate([
+      { $match: { grave: new mongoose.Types.ObjectId(graveId) } },
+      { $count: "totalCount" },
+    ]);
+    console.log("Number of payers: ", payersCount);
+    if (payersCount.length > 0) {
+      const [{ totalCount }] = payersCount;
+      if (totalCount > 0) {
+        res.status(400).send({
+          message: "Cannot delete the grave, you must first delete all payers",
+        });
+        return;
+      }
+    }
+    //Provera da li ima zahteva
+    const requestsCount = await GraveRequest.aggregate([
+      { $match: { grave: new mongoose.Types.ObjectId(graveId) } },
+      { $count: "totalCount" },
+    ]);
+    console.log("Number of grave requests: ", requestsCount);
+    if (requestsCount.length > 0) {
+      const [{ totalCount }] = requestsCount;
+      if (totalCount > 0) {
+        res.status(400).send({
+          message:
+            "Cannot delete the grave, you must first delete all grave requests",
+        });
+        return;
+      }
+    }
+
     const result = await Grave.deleteOne({ _id: graveId });
-    console.log(res);
+    console.log(result);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
       res.send({ id: graveId });
