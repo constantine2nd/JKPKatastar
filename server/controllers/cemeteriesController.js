@@ -29,7 +29,7 @@ const addCemetery = async (req, res, next) => {
     console.log(newCemetery);
     if (newCemetery) {
       res.status(201).json({
-        ...newCemetery._doc
+        ...newCemetery._doc,
       });
     } else {
       res.status(400).send({
@@ -52,7 +52,7 @@ const updateCemetery = async (req, res, next) => {
 
     if (updatedCemetery) {
       res.status(200).json({
-        ...updatedCemetery._doc
+        ...updatedCemetery._doc,
       });
     } else {
       res.status(400).send({
@@ -78,11 +78,12 @@ const deleteCemetery = async (req, res, next) => {
         res.status(400).send({
           message: "Cannot delete the cemetery",
         });
+        return;
       }
     }
 
     const result = await Cemetery.deleteOne({ _id: id });
-    console.log(res);
+    console.log(result);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
       res.send({ id: id });

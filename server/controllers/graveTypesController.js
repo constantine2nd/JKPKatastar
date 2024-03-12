@@ -71,18 +71,20 @@ const updateGraveType = async (req, res, next) => {
 const deleteGraveType = async (req, res, next) => {
   const id = req.params.id;
   try {
-    GraveType;
-    const gravesTypesCount = await GraveType.aggregate([
+    //Provera da li ima grobnih mesta ovog tipa
+    const gravesCount = await Grave.aggregate([
       { $match: { graveType: new mongoose.Types.ObjectId(id) } },
       { $count: "totalCount" },
     ]);
-    console.log(gravesTypesCount);
-    if (gravesTypesCount.length > 0) {
-      const [{ totalCount }] = gravesTypesCount;
+    console.log(gravesCount);
+    if (gravesCount.length > 0) {
+      const [{ totalCount }] = gravesCount;
       if (totalCount > 0) {
         res.status(400).send({
-          message: "Cannot delete the grave type",
+          message:
+            "Cannot delete the grave type, you must first delete all graves of this grave type",
         });
+        return;
       }
     }
 

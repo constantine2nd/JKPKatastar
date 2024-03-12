@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 import GraveRequest from "../models/graveRequestModel.js";
 import Grave from "../models/graveModel.js";
+import { addLog } from "../utils/log.js";
 
 const getGraveRequests = async (req, res, next) => {
   try {
     const allRows = await GraveRequest.find().sort({ createdAt: "desc" });
     if (allRows) {
+      addLog("Mika", "getGraveRequests", allRows);
       res.send(allRows);
     } else {
       res.status(400).send({
