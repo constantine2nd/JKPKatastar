@@ -261,7 +261,7 @@ const GravesTableScreenCrud = () => {
 
   const handleAgree = () => {
     if (idOfrowToDelete !== "") {
-      deleteRow(idOfrowToDelete);
+      deleteRow(idOfrowToDelete).catch((error) => console.log(error));
     }
     setOpen(false);
   };
