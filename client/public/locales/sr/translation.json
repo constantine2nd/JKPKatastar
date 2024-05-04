@@ -43,8 +43,11 @@
   "search-deceased": {
     "search": "Pretraga",
     "birth-year": "Godina rođenja",
-    "death-year-from": "Datum smrti od",
-    "death-year-to": "Datum smrti do"
+    "cemetery-selection": "Izbor groblja",
+    "death-date-from": "Datum smrti od",
+    "death-date-to": "Datum smrti do",
+    "birth-date-from": "Datum rođenja od",
+    "birth-date-to": "Datum rođenja do"
   },
   "token": "Token",
   "dateBirth": "Datum rođenja",

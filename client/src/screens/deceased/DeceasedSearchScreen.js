@@ -3,6 +3,7 @@ import { Autocomplete } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
@@ -37,9 +38,11 @@ const DeceasedSearchScreen = () => {
   const [cemeteryIds, setCemeteryIds] = React.useState("");
   const [name, setName] = React.useState("");
   const [surname, setSurname] = React.useState("");
-  const [birthYear, setBirthYear] = React.useState();
-  const [deathYearFrom, setDeathYearFrom] = React.useState();
-  const [deathYearTo, setDeathYearTo] = React.useState();
+  // const [birthYear, setBirthYear] = React.useState();
+  const [deathDateFrom, setDeathDateFrom] = React.useState();
+  const [deathDateTo, setDeathDateTo] = React.useState();
+  const [birthDateFrom, setBirthDateFrom] = React.useState();
+  const [birthDateTo, setBirthDateTo] = React.useState();
   const [showTable, setShowTable] = React.useState(false);
   const [path, setPath] = React.useState("");
   const cemeteries = useSelector(selectAllCemeteries);
@@ -75,9 +78,10 @@ const DeceasedSearchScreen = () => {
       cemeteryIds,
       name,
       surname,
-      birthYear: birthYear?.toString() || "",
-      deathYearFrom: deathYearFrom?.toString() || "",
-      deathYearTo: deathYearTo?.toString() || "",
+      birthDateFrom: birthDateFrom?.$d?.toString() || "",
+      birthDateTo: birthDateTo?.$d?.toString() || "",
+      deathDateFrom: deathDateFrom?.$d?.toString() || "",
+      deathDateTo: deathDateTo?.$d?.toString() || "",
     };
 
     const queryParams = new URLSearchParams({
@@ -144,8 +148,8 @@ const DeceasedSearchScreen = () => {
                 <TextField
                   {...params}
                   variant="outlined"
-                  label="Multiple Autocomplete"
-                  placeholder="Multiple Autocomplete"
+                  label={t("search-deceased.cemetery-selection")}
+                  placeholder={t("search-deceased.cemetery-selection")}
                 />
               )}
               renderOption={(props, option, { selected }) => (
@@ -162,7 +166,7 @@ const DeceasedSearchScreen = () => {
             />
           </FormControl>
 
-          <TextField
+          {/* <TextField
             margin="normal"
             sx={{ gridArea: "birth-year" }}
             required
@@ -174,9 +178,21 @@ const DeceasedSearchScreen = () => {
             type="number"
             value={birthYear}
             onChange={(e) => setBirthYear(Number(e.target.value))}
+          /> */}
+          <DatePicker
+            label={t("search-deceased.birth-date-from")}
+            format="D/M/YYYY"
+            value={birthDateFrom}
+            onChange={(newValue) => setBirthDateFrom(newValue)}
+          />
+          <DatePicker
+            label={t("search-deceased.birth-date-to")}
+            format="D/M/YYYY"
+            value={birthDateTo}
+            onChange={(newValue) => setBirthDateTo(newValue)}
           />
 
-          <TextField
+          {/*  <TextField
             margin="normal"
             sx={{ gridArea: "death-year-from" }}
             required
@@ -188,8 +204,21 @@ const DeceasedSearchScreen = () => {
             type="number"
             value={deathYearFrom}
             onChange={(e) => setDeathYearFrom(Number(e.target.value))}
+          /> */}
+          <DatePicker
+            label={t("search-deceased.death-date-from")}
+            format="D/M/YYYY"
+            value={deathDateFrom}
+            onChange={(newValue) => setDeathDateFrom(newValue)}
           />
-          <TextField
+          <DatePicker
+            label={t("search-deceased.death-date-to")}
+            format="D/M/YYYY"
+            value={deathDateTo}
+            onChange={(newValue) => setDeathDateTo(newValue)}
+          />
+
+          {/* <TextField
             margin="normal"
             sx={{ gridArea: "death-year-to" }}
             required
@@ -201,7 +230,7 @@ const DeceasedSearchScreen = () => {
             type="number"
             value={deathYearTo}
             onChange={(e) => setDeathYearTo(Number(e.target.value))}
-          />
+          /> */}
 
           <Button
             type="submit"

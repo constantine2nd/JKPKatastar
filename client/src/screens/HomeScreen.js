@@ -1,8 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Modal, Form, Row, Col, Button } from "react-bootstrap";
+import Button from "@mui/material/Button";
+import { Autocomplete } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import CheckIcon from "@mui/icons-material/Check";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import { Modal, Form, Row, Col } from "react-bootstrap";
 import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 import {
   getGravesError,
@@ -10,6 +24,10 @@ import {
   fetchGravesForCemetary,
   selectAllGraves,
 } from "../features/gravesSlice";
+import {
+  getAllGraveTypes,
+  selectAllGraveTypes,
+} from "../features/graveTypesSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { getSelectedCemetery } from "../utils/cemeterySelector";
@@ -44,9 +62,11 @@ const iconBaseFull =
 const HomeScreen = (props) => {
   const dispatch = useDispatch();
   const graves = useSelector(selectAllGraves);
+  const graveTypes = useSelector(selectAllGraveTypes);
   const gravesStatus = useSelector(getGravesStatus);
   const error = useSelector(getGravesError);
 
+  const [graveTypeIds, setGraveTypeIds] = useState([]);
   const [currentZoom, setCurrentZoom] = useState(19);
   const [selectedGrave, setSelectedGrave] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -56,15 +76,18 @@ const HomeScreen = (props) => {
   const location = useLocation();
   console.log(location.state);
   // const selectedCemetery = location.state?.cemetery;
-  const [selectedCemetery, setCemeteryId] = React.useState(getSelectedCemetery());
+  const [selectedCemetery, setCemeteryId] = React.useState(
+    getSelectedCemetery()
+  );
   //|| location.state?.sender === "ADDGraveSreen"
   useEffect(() => {
-    if(!localStorage.getItem("selected-cemetery")) {
-      navigate("/landing")
+    if (!localStorage.getItem("selected-cemetery")) {
+      navigate("/landing");
     } else {
       if (gravesStatus === "idle") {
         console.log("UPAO");
         dispatch(fetchGravesForCemetary(selectedCemetery?._id));
+        dispatch(getAllGraveTypes());
       }
     }
   }, [gravesStatus, dispatch]);
@@ -75,7 +98,6 @@ const HomeScreen = (props) => {
   }, []); */
 
   useEffect(() => {
-    
     if (mapRef.current) {
       // Dohvatite trenutni zoom nivo
       const newZoom = mapRef.current.map.getZoom();
@@ -112,6 +134,34 @@ const HomeScreen = (props) => {
     );
   }
 
+  function getStatData(graveType, graves) {
+    console.log(graves);
+    console.log(graveType);
+    let fileteredGraves = graves.filter(
+      (grave) => grave.graveType === graveType._id
+    );
+    let numberOfFilteredGraves = fileteredGraves.length;
+    let filteredFreeGraves = fileteredGraves.filter(
+      (grave) => grave.status === "FREE"
+    );
+    let numberOffilteredFreeGraves = filteredFreeGraves.length;
+    let numberOfOccupiedGraves =
+      numberOfFilteredGraves - numberOffilteredFreeGraves;
+    return {
+      graveType: graveType.name,
+      numberOfFilteredGraves,
+      numberOffilteredFreeGraves,
+      numberOfOccupiedGraves,
+    };
+  }
+
+  const rows = graveTypes.map((graveType) => getStatData(graveType, graves));
+
+  const handleChangeGraveType = (event, value) => {
+    let slelectedGraveTypeIds = value.map((graveType) => graveType._id);
+    setGraveTypeIds(slelectedGraveTypeIds);
+  };
+
   return (
     <>
       <div
@@ -124,12 +174,73 @@ const HomeScreen = (props) => {
           alignItems: "center",
         }}
       >
-        <div>Home Screen</div>
-        <h2>Ukupan broj grobnih mesta: {graves.length}</h2>
-        <h2>Ukupan broj grobnih mesta tipa GR6: {graves.filter(grave => grave.graveType.name == 'GR6').length}</h2>
-        <h2>Ukupan broj slobodnih grobnih mesta: {graves.filter(grave => grave.status == 'FREE').length}</h2>
-        <br />
+        <h3>Naziv: {selectedCemetery?.name}</h3>
+        {/* <TableContainer
+          component={Paper}
+          style={{
+            width: "70%",
+          }}
+        > */}
+        <Table sx={{ width: "50%", margin: "10px" }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Grave type</TableCell>
+              <TableCell align="right">Num of graves</TableCell>
+              <TableCell align="right">Num of free graves</TableCell>
+              <TableCell align="right">Num of occupied graves</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.graveType}
+                </TableCell>
+                <TableCell align="right">
+                  {row.numberOfFilteredGraves}
+                </TableCell>
+                <TableCell align="right">
+                  {row.numberOffilteredFreeGraves}
+                </TableCell>
+                <TableCell align="right">
+                  {row.numberOfOccupiedGraves}
+                </TableCell>
+              </TableRow>
+            ))}
+            <TableRow
+              key={0}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                Ukupno:
+              </TableCell>
+              <TableCell align="right">{graves.length}</TableCell>
+              <TableCell align="right">
+                {graves.filter((grave) => grave.status === "FREE").length}
+              </TableCell>
+              <TableCell align="right">
+                {graves.filter((grave) => grave.status === "OCCUPIED").length}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        {/*     </TableContainer> */}
+        {/* <h2>Ukupan broj grobnih mesta: {graves.length}</h2>
+        <h2>
+          Ukupan broj grobnih mesta tipa GR6:{" "}
+          {graves.filter((grave) => grave.graveType.name == "GR6").length}
+        </h2>
+        <h2>
+          Ukupan broj slobodnih grobnih mesta:{" "}
+          {graves.filter((grave) => grave.status == "FREE").length}
+        </h2>
+        <br /> */}
+
         <Button
+          variant="contained"
           onClick={() => {
             navigate({
               pathname: "/graves-table",
@@ -139,8 +250,41 @@ const HomeScreen = (props) => {
           Idi na tabelarni prikaz
         </Button>
         <br />
-        <h3>Naziv: {selectedCemetery?.name}</h3>
-
+        <FormControl
+          margin="normal"
+          fullWidth
+          sx={{ gridArea: "cemetery", width: "400px" }}
+        >
+          <Autocomplete
+            onChange={handleChangeGraveType}
+            multiple
+            options={graveTypes}
+            getOptionLabel={(option) =>
+              `${option.name} - ${option.description}`
+            }
+            disableCloseOnSelect
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Tip grobnog mesta"
+                placeholder="Tip grobnog mesta"
+              />
+            )}
+            renderOption={(props, option, { selected }) => (
+              <MenuItem
+                {...props}
+                key={option._id}
+                value={option._id}
+                sx={{ justifyContent: "space-between" }}
+              >
+                {option.name} - {option.description}
+                {selected ? <CheckIcon color="info" /> : null}
+              </MenuItem>
+            )}
+          />
+        </FormControl>
+        <br />
         <Map
           containerStyle={mapStyles}
           ref={mapRef}
@@ -152,28 +296,33 @@ const HomeScreen = (props) => {
           }}
           mapType="satellite"
         >
-          {graves.map((grave) => {
-            console.log(grave.status)
-            const iconUrl =
-              grave.status === undefined
-                ? iconBaseFree
-                : iconBaseFull;
-            return (
-              <Marker
-                key={grave._id}
-                position={{ lat: grave.LAT, lng: grave.LON }}
-                icon={{
-                  url: iconUrl,
-                  scaledSize: new props.google.maps.Size(
-                    getSizeOfMarker(currentZoom),
-                    getSizeOfMarker(currentZoom)
-                  ),
-                  rotation: 45,
-                }}
-                onClick={() => onClickHandler(grave)}
-              />
-            );
-          })}
+          {graves
+            .filter((grave) => {
+              return (
+                graveTypeIds.length === 0 ||
+                graveTypeIds.some((id) => id === grave.graveType)
+              );
+            })
+            .map((grave) => {
+              console.log(grave.status);
+              const iconUrl =
+                grave.status === "FREE" ? iconBaseFree : iconBaseFull;
+              return (
+                <Marker
+                  key={grave._id}
+                  position={{ lat: grave.LAT, lng: grave.LON }}
+                  icon={{
+                    url: iconUrl,
+                    scaledSize: new props.google.maps.Size(
+                      getSizeOfMarker(currentZoom),
+                      getSizeOfMarker(currentZoom)
+                    ),
+                    rotation: 45,
+                  }}
+                  onClick={() => onClickHandler(grave)}
+                />
+              );
+            })}
         </Map>
         {selectedGrave && (
           <Modal show={showModal} onHide={onCloseHandler} size="lg">
@@ -271,5 +420,5 @@ const HomeScreen = (props) => {
   );
 };
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyACV2yMJcx_aByY3PwY1b59WvppbM9_ovc',
+  apiKey: "AIzaSyACV2yMJcx_aByY3PwY1b59WvppbM9_ovc",
 })(HomeScreen);
