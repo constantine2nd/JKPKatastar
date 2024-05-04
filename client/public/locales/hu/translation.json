@@ -32,8 +32,11 @@
   "search-deceased": {
     "search": "Keresés",
     "birth-year": "Születési év",
-    "death-year-from": "Halálozás éve - dátumtól számítva",
-    "death-year-to": "Halálozás éve – a mai napig"
+    "cemetery-selection": "Választható temető",
+    "death-date-from": "Halálozás dátuma - tól",
+    "death-date-to": "Halálozás dátuma - ig",
+    "birth-date-from": "Születési dátum - tól",
+    "birth-date-to": "Születési dátum - ig"
   },
   "token": "Token",
   "dateBirth": "Születési dátum",

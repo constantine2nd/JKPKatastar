@@ -96,8 +96,8 @@ const MapStepperComponent = (props) => {
             <TextField
               {...params}
               variant="outlined"
-              label="Multiple Autocomplete"
-              placeholder="Multiple Autocomplete"
+              label="Tip grobnog mesta"
+              placeholder="Tip grobnog mesta"
             />
           )}
           renderOption={(props, option, { selected }) => (

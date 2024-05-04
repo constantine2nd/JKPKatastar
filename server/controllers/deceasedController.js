@@ -190,8 +190,22 @@ const getDeceasedForGrave = async (req, res, next) => {
 
 const getDeceasedSearch = async (req, res, next) => {
   console.log(req.query);
-  const { cemeteryIds, name, surname, birthYear, deathYearFrom, deathYearTo } =
-    req.query;
+  const {
+    cemeteryIds,
+    name,
+    surname,
+    deathDateFrom,
+    deathDateTo,
+    birthDateFrom,
+    birthDateTo,
+  } = req.query;
+  /*  let deathDateFromObject = new Date(deathDateFrom);
+  let mongoDateFromDate =
+    deathDateFrom === "" ? "" : deathDateFromObject.toISOString();
+  let deathDateToObject = new Date(deathDateTo);
+  let mongoDateToDate =
+    deathDateTo === "" ? "" : deathDateToObject.toISOString(); */
+
   console.log(cemeteryIds);
   const filterArray = [];
 
@@ -202,7 +216,7 @@ const getDeceasedSearch = async (req, res, next) => {
     filterArray.push({ surname: { $regex: surname, $options: "i" } });
   }
 
-  if (birthYear) {
+  /* if (birthYear) {
     let startDateBirth = new Date(Number(birthYear), 0, 1);
     let endDateBirth = new Date(Number(birthYear) + 1, 0, 1);
     filterArray.push({
@@ -211,21 +225,37 @@ const getDeceasedSearch = async (req, res, next) => {
         $lt: endDateBirth, // Manje od kraja godine
       },
     });
-  }
-
-  if (deathYearFrom) {
-    let startDateDeath = new Date(Number(deathYearFrom), 0, 1);
+  } */
+  if (birthDateFrom) {
+    //let startDateDeath = new Date(Number(deathYearFrom), 0, 1);
     filterArray.push({
-      dateDeath: {
-        $gte: startDateDeath, // Veće ili jednako početnom datumu
+      dateBirth: {
+        $gte: new Date(birthDateFrom), // Veće ili jednako početnom datumu
       },
     });
   }
-  if (deathYearTo) {
-    let endDateDeath = new Date(Number(deathYearTo) + 1, 0, 1);
+  if (birthDateTo) {
+    //let endDateDeath = new Date(Number(deathYearTo) + 1, 0, 1);
+    filterArray.push({
+      dateBirth: {
+        $lt: new Date(birthDateTo), // Veće ili jednako početnom datumu
+      },
+    });
+  }
+
+  if (deathDateFrom) {
+    //let startDateDeath = new Date(Number(deathYearFrom), 0, 1);
     filterArray.push({
       dateDeath: {
-        $lt: endDateDeath, // Veće ili jednako početnom datumu
+        $gte: new Date(deathDateFrom), // Veće ili jednako početnom datumu
+      },
+    });
+  }
+  if (deathDateTo) {
+    //let endDateDeath = new Date(Number(deathYearTo) + 1, 0, 1);
+    filterArray.push({
+      dateDeath: {
+        $lt: new Date(deathDateTo), // Veće ili jednako početnom datumu
       },
     });
   }
