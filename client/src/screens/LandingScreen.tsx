@@ -60,23 +60,34 @@ const LandingScreen: React.FC = () => {
 
   return (
     <>
-      <h1>{t("Landing page screen")}</h1>
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth>
-          <InputLabel id="cemetery-select-label">{t("Cemetery")}</InputLabel>
-          <Select
-            labelId="cemetery-select-label"
-            id="demo-simple-select"
-            value={cemeteryId}
-            label="Cemetery"
-            onChange={handleChange}
-          >
-            {cemeteries?.map((cemetery) => (
-              <MenuItem key={cemetery._id} value={cemetery._id}>{cemetery.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <h1>{t("Landing page screen")}</h1>
+        <Box sx={{ minWidth: 400, maxWidth: 500 }}>
+          <FormControl fullWidth>
+            <InputLabel id="cemetery-select-label">{t("Cemetery")}</InputLabel>
+            <Select
+              labelId="cemetery-select-label"
+              id="demo-simple-select"
+              value={cemeteryId}
+              label="Cemetery"
+              onChange={handleChange}
+            >
+              {cemeteries?.map((cemetery) => (
+                <MenuItem key={cemetery._id} value={cemetery._id}>
+                  {cemetery.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </div>
     </>
   );
 };

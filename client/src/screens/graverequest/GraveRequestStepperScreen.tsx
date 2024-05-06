@@ -99,8 +99,10 @@ const GraveRequestStepperScreen: React.FC = () => {
 
   const onClickGraveHandler = (grave: any) => {
     console.log(grave);
-    setSelectedGrave(grave);
-    setActiveStep(2);
+    if (grave.status === "FREE") {
+      setSelectedGrave(grave);
+      setActiveStep(2);
+    }
   };
 
   const calculateGridTemplateAreas = () => {
@@ -162,7 +164,11 @@ const GraveRequestStepperScreen: React.FC = () => {
             </StepButton>
           </Step>
           <Step>
-            <StepButton color="inherit" onClick={() => handleStep(3)}>
+            <StepButton
+              color="inherit"
+              onClick={() => handleStep(3)}
+              disabled={!(activeStep === 3)}
+            >
               <StepLabel>{"Potvrda uspešnog zahteva"}</StepLabel>
             </StepButton>
           </Step>
