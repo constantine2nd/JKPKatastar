@@ -1,4 +1,8 @@
 const dateFormatter = (date) => {
+  console.log(date);
+  if (!date) {
+    return "No available contract";
+  }
   const myDate = new Date(date);
   let day = myDate.getDate();
   let month = myDate.getMonth() + 1;
@@ -14,6 +18,10 @@ const dateFormatter = (date) => {
 };
 
 const dateCalendarFormatter = (date) => {
+  console.log(date);
+  if (!date) {
+    return "Wrong string";
+  }
   const myDate = new Date(date);
   let day = myDate.getDate();
   let month = myDate.getMonth() + 1;

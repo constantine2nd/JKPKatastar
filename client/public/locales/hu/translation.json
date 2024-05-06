@@ -38,6 +38,37 @@
     "birth-date-from": "Születési dátum - tól",
     "birth-date-to": "Születési dátum - ig"
   },
+  "home-screen": {
+    "cemetery": "Temető",
+    "selection-grave-type": "A temetési hely típusának megválasztása",
+    "grave-type": "A temetkezési hely típusa",
+    "number-of-graves": "Sírhelyek száma",
+    "number-of-free-graves": "Üres sírhelyek száma",
+    "number-of-occupied-graves": "Az elfoglalt sírhelyek száma",
+    "total": "Összesen:",
+    "table-view": "Táblázatos nézet",
+    "grave-information": "Információ a temetkezési helyről",
+    "field": "Mező",
+    "row": "Sor",
+    "number": "Sorozatszám",
+    "availability": "Elérhetőség",
+    "free": "Ingyenes",
+    "occupied": "Elfoglalt",
+    "details": "Részletek"
+  },
+  "grave-request": {
+    "new-grave-request": "Új temetési hely iránti kérelem"
+  },
+  "header": {
+    "deceased-list": "Az elhunyt látképe",
+    "deceased-search": "Keresd az elhunytat",
+    "graves-list": "Sírhelyek bemutatása",
+    "grave-request": "Temetési hely igénylése",
+    "cemeteries-management": "Temetők kezelése",
+    "user-management": "Felhasználókezelés",
+    "grave-types-management": "Temetkezési helytípusok kezelése",
+    "management": "Menedzsment"
+  },
   "token": "Token",
   "dateBirth": "Születési dátum",
   "dateDeath": "Halál dátuma",
@@ -59,6 +90,7 @@
   "Create New User": "Új felhasználó létrehozása",
   "Create New Grave Type": "Hozzon létre egy új típusú sírt",
   "Edit Grave Type": "Sírtípus szerkesztése",
+  "Edit Grave": "Rendezzük el a sírhelyet",
   "Edit User": "Felhasználó szerkesztése",
   "Create New Cemetery": "Új temető létrehozása",
   "Edit Cemetery": "Temető szerkesztése",

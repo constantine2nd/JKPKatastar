@@ -53,7 +53,7 @@ const GraveRequestTableScreenCrud = () => {
     { label: t(REQUESTED), value: REQUESTED },
     { label: t(ACCEPTED), value: ACCEPTED },
     { label: t(DENIED), value: DENIED },
-  ] 
+  ];
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
@@ -127,11 +127,9 @@ const GraveRequestTableScreenCrud = () => {
     {
       accessorKey: "status",
       header: t("status"),
-      editVariant: 'select',
+      editVariant: "select",
       editSelectOptions: statuses,
-      Cell: ({ row }) => (
-        statusOfGraveRequest(row.original.status, t)
-      ),
+      Cell: ({ row }) => statusOfGraveRequest(row.original.status, t),
     },
     {
       accessorFn: (row) => new Date(row.createdAt),
@@ -177,11 +175,7 @@ const GraveRequestTableScreenCrud = () => {
   } = useDeleteRow(queryFunction, deletePath);
 
   function errorOccuried() {
-    return (
-      isLoadingDataError ||
-      isUpdatingDataError ||
-      isUDeletingDataError
-    );
+    return isLoadingDataError || isUpdatingDataError || isUDeletingDataError;
   }
 
   function errorMessage() {
@@ -282,11 +276,11 @@ const GraveRequestTableScreenCrud = () => {
       <Button
         variant="contained"
         onClick={() => {
-          const url = '/grave-requests-stepper';
-          window.open(url, '_blank');
+          const url = "/grave-requests-stepper";
+          window.open(url, "_blank");
         }}
       >
-        {t("Create New Grave Request")}
+        {t("grave-request.new-grave-request")}
       </Button>
     ),
     state: {
@@ -310,9 +304,17 @@ const validateRequired = (value: string) => !!value.length;
 
 function validateGraveType(row: CrudTableType) {
   return {
-    name: !validateRequired(row.name) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
-    surname: !validateRequired(row.surname) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
-    email: !validateRequired(row.email) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
-    phone: !validateRequired(row.phone) ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED") : "",
+    name: !validateRequired(row.name)
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      : "",
+    surname: !validateRequired(row.surname)
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      : "",
+    email: !validateRequired(row.email)
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      : "",
+    phone: !validateRequired(row.phone)
+      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      : "",
   };
 }

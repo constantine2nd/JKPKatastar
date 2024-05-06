@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import Button from "@mui/material/Button";
 import { Autocomplete } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
@@ -40,6 +41,7 @@ const mapStyles = {
 };
 
 const getSizeOfMarker = (zoom) => {
+  //console.log(zoom);
   switch (zoom) {
     case 20:
       return 16;
@@ -60,6 +62,7 @@ const iconBaseFull =
   "http://maps.google.com/mapfiles/kml/paddle/red-circle-lv.png";
 
 const HomeScreen = (props) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const graves = useSelector(selectAllGraves);
   const graveTypes = useSelector(selectAllGraveTypes);
@@ -101,16 +104,22 @@ const HomeScreen = (props) => {
     if (mapRef.current) {
       // Dohvatite trenutni zoom nivo
       const newZoom = mapRef.current.map.getZoom();
-      console.log(newZoom);
+      console.log("SETTING OF INITIAL ZOOM: ", newZoom);
       setCurrentZoom(newZoom);
 
       // Dodajte slušač za promene zoom nivoa
       mapRef.current.map.addListener("zoom_changed", () => {
+        console.log("ZOOM CHANGED");
         const updatedZoom = mapRef.current.map.getZoom();
         console.log(updatedZoom);
         setCurrentZoom(updatedZoom);
       });
     }
+    return () => {
+      if (mapRef.current && mapRef.current.map.removeListener) {
+        mapRef.current.map.removeListener("zoom_changed");
+      }
+    };
   }, []);
 
   const onClickHandler = (grave) => {
@@ -135,8 +144,8 @@ const HomeScreen = (props) => {
   }
 
   function getStatData(graveType, graves) {
-    console.log(graves);
-    console.log(graveType);
+    // console.log(graves);
+    // console.log(graveType);
     let fileteredGraves = graves.filter(
       (grave) => grave.graveType === graveType._id
     );
@@ -174,7 +183,9 @@ const HomeScreen = (props) => {
           alignItems: "center",
         }}
       >
-        <h3>Naziv: {selectedCemetery?.name}</h3>
+        <h3>
+          {t("home-screen.cemetery")}: {selectedCemetery?.name}
+        </h3>
         {/* <TableContainer
           component={Paper}
           style={{
@@ -184,10 +195,16 @@ const HomeScreen = (props) => {
         <Table sx={{ width: "50%", margin: "10px" }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Grave type</TableCell>
-              <TableCell align="right">Num of graves</TableCell>
-              <TableCell align="right">Num of free graves</TableCell>
-              <TableCell align="right">Num of occupied graves</TableCell>
+              <TableCell>{t("home-screen.grave-type")}</TableCell>
+              <TableCell align="right">
+                {t("home-screen.number-of-graves")}
+              </TableCell>
+              <TableCell align="right">
+                {t("home-screen.number-of-free-graves")}
+              </TableCell>
+              <TableCell align="right">
+                {t("home-screen.number-of-occupied-graves")}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -215,7 +232,7 @@ const HomeScreen = (props) => {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                Ukupno:
+                {t("home-screen.total")}
               </TableCell>
               <TableCell align="right">{graves.length}</TableCell>
               <TableCell align="right">
@@ -227,27 +244,16 @@ const HomeScreen = (props) => {
             </TableRow>
           </TableBody>
         </Table>
-        {/*     </TableContainer> */}
-        {/* <h2>Ukupan broj grobnih mesta: {graves.length}</h2>
-        <h2>
-          Ukupan broj grobnih mesta tipa GR6:{" "}
-          {graves.filter((grave) => grave.graveType.name == "GR6").length}
-        </h2>
-        <h2>
-          Ukupan broj slobodnih grobnih mesta:{" "}
-          {graves.filter((grave) => grave.status == "FREE").length}
-        </h2>
-        <br /> */}
 
         <Button
           variant="contained"
           onClick={() => {
             navigate({
-              pathname: "/graves-table",
+              pathname: "/graves-table-crud",
             });
           }}
         >
-          Idi na tabelarni prikaz
+          {t("home-screen.table-view")}
         </Button>
         <br />
         <FormControl
@@ -267,8 +273,8 @@ const HomeScreen = (props) => {
               <TextField
                 {...params}
                 variant="outlined"
-                label="Tip grobnog mesta"
-                placeholder="Tip grobnog mesta"
+                label={t("home-screen.selection-grave-type")}
+                placeholder={t("home-screen.selection-grave-type")}
               />
             )}
             renderOption={(props, option, { selected }) => (
@@ -327,14 +333,34 @@ const HomeScreen = (props) => {
         {selectedGrave && (
           <Modal show={showModal} onHide={onCloseHandler} size="lg">
             <Modal.Header closeButton>
-              <Modal.Title>Informacije o grobnom mestu</Modal.Title>
+              <Modal.Title>{t("home-screen.grave-information")}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
                 <Row>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Redni broj</Form.Label>
+                      <Form.Label>{t("home-screen.field")}</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={selectedGrave.field}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Form.Group>
+                      <Form.Label>{t("home-screen.row")}</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={selectedGrave.row}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Group>
+                      <Form.Label>{t("home-screen.number")}</Form.Label>
                       <Form.Control
                         type="text"
                         value={selectedGrave.number}
@@ -343,53 +369,28 @@ const HomeScreen = (props) => {
                   </Col>
                   <Col>
                     <Form.Group>
-                      <Form.Label>Polje</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={selectedGrave.field}
-                      ></Form.Control>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Red</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={selectedGrave.row}
-                      ></Form.Control>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Kapacitet</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={selectedGrave.capacity}
-                      ></Form.Control>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Zauzetost</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={selectedGrave.numberOfDeceaseds}
-                      ></Form.Control>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group>
-                      <Form.Label>Broj slobodnih mesta</Form.Label>
+                      <Form.Label>{t("home-screen.grave-type")}</Form.Label>
                       <Form.Control
                         type="text"
                         value={
-                          selectedGrave.capacity -
-                          selectedGrave.numberOfDeceaseds
+                          graveTypes.find(
+                            (graveType) =>
+                              selectedGrave.graveType === graveType._id
+                          ).name
                         }
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Group>
+                      <Form.Label>{t("home-screen.availability")}</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={t(
+                          `home-screen.${selectedGrave.status.toLowerCase()}`
+                        )}
                       ></Form.Control>
                     </Form.Group>
                   </Col>
@@ -408,7 +409,7 @@ const HomeScreen = (props) => {
                       });
                     }}
                   >
-                    Detalji
+                    {t("home-screen.details")}
                   </Button>
                 </Col>
               </Row>

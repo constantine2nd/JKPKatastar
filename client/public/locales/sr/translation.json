@@ -37,6 +37,37 @@
     "birth-date-from": "Datum rođenja od",
     "birth-date-to": "Datum rođenja do"
   },
+  "home-screen": {
+    "cemetery": "Groblje",
+    "selection-grave-type": "Izbor tipa grobnog mesta",
+    "grave-type": "Tip grobnog mesta",
+    "number-of-graves": "Broj grobnih mesta",
+    "number-of-free-graves": "Broj slobodnih grobnih mesta",
+    "number-of-occupied-graves": "Broj zauzetih grobnih mesta",
+    "total": "Ukupno:",
+    "table-view": "Tabelarni prikaz",
+    "grave-information": "Informacije o grobnom mestu",
+    "field": "Polje",
+    "row": "Red",
+    "number": "Redni broj",
+    "availability": "Dostupnost",
+    "free": "Slobodno",
+    "occupied": "Zauzeto",
+    "details": "Detalji"
+  },
+  "grave-request": {
+    "new-grave-request": "Novi zahtev za grobno mesto"
+  },
+  "header": {
+    "deceased-list": "Prikaz pokojnika",
+    "deceased-search": "Pretraga pokojnika",
+    "graves-list": "Prikaz grobnih mesta",
+    "grave-request": "Zahtev za grobno mesto",
+    "cemeteries-management": "Upravljanje grobljima",
+    "user-management": "Upravljanje korisnicima",
+    "grave-types-management": "Upravljenje tipovima grobnih mesta",
+    "management": "Upravljanje"
+  },
   "token": "Token",
   "dateBirth": "Datum rođenja",
   "dateDeath": "Datum smrti",
@@ -58,6 +89,7 @@
   "Create New User": "Napravite novog korisnika",
   "Create New Grave Type": "Napravite novu vrstu groba",
   "Edit Grave Type": "Uredi vrstu groba",
+  "Edit Grave": "Uredi grobno mesto",
   "Edit User": "Uredi korisnika",
   "Create New Cemetery": "Kreiraj novo groblje",
   "Edit Cemetery": "Uredi groblje",

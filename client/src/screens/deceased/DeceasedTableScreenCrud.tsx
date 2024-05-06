@@ -30,7 +30,10 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../../hooks/useCrudHooks";
-import { dateFormatter, dateCalendarFormatter } from "../../utils/dateFormatter";
+import {
+  dateFormatter,
+  dateCalendarFormatter,
+} from "../../utils/dateFormatter";
 
 // Defines the name of the react query
 const queryFunction = "deceased-all";
@@ -71,6 +74,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     {
       accessorKey: "name",
       header: t("name"),
+      enableEditing: true,
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -88,6 +92,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     {
       accessorKey: "surname",
       header: t("surname"),
+      enableEditing: true,
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -107,6 +112,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       accessorFn: (row) => dateCalendarFormatter(row.dateBirth),
       id: "dateBirth",
       header: t("dateBirth"),
+      enableEditing: true,
       enableColumnFilter: false,
       muiEditTextFieldProps: {
         type: "date",
@@ -131,6 +137,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       id: "dateDeath",
       header: t("dateDeath"),
       enableColumnFilter: false,
+      enableEditing: true,
       muiEditTextFieldProps: {
         type: "date",
         required: true,
@@ -287,7 +294,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
         elementsDateBirth
       )[0] as HTMLInputElement;
 
-      console.log(myInput.value);
+      //console.log(myInput.value);
       /* const newRow = { ...row };
       newRow._valuesCache = { ...row._valuesCache };
       newRow.original = { ...row.original }; */

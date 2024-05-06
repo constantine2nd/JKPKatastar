@@ -72,6 +72,11 @@ const MapStepperComponent = (props) => {
         setCurrentZoom(updatedZoom);
       });
     }
+    return () => {
+      if (mapRef.current && mapRef.current.map.removeListener) {
+        mapRef.current.map.removeListener("zoom_changed");
+      }
+    };
   }, []);
 
   const handleChangeGraveType = (event, value) => {

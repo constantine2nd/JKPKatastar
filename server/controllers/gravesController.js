@@ -1,4 +1,5 @@
 import Grave from "../models/graveModel.js";
+import Cemetery from "../models/cemeteryModel.js";
 import Deceased from "../models/deceasedModel.js";
 import Payer from "../models/payerModel.js";
 import GraveType from "../models/graveTypeModel.js";
@@ -310,10 +311,18 @@ const updateGrave = async (req, res) => {
     field,
     row,
     status,
-    "graveType._id": graveTypeId,
-    "cemetery._id": cemeteryId,
+    "graveType.name": graveTypeName,
+    "cemetery.name": cemeteryName,
+    contractTo,
+    LAT,
+    LON,
   } = req.body;
-  console.log(graveTypeId);
+  //console.log(graveTypeId);
+
+  const foundGraveType = await GraveType.findOne({ name: graveTypeName });
+  //  console.log(foundGraveType);
+  const foundCemetery = await Cemetery.findOne({ name: cemeteryName });
+  //  console.log(foundCemetery);
 
   const filter = { _id: _id }; // Criteria to find a row
   const update = {
@@ -321,8 +330,11 @@ const updateGrave = async (req, res) => {
     field: field,
     row: row,
     status: status,
-    graveType: new mongoose.Types.ObjectId(graveTypeId),
-    cemetery: new mongoose.Types.ObjectId(cemeteryId),
+    contractTo: new Date(contractTo),
+    graveType: foundGraveType._id,
+    cemetery: foundCemetery._id,
+    LAT: Number(LAT),
+    LON: Number(LON),
   }; // Fields to update
 
   const updatedRow = await Grave.findOneAndUpdate(filter, update, { new: true })

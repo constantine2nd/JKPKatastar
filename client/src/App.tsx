@@ -36,6 +36,7 @@ import LoginScreenMUI from "./screens/user/LoginScreenMUI";
 import ResetPasswordInitiation from "./screens/user/ResetPasswordInitiationScreen";
 import ResetPassword from "./screens/user/ResetPasswordScreen";
 import AddGraveScreenMUI from "./screens/grave/AddGraveScreenMUI";
+import DeceasedTableScreenCrud from "./screens/deceased/DeceasedTableScreenCrud";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},

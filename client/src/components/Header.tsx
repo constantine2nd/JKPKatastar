@@ -4,6 +4,7 @@ import { NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "../features/userSlice";
+import { Link } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -15,7 +16,6 @@ import {
   Box,
   Container,
   IconButton,
-  Link,
   ListItemIcon,
   Toolbar,
   Tooltip,
@@ -32,28 +32,47 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import { ADMINISTRATOR, OFFICER, VISITOR } from "../utils/constant.js";
 
 const pages = [
-  { item: "Pregled pokojnika", link: "deceased-table", roles: [] },
-  { item: "Pretraga pokojnika", link: "search-deceased", roles: [] },
-  // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
-  { item: "Pregled GM CRUD", link: "graves-table-crud", roles: [] },
   {
-    item: "Zahtev za grobno mesto",
+    dropdown: false,
+    item: "header.deceased-list",
+    link: "deceased-table",
+    roles: [],
+  },
+  {
+    dropdown: false,
+    item: "header.deceased-search",
+    link: "search-deceased",
+    roles: [],
+  },
+  // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
+  {
+    dropdown: false,
+    item: "header.graves-list",
+    link: "graves-table-crud",
+    roles: [],
+  },
+  {
+    dropdown: false,
+    item: "header.grave-request",
     link: "grave-requests-crud",
     roles: [VISITOR, OFFICER, ADMINISTRATOR],
   },
   {
-    item: "Cemeteries managment",
+    dropdown: true,
+    item: "header.cemeteries-management",
     link: "cemeteries-table-crud",
     roles: [OFFICER, ADMINISTRATOR],
   },
   {
-    item: "User management",
+    dropdown: true,
+    item: "header.user-management",
     link: "users-table-crud",
     roles: [ADMINISTRATOR],
   },
   // { item: "Grave Types MGM", link: "grave-types-table" },
   {
-    item: "Grave Types MGM CRUD",
+    dropdown: true,
+    item: "header.grave-types-management",
     link: "grave-types-crud",
     roles: [OFFICER, ADMINISTRATOR],
   },
@@ -124,8 +143,8 @@ const Header = () => {
             <Typography
               variant="h6"
               noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
+              component={Link}
+              to="/"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -182,8 +201,8 @@ const Header = () => {
             <Typography
               variant="h5"
               noWrap
-              component="a"
-              href="#app-bar-with-responsive-menu"
+              component={Link}
+              to="/"
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
@@ -201,19 +220,39 @@ const Header = () => {
               {pages
                 .filter(
                   (page) =>
-                    page.roles?.length === 0 ||
-                    page.roles?.find((role) => user?.role === role)
+                    !page.dropdown &&
+                    (page.roles?.length === 0 ||
+                      page.roles?.find((role) => user?.role === role))
                 )
                 .map((page) => navBarButton(page))}
             </Box>
+            {user?.role === ADMINISTRATOR && (
+              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                <NavDropdown title={t("header.management")}>
+                  {pages
+                    .filter(
+                      (page) =>
+                        page.dropdown &&
+                        (page.roles?.length === 0 ||
+                          page.roles?.find((role) => user?.role === role))
+                    )
+                    .map((page, index) => (
+                      <NavDropdown.Item
+                        key={index}
+                        to={`${page.link}`}
+                        as={Link}
+                      >
+                        {t(page.item)}
+                      </NavDropdown.Item>
+                    ))}
+                </NavDropdown>
+              </Box>
+            )}
 
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar
-                    alt={user?.name}
-                    src={user?.avatarUrl}
-                  />
+                  <Avatar alt={user?.name} src={user?.avatarUrl} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -233,7 +272,7 @@ const Header = () => {
                 onClose={handleCloseUserMenu}
               >
                 {!user && (
-                  <MenuItem key={"Login"} href="/login-user" component={Link}>
+                  <MenuItem key={"Login"} to="/login-user" component={Link}>
                     <ListItemIcon>
                       <Login fontSize="small" />
                     </ListItemIcon>
@@ -241,7 +280,7 @@ const Header = () => {
                   </MenuItem>
                 )}
                 {!user && (
-                  <MenuItem key={"Register"} href="/add-user" component={Link}>
+                  <MenuItem key={"Register"} to="/add-user" component={Link}>
                     <ListItemIcon>
                       <PersonAdd fontSize="small" />
                     </ListItemIcon>
@@ -292,19 +331,19 @@ const Header = () => {
     return (
       <Button
         key={page.item}
-        href={page.link}
+        to={page.link}
         component={Link}
         sx={{ my: 2, color: "white", display: "block" }}
       >
-        {page.item}
+        {t(page.item)}
       </Button>
     );
   }
 
   function navBarMenuItem(page: { item: string; link: string }) {
     return (
-      <MenuItem key={page.item} href={page.link} component={Link}>
-        <Typography textAlign="center">{page.item}</Typography>
+      <MenuItem key={page.item} to={page.link} component={Link}>
+        <Typography textAlign="center">{t(page.item)}</Typography>
       </MenuItem>
     );
   }

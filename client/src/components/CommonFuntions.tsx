@@ -21,8 +21,15 @@ const capacity = (capacity: string, numberOfDeceaseds: string) => {
 };
 
 const expiredContract = (contractTo: string) => {
+  console.log(contractTo);
+  console.log(new Date(contractTo));
+  //  console.log(contractTo.toString());
+  if (contractTo === "Wrong string") {
+    return <Chip label={"No available contract"} color="success" />;
+  }
   let result = null;
   let contractDate = new Date(contractTo);
+  //  console.log(contractDate);
   let contractDatePlus = new Date(contractTo);
   contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
   let today = new Date();

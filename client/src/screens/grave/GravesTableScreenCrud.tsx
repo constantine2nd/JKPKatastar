@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -8,6 +10,7 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   Box,
   Button,
@@ -19,6 +22,7 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
+import ButtonMUI from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
@@ -31,7 +35,7 @@ import {
   useUpdateRow,
 } from "../../hooks/useCrudHooks";
 import { GraveData as CrudTableType } from "../../interfaces/GraveIntefaces";
-import { dateFormatter } from "../../utils/dateFormatter";
+
 import {
   capacityExt,
   expiredContract,
@@ -50,6 +54,11 @@ import { GraveType } from "../../interfaces/GraveTypeInterfaces";
 import { Cemetery } from "../../interfaces/CemeteryInterfaces";
 import { FREE, OCCUPIED } from "../../utils/constant";
 
+import {
+  dateFormatter,
+  dateCalendarFormatter,
+} from "../../utils/dateFormatter";
+
 // Defines the name of the react query
 const queryFunction = "graves-all";
 // Defines CRUD paths
@@ -59,11 +68,13 @@ const updatePath = "/api/graves/updategrave";
 const deletePath = "/api/graves/single";
 
 const GravesTableScreenCrud = () => {
+  let navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [idOfrowToDelete, setIdOfRowToDelete] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+  const [dateTo, setDateTo] = useState<Dayjs | null>(null);
   const graveTypes: GraveType[] | null = useSelector(selectAllGraveTypes);
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
   const { t, i18n } = useTranslation();
@@ -81,14 +92,14 @@ const GravesTableScreenCrud = () => {
   const myGraveTypes = graveTypes.map((item) => {
     return {
       label: item.name,
-      value: item._id,
+      value: item.name,
     };
   });
 
   const myCemeteries = cemeteries.map((item) => {
     return {
       label: item.name,
-      value: item._id,
+      value: item.name,
     };
   });
 
@@ -99,12 +110,13 @@ const GravesTableScreenCrud = () => {
       editVariant: "select",
       editSelectOptions: myCemeteries,
       enableEditing: true,
-      /* Cell: ({ row }) =>
-        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name, */
     },
     {
       accessorKey: "number",
       header: t("number"),
+
+      maxSize: 20, //max size enforced during resizing
+
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -122,6 +134,9 @@ const GravesTableScreenCrud = () => {
     {
       accessorKey: "field",
       header: t("field"),
+
+      maxSize: 20, //max size enforced during resizing
+
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -139,6 +154,9 @@ const GravesTableScreenCrud = () => {
     {
       accessorKey: "row",
       header: t("row"),
+
+      maxSize: 20, //max size enforced during resizing
+
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -154,21 +172,20 @@ const GravesTableScreenCrud = () => {
       },
     },
     {
-      accessorKey: "graveType._id",
+      accessorKey: "graveType.name",
       header: t("grave type"),
       editVariant: "select",
+      maxSize: 20,
       editSelectOptions: myGraveTypes,
       enableEditing: true,
-      Cell: ({ row }) =>
-        graveTypes.find((item) => item._id === row.original.graveType._id)
-          ?.name,
+      filterVariant: "autocomplete",
     },
     {
       accessorKey: "_id",
       header: "Id",
       enableEditing: false,
     },
-    {
+    /*  {
       accessorFn: (row) => new Date(row.contractTo),
       id: "contractTo",
       filterFn: "between",
@@ -176,14 +193,55 @@ const GravesTableScreenCrud = () => {
       sortingFn: "datetime",
       header: t("contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
-      enableEditing: false,
+      enableEditing: true,
+      Edit: ({ cell, row }) => {
+        console.log(cell.getValue<string>());
+        console.log(new Date(cell.getValue<string>()).getFullYear());
+        let dateObject = new Date(cell.getValue<string>());
+        //     setDateTo(dayjs(dateObject));
+        return (
+          <>
+            <DatePicker
+              label={t("contract-expiration-date")}
+              format="D/M/YYYY"
+              value={dayjs(dateObject)}
+              onChange={(newValue) => setDateTo(newValue)}
+            />
+          </>
+        );
+      },
+    }, */
+    {
+      accessorFn: (row) => dateCalendarFormatter(row.contractTo),
+      id: "contractTo",
+      header: t("contract-expiration-date"),
+      enableColumnFilter: false,
+      enableEditing: true,
+      filterFn: "between",
+      filterVariant: "date",
+      sortingFn: "datetime",
+      muiEditTextFieldProps: {
+        type: "date",
+        required: true,
+        error: !!validationErrors?.contractTo,
+        helperText: validationErrors?.contractTo,
+        //remove any previous validation errors when user focuses on the input
+        onFocus: () =>
+          setValidationErrors({
+            ...validationErrors,
+            contractTo: undefined,
+          }),
+        //optionally add validation checking for onBlur or onChange
+      },
+      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
     },
     {
       accessorFn: (row) => {
-        console.log(row);
+        //    console.log(row);
         return `${row.numberOfDeceaseds}/${row.graveType?.capacity}`;
       }, //accessorFn used to join multiple data into a single cell
       id: "occupation",
+      maxSize: 20,
       header: t("occupation"),
       enableEditing: false,
       Cell: ({ renderedCellValue, row }) =>
@@ -193,8 +251,41 @@ const GravesTableScreenCrud = () => {
       accessorKey: "status",
       header: t("status"),
       editVariant: "select",
+      maxSize: 20,
       editSelectOptions: statuses,
       Cell: ({ row }) => statusOfGrave(row.original.status, t),
+    },
+    {
+      accessorKey: "LAT",
+      maxSize: 20,
+      header: t("LAT"),
+      enableEditing: true,
+    },
+    {
+      accessorKey: "LON",
+      header: t("LON"),
+      enableEditing: true,
+    },
+    {
+      accessorFn: (row) => row.LAT + row.LON,
+      id: "free-column",
+      header: t(""),
+      columnDefType: "display", //turns off data column features like sorting, filtering, etc.
+      Cell: ({ renderedCellValue, row }) => (
+        <ButtonMUI
+          variant="contained"
+          onClick={() => {
+            navigate({
+              pathname: "/single-grave",
+              search: createSearchParams({
+                id: row.getValue<string>("_id"),
+              }).toString(),
+            });
+          }}
+        >
+          {t("details")}
+        </ButtonMUI>
+      ),
     },
   ];
 
@@ -236,6 +327,11 @@ const GravesTableScreenCrud = () => {
   // UPDATE action
   const handleSaveRow: MRT_TableOptions<CrudTableType>["onEditingRowSave"] =
     async ({ values, table }) => {
+      // console.log(values.contractTo);
+      // console.log(dateTo?.toString());
+      /* if (dateTo) {
+        values.contractTo = dateTo?.toString();
+      } */
       const newValidationErrors = validateCrudTable(values);
       if (Object.values(newValidationErrors).some((error) => error)) {
         setValidationErrors(newValidationErrors);
@@ -308,7 +404,7 @@ const GravesTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Grave Type")}</DialogTitle>
+        <DialogTitle variant="h3">{t("Edit Grave")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >

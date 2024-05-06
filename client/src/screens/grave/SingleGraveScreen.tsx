@@ -239,7 +239,7 @@ const SingleGraveScreen: React.FC = () => {
         )}
         {grave && value === 2 && <PayersTableScreenCrud graveId={grave._id} />}
       </Box>
-      <Accordion defaultExpanded>
+      {/*      <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
@@ -352,7 +352,7 @@ const SingleGraveScreen: React.FC = () => {
         <AccordionDetails>
           {grave && <PayersTableScreenCrud graveId={grave._id} />}
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
     </>
   );
 };
