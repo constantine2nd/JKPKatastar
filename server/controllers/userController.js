@@ -234,7 +234,7 @@ const resetPasswordInitiation = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   try {
-    const { token, password, repeatedPassword } = req.body;
+    const { token, password, 'repeated-password': repeatedPassword } = req.body;
     const filter = { pseudoRandomToken: token }; // Criteria to find a row
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);

@@ -88,7 +88,7 @@ export default function ResetPassword() {
         <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Collapse in={userStatus === "succeeded" ? true : false}>
           <Alert severity="info">
-            "Reset password initiated. Please check you email."
+            "Password changed."
           </Alert>
         </Collapse>
         <Box
