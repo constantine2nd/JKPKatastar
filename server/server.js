@@ -25,10 +25,32 @@ app.use("/api/cemeteries", cemeteriesRoutes);
 app.use("/api/grave-types", graveTypesRoutes);
 app.use("/api/grave-requests", graveRequestRoutes);
 
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "JKP Katastar API is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+    port: process.env.PORT || 5000,
+    database: process.env.MONGO_URI ? "Connected" : "Not configured",
+    email: process.env.EMAIL_HOST ? "Configured" : "Not configured",
+  });
+});
+
 app.use((err, req, res, next) => {
   console.log("app.use");
   console.log(err.message);
-  res.status(500).send({message: err.message});
+  res.status(500).send({ message: err.message });
 });
 
-app.listen(5000);
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 JKP Katastar API Server running on port ${PORT}`);
+  console.log(
+    `📊 Database: ${process.env.MONGO_URI ? "Connected" : "Not configured"}`,
+  );
+  console.log(`🌐 Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log(`⚡ Health check: http://localhost:${PORT}/api/health`);
+});
