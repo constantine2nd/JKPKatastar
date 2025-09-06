@@ -6,7 +6,7 @@ import HomeScreen from "./screens/HomeScreen";
 import LandingScreen from "./screens/LandingScreen";
 import AddDeceasedScreen from "./screens/deceased/AddDeceasedScreen";
 import DeceasedTableScreen from "./screens/deceased/DeceasedTableScreen";
-import AddGraveScreen from "./screens/grave/AddGraveScreen";
+
 import GravesTableScreen from "./screens/grave/GravesTableScreen";
 import SingleGraveScreen from "./screens/grave/SingleGraveScreen";
 import AddPayerScreen from "./screens/payer/AddPayerScreen";
@@ -57,7 +57,7 @@ function App() {
         });
       },
     }),
-    []
+    [],
   );
 
   const theme = React.useMemo(
@@ -67,7 +67,7 @@ function App() {
           mode,
         },
       }),
-    [mode]
+    [mode],
   );
   return (
     <>

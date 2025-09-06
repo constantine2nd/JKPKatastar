@@ -2,14 +2,9 @@ import React, { useEffect } from "react";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { Marker } from "react-leaflet/Marker";
 import { TileLayer } from "react-leaflet/TileLayer";
-import { useMapEvents } from "react-leaflet";
 import { Popup } from "react-leaflet/Popup";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-const position = [51.505, -0.09];
-
-const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 const OpenMapComponent = ({ LAT, LON }) => {
   useEffect(() => {

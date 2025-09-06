@@ -22,12 +22,7 @@ interface MyComponentProps {
 
 const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
   console.log("PATH: ", props.path);
-  const [deathDateString, setDeathDateString] = useState("");
-  const [birthDateString, setBirthDateString] = useState("");
   const getPath = props.path;
-  const [validationErrors, setValidationErrors] = useState<
-    Record<string, string | undefined>
-  >({});
 
   const { t, i18n } = useTranslation();
 
@@ -92,7 +87,7 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
 
   useEffect(() => {
     refetch(); // Pozivamo refetch svaki put kada se promeni path
-  }, [props.path]);
+  }, [props.path, refetch]);
 
   function errorOccuried() {
     return isLoadingDataError;

@@ -18,7 +18,11 @@ import { object, string } from "yup";
 import { Copyright } from "../../components/Copyright";
 import Loader from "../../components/Loader";
 import { ServerErrorComponent } from "../../components/ServerErrorComponent";
-import { getUserError, getUserStatus, loginUser } from "../../features/userSlice";
+import {
+  getUserError,
+  getUserStatus,
+  loginUser,
+} from "../../features/userSlice";
 
 const watchServerErrors: string[] = [
   "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
@@ -28,7 +32,7 @@ const watchServerErrors: string[] = [
 ];
 
 export default function SignIn() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch<any>();
 
   interface IFormValues {

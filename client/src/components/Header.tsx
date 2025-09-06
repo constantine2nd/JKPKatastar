@@ -31,10 +31,7 @@ import Login from "@mui/icons-material/Login";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import { ADMINISTRATOR, OFFICER, VISITOR } from "../utils/constant.js";
 
-
-
 const Header = () => {
-
   const { t, i18n } = useTranslation();
 
   const pages = [
@@ -66,10 +63,10 @@ const Header = () => {
   ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -113,7 +110,7 @@ const Header = () => {
     const selectedLanguage = languageFromStorage ? languageFromStorage : "sr";
     setLanguage(selectedLanguage);
     i18n.changeLanguage(selectedLanguage);
-  }, []);
+  }, [i18n]);
 
   const logoutHandler = () => {
     dispatch(logoutUser());
@@ -176,7 +173,7 @@ const Header = () => {
                   .filter(
                     (page) =>
                       page.roles?.length === 0 ||
-                      page.roles?.find((role) => user?.role === role)
+                      page.roles?.find((role) => user?.role === role),
                   )
                   .map((page) => navBarMenuItem(page))}
               </Menu>
@@ -206,7 +203,7 @@ const Header = () => {
                 .filter(
                   (page) =>
                     page.roles?.length === 0 ||
-                    page.roles?.find((role) => user?.role === role)
+                    page.roles?.find((role) => user?.role === role),
                 )
                 .map((page) => navBarButton(page))}
             </Box>

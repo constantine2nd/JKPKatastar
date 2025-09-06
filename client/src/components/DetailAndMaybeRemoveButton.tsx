@@ -10,12 +10,11 @@ import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
 const DeleteAndMaybeRemoveButton = (
   id: string,
   relativePathOfAction: string,
-  actionFunction: (id: string) => void
+  actionFunction: (id: string) => void,
 ) => {
   let navigate = useNavigate();
   const user = useSelector(selectUser);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedGraveId, setSelectedGraveId] = useState<string>();
+
   return (
     <Box sx={{ display: "flex", gap: "1rem" }}>
       <ButtonMUI

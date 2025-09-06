@@ -28,7 +28,7 @@ const watchServerErrors: string[] = [
 ];
 
 export default function SignUp() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch<any>();
 
   interface IFormValues {
@@ -50,7 +50,7 @@ export default function SignUp() {
     email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
     password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
     "repeated-password": string().required(
-      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED"),
     ),
   });
 

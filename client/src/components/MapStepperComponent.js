@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import TextField, { OutlinedTextFieldProps } from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
+import TextField from "@mui/material/TextField";
+
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { Autocomplete, AutocompleteRenderInputParams } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -12,13 +11,7 @@ import {
   selectAllGraveTypes,
 } from "../features/graveTypesSlice";
 
-import {
-  Map,
-  GoogleApiWrapper,
-  Marker,
-  Polygon,
-  InfoWindow,
-} from "google-maps-react";
+import { Map, GoogleApiWrapper, Marker, InfoWindow } from "google-maps-react";
 
 const mapStyles = {
   width: "70%",
@@ -56,7 +49,7 @@ const MapStepperComponent = (props) => {
 
   useEffect(() => {
     dispatch(getAllGraveTypes());
-  }, []);
+  }, [dispatch]);
   //const mapRef = useRef(null);
   useEffect(() => {
     if (mapRef.current) {
@@ -142,7 +135,7 @@ const MapStepperComponent = (props) => {
                   url: iconUrl,
                   scaledSize: new props.google.maps.Size(
                     getSizeOfMarker(currentZoom),
-                    getSizeOfMarker(currentZoom)
+                    getSizeOfMarker(currentZoom),
                   ),
                   rotation: 45,
                 }}
