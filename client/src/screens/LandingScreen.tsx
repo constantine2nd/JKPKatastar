@@ -29,7 +29,7 @@ const LandingScreen: React.FC = () => {
 
   const handleChange = (event: SelectChangeEvent) => {
     const selectedCemetery = cemeteries?.find(
-      (cem) => cem._id === event.target.value
+      (cem) => cem._id === event.target.value,
     );
     navigate("/", { state: { cemetery: selectedCemetery } });
     setCemeteryId(event.target.value);
@@ -60,19 +60,23 @@ const LandingScreen: React.FC = () => {
 
   return (
     <>
-      <h1>{t("Landing page screen")}</h1>
+      <h1>{t("client.landing-page-screen")}</h1>
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
-          <InputLabel id="cemetery-select-label">{t("Cemetery")}</InputLabel>
+          <InputLabel id="cemetery-select-label">
+            {t("cemetery.title")}
+          </InputLabel>
           <Select
             labelId="cemetery-select-label"
             id="demo-simple-select"
             value={cemeteryId}
-            label="Cemetery"
+            label={t("cemetery.title")}
             onChange={handleChange}
           >
             {cemeteries?.map((cemetery) => (
-              <MenuItem key={cemetery._id} value={cemetery._id}>{cemetery.name}</MenuItem>
+              <MenuItem key={cemetery._id} value={cemetery._id}>
+                {cemetery.name}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>

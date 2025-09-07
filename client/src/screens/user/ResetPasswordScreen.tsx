@@ -45,10 +45,8 @@ export default function ResetPassword() {
   };
 
   const validationSchema = object({
-    password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    "repeated-password": string().required(
-      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
-    ),
+    password: string().required(t("client.err-field-required")),
+    "repeated-password": string().required(t("client.err-field-required")),
   });
 
   const onSubmit = (values: IFormValues) => {
@@ -87,9 +85,7 @@ export default function ResetPassword() {
         </Avatar>
         <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Collapse in={userStatus === "succeeded" ? true : false}>
-          <Alert severity="info">
-            "Password changed."
-          </Alert>
+          <Alert severity="info">"Password changed."</Alert>
         </Collapse>
         <Box
           component="form"

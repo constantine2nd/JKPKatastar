@@ -46,12 +46,10 @@ export default function SignUp() {
   };
 
   const validationSchema = object({
-    name: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    email: string().email().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    password: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    "repeated-password": string().required(
-      t("CLIENT_ERR_THE_FIELD_IS_REQUIRED"),
-    ),
+    name: string().required(t("client.err-field-required")),
+    email: string().email().required(t("client.err-field-required")),
+    password: string().required(t("client.err-field-required")),
+    "repeated-password": string().required(t("client.err-field-required")),
   });
 
   const onSubmit = (values: IFormValues) => {
@@ -122,7 +120,7 @@ export default function SignUp() {
             required
             fullWidth
             id="email"
-            label={t("email")}
+            label={t("form.email")}
             name="email"
             autoComplete="email"
             value={formik.values.email}

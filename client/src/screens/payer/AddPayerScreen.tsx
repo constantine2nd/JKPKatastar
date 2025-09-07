@@ -14,6 +14,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 import { addPayer } from "../../features/singleGraveSlice";
 
@@ -34,6 +35,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const AddPayer: React.FC = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [activeChecked, setActiveChecked] = useState(true);
   const graveId = searchParams.get("id");
@@ -166,7 +168,7 @@ const AddPayer: React.FC = () => {
                     type="switch"
                     name="active"
                     checked={activeChecked}
-                    label="Platioc aktivan:"
+                    label={t("payer.active")}
                     onChange={() => {
                       setActiveChecked(!activeChecked);
                     }}

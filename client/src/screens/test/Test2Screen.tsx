@@ -31,7 +31,7 @@ const Test2Screen = () => {
 
   //table state
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>(
-    []
+    [],
   );
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -58,7 +58,7 @@ const Test2Screen = () => {
 
       try {
         const response = await axios.get(
-          `/api/deceased/paginate?${queryParams}`
+          `/api/deceased/paginate?${queryParams}`,
         );
         const data = response.data;
         console.log(data);
@@ -97,7 +97,7 @@ const Test2Screen = () => {
       {
         accessorFn: (row) => new Date(row.dateBirth),
         id: "dateBirth",
-        header: t("dateBirth"),
+        header: t("dates.birth"),
         filterFn: "between",
         filterVariant: "date",
         sortingFn: "datetime",
@@ -106,7 +106,7 @@ const Test2Screen = () => {
       {
         accessorFn: (row) => new Date(row.dateDeath),
         id: "dateDeath",
-        header: t("dateDeath"),
+        header: t("dates.death"),
         filterFn: "between",
         filterVariant: "date",
         sortingFn: "datetime",
@@ -115,7 +115,7 @@ const Test2Screen = () => {
 
       //end
     ],
-    []
+    [],
   );
 
   const table = useMaterialReactTable({

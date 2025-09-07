@@ -95,7 +95,7 @@ const GravesTableScreenCrud = () => {
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
       accessorKey: "cemetery.name",
-      header: t("Cemetery"),
+      header: t("cemetery.title"),
       editVariant: "select",
       editSelectOptions: myCemeteries,
       enableEditing: true,
@@ -294,7 +294,7 @@ const GravesTableScreenCrud = () => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Grave Type")}</DialogTitle>
+        <DialogTitle variant="h3">{t("grave-type.create-new")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -308,7 +308,7 @@ const GravesTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Grave Type")}</DialogTitle>
+        <DialogTitle variant="h3">{t("grave-type.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -341,7 +341,7 @@ const GravesTableScreenCrud = () => {
           window.open(url, "_blank");
         }}
       >
-        {t("add grave")}
+        {t("grave.add")}
       </Button>
     ),
     state: {
@@ -389,13 +389,11 @@ const validateRequired = (value: string) => {
 function validateCrudTable(tableRow: CrudTableType) {
   return {
     number: !validateRequired(tableRow.number)
-      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      ? t("client.err-field-required")
       : "",
     field: !validateRequired(tableRow.field)
-      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
+      ? t("client.err-field-required")
       : "",
-    row: !validateRequired(tableRow.row)
-      ? t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")
-      : "",
+    row: !validateRequired(tableRow.row) ? t("client.err-field-required") : "",
   };
 }

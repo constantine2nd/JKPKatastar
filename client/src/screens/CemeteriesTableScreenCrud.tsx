@@ -74,7 +74,7 @@ const CemeteriesTableScreenCrud = () => {
   const columns: MRT_ColumnDef<Cemetery>[] = [
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -256,7 +256,7 @@ const CemeteriesTableScreenCrud = () => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Cemetery")}</DialogTitle>
+        <DialogTitle variant="h3">{t("cemetery.create-new")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -270,7 +270,7 @@ const CemeteriesTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Cemetery")}</DialogTitle>
+        <DialogTitle variant="h3">{t("cemetery.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -351,7 +351,7 @@ const CemeteriesTableScreenCrud = () => {
             // );
           }}
         >
-          {t("Create New Cemetery")}
+          {t("cemetery.create-new")}
         </Button>
       </>
     ),

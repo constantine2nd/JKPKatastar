@@ -70,16 +70,16 @@ const DeceasedTableScreen: React.FC = () => {
   const columns: MRT_ColumnDef<Deceased>[] = [
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
     },
     {
       accessorKey: "surname",
-      header: t("surname"),
+      header: t("form.surname"),
     },
     {
       accessorFn: (row) => new Date(row.dateBirth),
       id: "dateBirth",
-      header: t("dateBirth"),
+      header: t("dates.birth"),
       filterFn: "between",
       filterVariant: "date",
       sortingFn: "datetime",
@@ -88,7 +88,7 @@ const DeceasedTableScreen: React.FC = () => {
     {
       accessorFn: (row) => new Date(row.dateDeath),
       id: "dateDeath",
-      header: t("dateDeath"),
+      header: t("dates.death"),
       filterFn: "between",
       filterVariant: "date",
       sortingFn: "datetime",
@@ -196,7 +196,7 @@ const DeceasedTableScreen: React.FC = () => {
               });
             }}
           >
-            {t("add grave")}
+            {t("grave.add")}
           </ButtonMUI>
         )}
         <br />
@@ -222,7 +222,7 @@ const DeceasedTableScreen: React.FC = () => {
                 "& tr:nth-of-type(odd) > td": {
                   backgroundColor: darken(
                     theme.palette.background.default,
-                    0.05
+                    0.05,
                   ),
                 },
               }),

@@ -30,7 +30,10 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../../hooks/useCrudHooks";
-import { dateFormatter, dateCalendarFormatter } from "../../utils/dateFormatter";
+import {
+  dateFormatter,
+  dateCalendarFormatter,
+} from "../../utils/dateFormatter";
 
 // Defines the name of the react query
 const queryFunction = "deceased-all";
@@ -70,7 +73,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -87,7 +90,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "surname",
-      header: t("surname"),
+      header: t("form.surname"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -103,10 +106,10 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       },
     },
     {
-      //accessorKey: "dateBirth",
-      accessorFn: (row) => dateCalendarFormatter(row.dateBirth),
-      id: "dateBirth",
-      header: t("dateBirth"),
+      //accessorKey: "dateDeath",
+      accessorFn: (row) => dateCalendarFormatter(row.dateDeath),
+      id: "dateDeath",
+      header: t("dates.death"),
       enableColumnFilter: false,
       muiEditTextFieldProps: {
         type: "date",
@@ -129,7 +132,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     {
       accessorFn: (row) => dateCalendarFormatter(row.dateDeath),
       id: "dateDeath",
-      header: t("dateDeath"),
+      header: t("dates.death"),
       enableColumnFilter: false,
       muiEditTextFieldProps: {
         type: "date",
@@ -265,7 +268,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Deceased")}</DialogTitle>
+        <DialogTitle variant="h3">{t("deceased.create-new")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -284,7 +287,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
 
       const elementsDateBirth = document.getElementsByName("dateBirth");
       const myInput: HTMLInputElement | undefined = Array.from(
-        elementsDateBirth
+        elementsDateBirth,
       )[0] as HTMLInputElement;
 
       console.log(myInput.value);
@@ -306,7 +309,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       // console.log(newRow);
       return (
         <>
-          <DialogTitle variant="h3">{t("Edit Deceased")}</DialogTitle>
+          <DialogTitle variant="h3">{t("deceased.edit")}</DialogTitle>
           <DialogContent
             sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
           >
@@ -347,7 +350,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
           // );
         }}
       >
-        {t("Create New Deceased")}
+        {t("deceased.create-new")}
       </Button>
     ),
     state: {

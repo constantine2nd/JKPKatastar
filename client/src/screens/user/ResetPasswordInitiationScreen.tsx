@@ -35,7 +35,7 @@ export default function ResetPasswordInitiation() {
   };
 
   const validationSchema = object({
-    email: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    email: string().required(t("client.err-field-required")),
   });
 
   const onSubmit = (values: IFormValues) => {

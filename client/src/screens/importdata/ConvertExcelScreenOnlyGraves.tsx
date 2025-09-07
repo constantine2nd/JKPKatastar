@@ -3,6 +3,7 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import { Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import {
   fetchCemeteries,
   selectAllCemeteries,
@@ -13,6 +14,7 @@ function ExcelToJsonConverterOnlyGraves() {
   const [jsonData, setJsonData] = useState("");
   const [selectedCemeteryId, setSelectedCemeteryId] = useState("");
 
+  const { t } = useTranslation();
   const dispatch = useDispatch<any>();
   const cemeteries = useSelector(selectAllCemeteries);
 
@@ -71,7 +73,7 @@ function ExcelToJsonConverterOnlyGraves() {
         const response = await axios.post(
           `/api/graves/new-from-excel`,
           dataToSend,
-          config
+          config,
         );
         ///////////////
       };
@@ -102,7 +104,7 @@ function ExcelToJsonConverterOnlyGraves() {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={selectedCemeteryId}
-            label="Cemetery"
+            label={t("cemetery.title")}
             onChange={handleSelectCemetery}
           >
             {cemeteries.map((cemetery) => (

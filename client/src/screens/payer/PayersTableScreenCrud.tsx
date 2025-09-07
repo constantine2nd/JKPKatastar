@@ -63,7 +63,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -80,7 +80,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "surname",
-      header: t("surname"),
+      header: t("form.surname"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -267,7 +267,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Payer")}</DialogTitle>
+        <DialogTitle variant="h3">{t("payer.create-new")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -281,7 +281,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Payer")}</DialogTitle>
+        <DialogTitle variant="h3">{t("payer.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -319,7 +319,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
           // );
         }}
       >
-        {t("Create New Payer")}
+        {t("payer.create-new")}
       </Button>
     ),
     state: {

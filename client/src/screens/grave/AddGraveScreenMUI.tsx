@@ -75,13 +75,13 @@ const AddGraveScreenMUI: React.FC = () => {
   };
 
   const validationSchema = object({
-    graveField: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    graveRow: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    graveNumber: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    LAT: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    LON: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    cemetery: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
-    graveType: string().required(t("CLIENT_ERR_THE_FIELD_IS_REQUIRED")),
+    graveField: string().required(t("client.err-field-required")),
+    graveRow: string().required(t("client.err-field-required")),
+    graveNumber: string().required(t("client.err-field-required")),
+    LAT: string().required(t("client.err-field-required")),
+    LON: string().required(t("client.err-field-required")),
+    cemetery: string().required(t("client.err-field-required")),
+    graveType: string().required(t("client.err-field-required")),
   });
 
   const onSubmit = (values: IFormValues) => {
@@ -206,7 +206,7 @@ const AddGraveScreenMUI: React.FC = () => {
           <TextField
             margin="normal"
             fullWidth
-            label="cemetery"
+            label={t("cemetery.title")}
             name="cemetery"
             id="cemetery"
             value={formik.values.cemetery}
@@ -226,7 +226,7 @@ const AddGraveScreenMUI: React.FC = () => {
           <TextField
             margin="normal"
             fullWidth
-            label="graveType"
+            label={t("grave.type")}
             name="graveType"
             id="graveType"
             value={formik.values.graveType}

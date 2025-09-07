@@ -77,7 +77,7 @@ const UsersTableScreenCrud = () => {
     },
     {
       accessorKey: "email",
-      header: t("email"),
+      header: t("form.email"),
       enableEditing: true,
       muiEditTextFieldProps: {
         type: "email",
@@ -249,7 +249,7 @@ const UsersTableScreenCrud = () => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New User")}</DialogTitle>
+        <DialogTitle variant="h3">{t("user.create-new")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -301,7 +301,7 @@ const UsersTableScreenCrud = () => {
           // );
         }}
       >
-        {t("Create New User")}
+        {t("user.create-new")}
       </Button>
     ),
     state: {

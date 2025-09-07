@@ -97,7 +97,7 @@ const SingleGraveScreen: React.FC = () => {
         const mapImageUrl = canvas.toDataURL("image/png");
 
         const pdfBlob = await pdf(
-          <PDFRenderer grave={grave} mapImageUrl={mapImageUrl} />
+          <PDFRenderer grave={grave} mapImageUrl={mapImageUrl} />,
         ).toBlob();
 
         const pdfUrl = URL.createObjectURL(pdfBlob);
@@ -144,9 +144,9 @@ const SingleGraveScreen: React.FC = () => {
     <>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
         <Tabs value={value} onChange={handleChange} centered>
-          <Tab label="Podaci o grobnom mestu" />
-          <Tab label="Lista pokojnika" />
-          <Tab label="Lista platioca" />
+          <Tab label={t("tabs.grave-data")} />
+          <Tab label={t("tabs.deceased-list")} />
+          <Tab label={t("tabs.payer-list")} />
         </Tabs>
       </Box>
       <Box

@@ -1,0 +1,179 @@
+{
+  "client": {
+    "your-website": "Your Internet Portal",
+    "landing-page-screen": "Landing Page Screen",
+    "err-field-required": "The field is required"
+  },
+  "cemetery": {
+    "title": "Cemetery",
+    "create-new": "Create New Cemetery",
+    "edit": "Edit Cemetery",
+    "selection": "Cemetery Selection"
+  },
+  "grave": {
+    "title": "Grave",
+    "add": "Add Grave",
+    "add-route": "add-grave",
+    "create-new": "Create new grave",
+    "table-screen": "Table View",
+    "type": "Grave Type",
+    "number": "Serial Number",
+    "row": "Row",
+    "field": "Field",
+    "capacity": "Capacity",
+    "occupation": "Occupancy",
+    "contract-expiration-date": "Contract Expiration Date",
+    "add-contract-date": "Enter contract expiration date",
+    "id": "Grave ID",
+    "grave-field": "Grave Field",
+    "grave-number": "Grave Number",
+    "grave-row": "Grave Row",
+    "enter": "Enter the grave:",
+    "number-of": "Number of grave:",
+    "field-of": "Field of grave:",
+    "row-of": "Row of grave:",
+    "capacity-of": "Capacity of grave:",
+    "latitude-of": "Latitude of grave:",
+    "longitude-of": "Longitude of grave:",
+    "field-mandatory": "Field of grave is mandatory",
+    "row-mandatory": "Row of grave is mandatory",
+    "capacity-mandatory": "Capacity of grave is mandatory",
+    "latitude-mandatory": "Latitude of grave is mandatory",
+    "longitude-mandatory": "Longitude of grave is mandatory",
+    "contract-expiration-mandatory": "Contract expiration date is mandatory",
+    "enter-number": "Enter the number of the grave",
+    "enter-field": "Enter the field of the grave",
+    "enter-row": "Enter the row of the grave",
+    "enter-capacity": "Enter the capacity of the grave",
+    "enter-latitude": "Enter latitude of the grave",
+    "enter-longitude": "Enter longitude of the grave",
+    "enter-contract-expiration": "Enter contract expiration date"
+  },
+  "grave-type": {
+    "title": "Grave Types",
+    "create-new": "Create New Grave Type",
+    "edit": "Edit Grave Type"
+  },
+  "grave-request": {
+    "title": "Grave Request",
+    "create-new": "Create New Grave Request"
+  },
+  "deceased": {
+    "title": "Deceased",
+    "create-new": "Create New Deceased",
+    "edit": "Edit Deceased"
+  },
+  "payer": {
+    "create-new": "Create New Payer",
+    "edit": "Edit Payer",
+    "active": "Payer Active:"
+  },
+  "user": {
+    "create-new": "Create New User",
+    "edit": "Edit User",
+    "management": "User Management",
+    "delete-confirmation": "Are you sure you want to delete this user?"
+  },
+  "menu": {
+    "view-deceased": "View Deceased",
+    "search-deceased": "Search Deceased",
+    "view-grave": "View Graves",
+    "grave-request": "Grave Request",
+    "cemeteries": "Cemeteries",
+    "user-management": "User Management",
+    "grave-types": "Grave Types"
+  },
+  "tabs": {
+    "grave-data": "Grave Data",
+    "deceased-list": "Deceased List",
+    "payer-list": "Payer List"
+  },
+  "search-deceased": {
+    "search": "Search",
+    "birth-year": "Birth Year",
+    "cemetery-selection": "Cemetery Selection",
+    "death-date-from": "Death Date From",
+    "death-date-to": "Death Date To",
+    "birth-date-from": "Birth Date From",
+    "birth-date-to": "Birth Date To",
+    "death-year-from": "Death Year From",
+    "death-year-to": "Death Year To"
+  },
+  "form": {
+    "name": "Name",
+    "surname": "Surname",
+    "email": "Email",
+    "password": "Password",
+    "repeat-password": "Repeat Password",
+    "address": "Address",
+    "phone": "Phone",
+    "jmbg": "JMBG",
+    "name-required": "Name is required",
+    "surname-required": "Surname is required",
+    "email-required": "Email is required",
+    "phone-required": "Phone is required"
+  },
+  "location": {
+    "lat": "Latitude",
+    "lon": "Longitude",
+    "zoom": "Zoom",
+    "lat-required": "Latitude is required",
+    "lon-required": "Longitude is required",
+    "zoom-required": "Zoom is required"
+  },
+  "dates": {
+    "birth": "Date of Birth",
+    "death": "Date of Death",
+    "created-at": "Created At",
+    "token": "Token"
+  },
+  "status": {
+    "active": "Active",
+    "status": "Status",
+    "requested": "Requested",
+    "accepted": "Accepted",
+    "denied": "Denied",
+    "free": "FREE",
+    "occupied": "OCCUPIED",
+    "verified": "Verified"
+  },
+  "roles": {
+    "role": "Role",
+    "administrator": "Administrator",
+    "officer": "Officer",
+    "visitor": "Visitor"
+  },
+  "actions": {
+    "send": "Send",
+    "back": "Back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "submit": "Submit",
+    "logout": "Logout",
+    "zoom": "Zoom",
+    "delete-confirmation": "Are you sure you want to delete the row?"
+  },
+  "common": {
+    "details": "Details",
+    "description": "Description",
+    "id": "ID",
+    "yes": "YES",
+    "no": "NO",
+    "avatar": "Avatar"
+  },
+  "auth": {
+    "remember-me": "Remember me",
+    "sign-in": "Sign in",
+    "sign-up": "Sign up",
+    "forgot-password": "Forgot password?",
+    "no-account": "Don't have an account? Sign Up"
+  },
+  "server": {
+    "err-user-exists": "User already exists",
+    "err-confirm-password": "Password is not confirmed",
+    "err-invalid-credentials": "Invalid email or password",
+    "err-username-mandatory": "Username is mandatory",
+    "err-password-mandatory": "Password is mandatory",
+    "err-user-not-verified": "User is not verified"
+  }
+}

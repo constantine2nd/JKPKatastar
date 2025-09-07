@@ -89,7 +89,7 @@ const GraveRequestStepperScreen: React.FC = () => {
   const handleChangeCemetery = (event: SelectChangeEvent) => {
     const selectedCemeteryId = event.target.value;
     const foundSelectedCemetery = cemeteries?.find(
-      (cem) => cem._id === selectedCemeteryId
+      (cem) => cem._id === selectedCemeteryId,
     );
     setSelectedCemetery(foundSelectedCemetery);
     setCemeteryId(event.target.value);
@@ -180,13 +180,13 @@ const GraveRequestStepperScreen: React.FC = () => {
           <Box sx={{ width: "50%", margin: "30px" }}>
             <FormControl fullWidth>
               <InputLabel id="cemetery-select-label">
-                {t("Cemetery")}
+                {t("cemetery.title")}
               </InputLabel>
               <Select
                 labelId="cemetery-select-label"
                 id="demo-simple-select"
                 value={cemeteryId}
-                label="Cemetery"
+                label={t("cemetery.title")}
                 onChange={handleChangeCemetery}
               >
                 {cemeteries?.map((cemetery) => (

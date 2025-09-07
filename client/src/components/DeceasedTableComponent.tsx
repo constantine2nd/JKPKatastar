@@ -56,7 +56,7 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
       //accessorKey: "dateBirth",
       accessorFn: (row) => dateCalendarFormatter(row.dateBirth),
       id: "dateBirth",
-      header: t("dateBirth"),
+      header: t("dates.birth"),
       enableColumnFilter: false,
       filterFn: "between",
       filterVariant: "date",
@@ -66,7 +66,7 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
     {
       accessorFn: (row) => dateCalendarFormatter(row.dateDeath),
       id: "dateDeath",
-      header: t("dateDeath"),
+      header: t("dates.death"),
       enableColumnFilter: false,
       filterFn: "between",
       filterVariant: "date",

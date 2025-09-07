@@ -278,6 +278,9 @@ const Header = () => {
                 <NavDropdown.Item onClick={() => selectLangugeHandler("hu")}>
                   HU
                 </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => selectLangugeHandler("en")}>
+                  EN
+                </NavDropdown.Item>
               </NavDropdown>
             </Box>
           </Toolbar>

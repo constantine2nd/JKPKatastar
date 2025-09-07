@@ -28,13 +28,13 @@ import { srRS } from "@mui/material/locale";
 import { DeleteAndMaybeRemoveButton } from "../../components/DetailAndMaybeRemoveButton";
 import { getLanguage } from "../../utils/languageSelector.js";
 
+import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import {
-  MaterialReactTable,
-  type MRT_ColumnDef
-} from "material-react-table";
-import { capacityExt, expiredContract, statusOfGrave } from "../../components/CommonFuntions";
+  capacityExt,
+  expiredContract,
+  statusOfGrave,
+} from "../../components/CommonFuntions";
 import { ADMINISTRATOR, OFFICER } from "../../utils/constant.js";
-
 
 const GravesTableScreen: React.FC = () => {
   //const [graves, setGraves] = useState<GraveData[]>([]);
@@ -49,9 +49,9 @@ const GravesTableScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
 
   const statuses = [
-    { label: t('FREE'), value: 'FREE' },
-    { label: t('OCCUPIED'), value: 'OCCUPIED' },
-  ]
+    { label: t("FREE"), value: "FREE" },
+    { label: t("OCCUPIED"), value: "OCCUPIED" },
+  ];
 
   const columns: MRT_ColumnDef<GraveData>[] = [
     {
@@ -72,7 +72,7 @@ const GravesTableScreen: React.FC = () => {
     },
     {
       accessorKey: "cemetery.name",
-      header: t("Cemetery"),
+      header: t("cemetery.title"),
     },
     {
       accessorFn: (row) => `${row.numberOfDeceaseds}/${row.graveType.capacity}`, //accessorFn used to join multiple data into a single cell
@@ -93,11 +93,9 @@ const GravesTableScreen: React.FC = () => {
     {
       accessorKey: "status",
       header: t("status"),
-      editVariant: 'select',
+      editVariant: "select",
       editSelectOptions: statuses,
-      Cell: ({ row }) => (
-        statusOfGrave(row.original.status)
-      ),
+      Cell: ({ row }) => statusOfGrave(row.original.status),
     },
     {
       accessorKey: "_id",
@@ -107,7 +105,7 @@ const GravesTableScreen: React.FC = () => {
         DeleteAndMaybeRemoveButton(
           row.original._id,
           "/single-grave",
-          handleShowModal
+          handleShowModal,
         ),
     },
   ];
@@ -174,7 +172,7 @@ const GravesTableScreen: React.FC = () => {
               });
             }}
           >
-            {t("add grave")}
+            {t("grave.add")}
           </ButtonMUI>
         )}
         <br />
@@ -198,7 +196,7 @@ const GravesTableScreen: React.FC = () => {
                 "& tr:nth-of-type(odd) > td": {
                   backgroundColor: darken(
                     theme.palette.background.default,
-                    0.05
+                    0.05,
                   ),
                 },
               }),
