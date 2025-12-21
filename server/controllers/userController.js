@@ -176,30 +176,41 @@ const authUser = async (req, res, next) => {
       res.status(401).send({
         message: "SERVER_ERR_USERNAME_IS_MANDATORY",
       });
+      return;
     }
 
     if (!password) {
       res.status(401).send({
         message: "SERVER_ERR_PASSWORD_IS_MANDATORY",
       });
+      return;
     }
 
     const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(401).send({
+        message: "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+      });
+      return;
+    }
 
     if (user.isVerified === false) {
       res.status(401).send({
         message: "SERVER_ERR_USER_IS_NOT_VERIFIED",
       });
+      return;
     }
 
-    if (user && (await user.matchPassword(password))) {
+    if (await user.matchPassword(password)) {
       res.json({
         ...user._doc,
         token: generateToken(user._id),
       });
     } else {
-      res.status(401);
-      throw new Error("SERVER_ERR_INVALID_EMAIL_OR_PASSWORD");
+      res.status(401).send({
+        message: "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+      });
     }
   } catch (err) {
     next(err); // Inside async code you have to pass the error to the next function, else your api will crash
@@ -234,7 +245,7 @@ const resetPasswordInitiation = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   try {
-    const { token, password, 'repeated-password': repeatedPassword } = req.body;
+    const { token, password, "repeated-password": repeatedPassword } = req.body;
     const filter = { pseudoRandomToken: token }; // Criteria to find a row
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);

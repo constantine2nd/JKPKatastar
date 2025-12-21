@@ -88,8 +88,18 @@ lsof -i :3000 :5000 :27017
 - **MongoDB Issue**: Now starts automatically with Docker (no external setup needed)
 - **Documentation**: Simplified to one README (removed redundant docs)  
 - **Scripts**: Single `./dev.sh` script (removed multiple competing scripts)
-- **Configuration**: All settings in docker-compose.yml (no .env complexity)
+- **Configuration**: Uses your `.env` file for all settings (Docker reads environment variables)
 - **Health Checks**: All services monitored and dependencies managed
+
+## ⚙️ Configuration
+
+Docker automatically reads your `.env` file:
+- **MONGO_URI**: Database connection (uses your `graves_test` database)
+- **JWT_SECRET**: Authentication security
+- **EMAIL_***: Email notification settings
+- **PORT**: Backend port (default: 5000)
+
+**Note**: All Docker services now use values from your `.env` file!
 
 ---
 

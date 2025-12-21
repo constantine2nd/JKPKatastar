@@ -9,9 +9,9 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
-      MONGO_INITDB_DATABASE: jkp_katastar
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password123}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-graves_test}
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -30,18 +30,18 @@ services:
     container_name: jkp-backend
     restart: unless-stopped
     ports:
-      - "5000:5000"
+      - "${PORT:-5000}:${PORT:-5000}"
     environment:
-      NODE_ENV: development
-      PORT: 5000
-      MONGO_URI: mongodb://admin:password123@mongodb:27017/jkp_katastar?authSource=admin
-      JWT_SECRET: your_super_secret_jwt_key_here_32_chars
-      EMAIL_SERVICE: Gmail
-      EMAIL_HOST: smtp.gmail.com
-      EMAIL_PORT: 465
-      EMAIL_USER: marko.milic.srbija@gmail.com
-      EMAIL_SECRET: mywd jrfx wyuh wjmw
-      CLIENT_HOST_URI: http://localhost:3000
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${PORT:-5000}
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      EMAIL_SERVICE: ${EMAIL_SERVICE}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_SECRET: ${EMAIL_SECRET}
+      CLIENT_HOST_URI: ${CLIENT_HOST_URI:-http://localhost:3000}
     volumes:
       - ./server:/app
       - /app/node_modules
@@ -51,7 +51,15 @@ services:
     networks:
       - jkp-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:5000/api/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -66,11 +74,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      CHOKIDAR_USEPOLLING: true
-      GENERATE_SOURCEMAP: false
-      REACT_APP_API_URL: http://localhost:5000/api
-      REACT_APP_MAP_CENTER_LAT: 45.2671
-      REACT_APP_MAP_CENTER_LON: 19.8335
+      CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-true}
+      GENERATE_SOURCEMAP: ${GENERATE_SOURCEMAP:-false}
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/api}
+      REACT_APP_MAP_CENTER_LAT: ${REACT_APP_MAP_CENTER_LAT:-45.2671}
+      REACT_APP_MAP_CENTER_LON: ${REACT_APP_MAP_CENTER_LON:-19.8335}
     volumes:
       - ./client/src:/app/src
       - ./client/public:/app/public
@@ -81,7 +89,15 @@ services:
     networks:
       - jkp-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
