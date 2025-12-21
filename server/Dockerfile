@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+# Install curl and wget for health checks
+RUN apk add --no-cache curl wget
 
 WORKDIR /app
 
