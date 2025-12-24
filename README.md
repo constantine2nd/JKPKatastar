@@ -101,6 +101,85 @@ Docker automatically reads your `.env` file:
 
 **Note**: All Docker services now use values from your `.env` file!
 
+## 🌐 Production Deployment (VPS)
+
+Deploy to your VPS server at `194.146.58.124` automatically with GitHub Actions or manually.
+
+### Automatic Deployment (GitHub Actions)
+
+**Setup once:**
+1. **VPS Setup:**
+   ```bash
+   # SSH into your VPS
+   ssh root@194.146.58.124
+   
+   # Install Docker & Docker Compose
+   curl -fsSL https://get.docker.com -o get-docker.sh
+   sh get-docker.sh
+   curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   chmod +x /usr/local/bin/docker-compose
+   
+   # Create deployment directory
+   mkdir -p /opt/jkp-katastar
+   
+   # Setup SSH key for GitHub Actions
+   ssh-keygen -t rsa -b 4096 -C "github-actions" -f /root/.ssh/github_actions -N ""
+   cat /root/.ssh/github_actions.pub >> /root/.ssh/authorized_keys
+   cat /root/.ssh/github_actions  # Copy this private key
+   
+   # Configure firewall
+   ufw allow 22 && ufw allow 3000 && ufw allow 5000 && ufw --force enable
+   ```
+
+2. **GitHub Secrets:**
+   Go to Repository → Settings → Secrets → Add these:
+   - `VPS_HOST`: `194.146.58.124`
+   - `VPS_USER`: `root`
+   - `VPS_SSH_KEY`: (paste the private key from above)
+   - `MONGO_PASSWORD`: Your secure MongoDB password
+   - `JWT_SECRET`: Your secure JWT secret
+   - `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_SECRET`
+
+**Deploy:**
+- Push to `main` branch → Automatic deployment
+- Or manually trigger in GitHub Actions tab
+
+### Manual Deployment
+
+```bash
+# Set environment variables
+export MONGO_PASSWORD=your_secure_password
+export JWT_SECRET=your_secure_jwt_secret
+
+# Deploy
+./deploy-vps.sh deploy
+
+# Other commands
+./deploy-vps.sh status   # Check status
+./deploy-vps.sh logs     # View logs  
+./deploy-vps.sh stop     # Stop services
+./deploy-vps.sh clean    # Clean reset
+```
+
+### Production URLs
+- **Frontend**: http://194.146.58.124:3000
+- **Backend API**: http://194.146.58.124:5000/api
+- **Health Check**: http://194.146.58.124:5000/api/health
+
+### Troubleshooting
+```bash
+# Run health check on VPS
+./health-check.sh
+
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+```
+
+📖 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed debugging guide.
+
 ---
 
 **Ready to develop!** Just run `./dev.sh` and start coding! 🚀

@@ -22,123 +22,231 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Create deployment script
+        run: |
+          cat > deploy.sh << 'SCRIPT_EOF'
+          #!/bin/bash
+          set -e
+
+          echo "🏛️  JKP Katastar - Remote Deployment"
+          echo "===================================="
+
+          # Navigate to deployment directory
+          DEPLOY_DIR="/opt/jkp-katastar"
+          mkdir -p $DEPLOY_DIR
+          cd $DEPLOY_DIR
+
+          # Stop existing services if they exist
+          if [ -d "JKPKatastar" ] && [ -f "JKPKatastar/docker-compose.yml" ]; then
+            echo "🛑 Stopping existing services..."
+            cd JKPKatastar
+            docker-compose down --timeout 30 || true
+            cd $DEPLOY_DIR
+          fi
+
+          # Backup existing deployment
+          if [ -d "JKPKatastar" ]; then
+            echo "📦 Backing up existing deployment..."
+            mv JKPKatastar JKPKatastar-backup-$(date +%Y%m%d-%H%M%S) || true
+          fi
+
+          # Clone fresh repository
+          echo "📥 Cloning repository..."
+          git clone https://github.com/constantine2nd/JKPKatastar.git JKPKatastar
+          cd JKPKatastar
+
+          # Create production environment file
+          echo "⚙️  Setting up environment..."
+          cat > .env << 'ENV_EOF'
+          NODE_ENV=production
+          PORT=5000
+          MONGO_USERNAME=admin
+          MONGO_PASSWORD=REPLACE_MONGO_PASSWORD
+          MONGO_DATABASE=graves_prod
+          MONGO_URI=mongodb://admin:REPLACE_MONGO_PASSWORD@mongodb:27017/graves_prod?authSource=admin
+          JWT_SECRET=REPLACE_JWT_SECRET
+          EMAIL_SERVICE=REPLACE_EMAIL_SERVICE
+          EMAIL_HOST=REPLACE_EMAIL_HOST
+          EMAIL_PORT=REPLACE_EMAIL_PORT
+          EMAIL_USER=REPLACE_EMAIL_USER
+          EMAIL_SECRET=REPLACE_EMAIL_SECRET
+          CLIENT_HOST_URI=http://194.146.58.124:3000
+          REACT_APP_API_URL=http://194.146.58.124:5000/api
+          REACT_APP_MAP_CENTER_LAT=45.2671
+          REACT_APP_MAP_CENTER_LON=19.8335
+          CHOKIDAR_USEPOLLING=false
+          GENERATE_SOURCEMAP=false
+          ENV_EOF
+
+          # Replace placeholders with actual values
+          sed -i "s/REPLACE_MONGO_PASSWORD/$MONGO_PASSWORD/g" .env
+          sed -i "s/REPLACE_JWT_SECRET/$JWT_SECRET/g" .env
+          sed -i "s/REPLACE_EMAIL_SERVICE/$EMAIL_SERVICE/g" .env
+          sed -i "s/REPLACE_EMAIL_HOST/$EMAIL_HOST/g" .env
+          sed -i "s/REPLACE_EMAIL_PORT/$EMAIL_PORT/g" .env
+          sed -i "s/REPLACE_EMAIL_USER/$EMAIL_USER/g" .env
+          sed -i "s/REPLACE_EMAIL_SECRET/$EMAIL_SECRET/g" .env
+
+          # Create data directories
+          mkdir -p $DEPLOY_DIR/data/mongodb
+          mkdir -p $DEPLOY_DIR/logs
+
+          # Check if Docker is running
+          if ! docker info > /dev/null 2>&1; then
+            echo "❌ Docker is not running!"
+            exit 1
+          fi
+
+          # Pull base images first
+          echo "📦 Pulling base Docker images..."
+          docker pull mongo:6.0 || true
+          docker pull node:18-alpine || true
+          docker pull nginx:alpine || true
+
+          # Build and start services
+          echo "🔨 Building and starting services..."
+          docker-compose up --build -d --remove-orphans
+
+          # Wait for containers to start
+          echo "⏳ Waiting for containers to start..."
+          sleep 30
+
+          # Check container status
+          echo "📊 Container Status:"
+          docker-compose ps
+
+          # Show logs for debugging
+          echo "📋 Recent logs:"
+          docker-compose logs --tail=50
+
+          # Wait for services to be ready
+          echo "🩺 Waiting for services to be ready..."
+
+          # Wait for MongoDB
+          for i in {1..30}; do
+            if docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet > /dev/null 2>&1; then
+              echo "✅ MongoDB is ready"
+              break
+            fi
+            echo "Waiting for MongoDB... ($i/30)"
+            sleep 5
+          done
+
+          # Wait for Backend
+          for i in {1..30}; do
+            if docker-compose exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health > /dev/null 2>&1; then
+              echo "✅ Backend is ready"
+              break
+            fi
+            echo "Waiting for Backend... ($i/30)"
+            sleep 5
+          done
+
+          # Wait for Frontend
+          for i in {1..30}; do
+            if docker-compose exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 > /dev/null 2>&1; then
+              echo "✅ Frontend is ready"
+              break
+            fi
+            echo "Waiting for Frontend... ($i/30)"
+            sleep 5
+          done
+
+          # Final status check
+          echo "📊 Final Service Status:"
+          docker-compose ps
+
+          # Clean up old images
+          echo "🧹 Cleaning up old Docker images..."
+          docker image prune -f || true
+
+          # Remove old backups (keep only last 3)
+          echo "🗂️  Cleaning up old backups..."
+          cd $DEPLOY_DIR
+          ls -dt JKPKatastar-backup-* 2>/dev/null | tail -n +4 | xargs rm -rf 2>/dev/null || true
+
+          echo "🎉 Deployment completed!"
+          echo ""
+          echo "🌐 Access URLs:"
+          echo "   Frontend: http://194.146.58.124:3000"
+          echo "   Backend:  http://194.146.58.124:5000/api"
+          echo "   Health:   http://194.146.58.124:5000/api/health"
+          SCRIPT_EOF
+
+          chmod +x deploy.sh
+
       - name: Deploy to VPS
         run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-            set -e
-
-            echo "🏛️  JKP Katastar - Remote Deployment"
-            echo "===================================="
-
-            # Navigate to deployment directory
-            cd /opt/jkp-katastar
-
-            # Stop existing services
-            if [ -f docker-compose.yml ]; then
-              echo "🛑 Stopping existing services..."
-              docker-compose -f docker-compose.yml -f docker-compose.prod.yml down || true
-            fi
-
-            # Backup existing deployment
-            if [ -d "JKPKatastar" ]; then
-              echo "📦 Backing up existing deployment..."
-              mv JKPKatastar JKPKatastar-backup-$(date +%Y%m%d-%H%M%S) || true
-            fi
-
-            # Clone fresh repository
-            echo "📥 Cloning repository..."
-            git clone https://github.com/${{ github.repository }}.git JKPKatastar
-            cd JKPKatastar
-
-            # Create production environment file
-            echo "⚙️  Setting up environment..."
-            cat > .env << 'ENVEOF'
-            NODE_ENV=production
-            PORT=5000
-            MONGO_USERNAME=admin
-            MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
-            MONGO_DATABASE=graves_prod
-            MONGO_URI=mongodb://admin:${{ secrets.MONGO_PASSWORD }}@mongodb:27017/graves_prod?authSource=admin
-            JWT_SECRET=${{ secrets.JWT_SECRET }}
-            EMAIL_SERVICE=${{ secrets.EMAIL_SERVICE }}
-            EMAIL_HOST=${{ secrets.EMAIL_HOST }}
-            EMAIL_PORT=${{ secrets.EMAIL_PORT }}
-            EMAIL_USER=${{ secrets.EMAIL_USER }}
-            EMAIL_SECRET=${{ secrets.EMAIL_SECRET }}
-            CLIENT_HOST_URI=http://194.146.58.124:3000
-            REACT_APP_API_URL=http://194.146.58.124:5000/api
-            REACT_APP_MAP_CENTER_LAT=45.2671
-            REACT_APP_MAP_CENTER_LON=19.8335
-            CHOKIDAR_USEPOLLING=false
-            GENERATE_SOURCEMAP=false
-            ENVEOF
-
-            # Create data directory for MongoDB
-            mkdir -p /opt/jkp-katastar/data/mongodb
-            mkdir -p /opt/jkp-katastar/logs
-
-            # Pull latest images and build
-            echo "🔨 Building and starting services..."
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull || true
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-
-            # Wait for services to be healthy
-            echo "🩺 Waiting for services to be healthy..."
-            for i in {1..30}; do
-              if docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps | grep -q "healthy"; then
-                echo "✅ Services are healthy!"
-                break
-              fi
-              echo "Waiting... ($i/30)"
-              sleep 10
-            done
-
-            # Show status
-            echo "📊 Service Status:"
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
-
-            # Clean up old images
-            echo "🧹 Cleaning up old Docker images..."
-            docker image prune -f
-
-            # Remove old backups (keep only last 3)
-            echo "🗂️  Cleaning up old backups..."
-            ls -dt JKPKatastar-backup-* 2>/dev/null | tail -n +4 | xargs rm -rf 2>/dev/null || true
-
-            echo "🎉 Deployment completed successfully!"
-            echo ""
-            echo "🌐 Access URLs:"
-            echo "   Frontend: http://194.146.58.124:3000"
-            echo "   Backend:  http://194.146.58.124:5000/api"
-            echo ""
-          EOF
+          scp deploy.sh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "MONGO_PASSWORD='${{ secrets.MONGO_PASSWORD }}' \
+             JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+             EMAIL_SERVICE='${{ secrets.EMAIL_SERVICE }}' \
+             EMAIL_HOST='${{ secrets.EMAIL_HOST }}' \
+             EMAIL_PORT='${{ secrets.EMAIL_PORT }}' \
+             EMAIL_USER='${{ secrets.EMAIL_USER }}' \
+             EMAIL_SECRET='${{ secrets.EMAIL_SECRET }}' \
+             /tmp/deploy.sh"
 
       - name: Verify deployment
         run: |
           echo "🔍 Verifying deployment..."
-          sleep 30
+          sleep 60
 
-          # Check if frontend is responding
-          if curl -f http://${{ secrets.VPS_HOST }}:3000 >/dev/null 2>&1; then
+          # Check if services are responding
+          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }}:3000 || echo "000")
+          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }}:5000/api/health || echo "000")
+
+          echo "Frontend Status: HTTP $FRONTEND_STATUS"
+          echo "Backend Status: HTTP $BACKEND_STATUS"
+
+          if [ "$FRONTEND_STATUS" = "200" ] || [ "$FRONTEND_STATUS" = "301" ] || [ "$FRONTEND_STATUS" = "302" ]; then
             echo "✅ Frontend is responding"
+            FRONTEND_OK=true
           else
-            echo "❌ Frontend check failed"
+            echo "⚠️  Frontend not responding properly"
+            FRONTEND_OK=false
           fi
 
-          # Check if backend API is responding
-          if curl -f http://${{ secrets.VPS_HOST }}:5000/api/health >/dev/null 2>&1; then
+          if [ "$BACKEND_STATUS" = "200" ]; then
             echo "✅ Backend API is responding"
+            BACKEND_OK=true
           else
-            echo "❌ Backend API check failed"
+            echo "⚠️  Backend API not responding properly"
+            BACKEND_OK=false
           fi
 
-      - name: Notify deployment status
+          # Get service status from VPS
+          echo ""
+          echo "📊 Service Status on VPS:"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd /opt/jkp-katastar/JKPKatastar && docker-compose ps"
+
+      - name: Cleanup
         if: always()
         run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "rm -f /tmp/deploy.sh" || true
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "📋 Deployment Summary"
+          echo "===================="
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
           if [ "${{ job.status }}" == "success" ]; then
-            echo "🎉 Deployment to VPS completed successfully!"
-            echo "Frontend: http://${{ secrets.VPS_HOST }}:3000"
-            echo "Backend: http://${{ secrets.VPS_HOST }}:5000/api"
+            echo "🎉 Deployment completed successfully!"
+            echo "🌐 Frontend: http://${{ secrets.VPS_HOST }}:3000"
+            echo "🔧 Backend API: http://${{ secrets.VPS_HOST }}:5000/api"
+            echo "🩺 Health Check: http://${{ secrets.VPS_HOST }}:5000/api/health"
           else
-            echo "❌ Deployment failed. Check the logs above."
+            echo "❌ Deployment encountered issues. Check the logs above."
           fi
+          echo ""
+          echo "ℹ️  To check logs manually:"
+          echo "   ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}"
+          echo "   cd /opt/jkp-katastar/JKPKatastar"
+          echo "   docker-compose logs"

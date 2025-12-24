@@ -90,7 +90,7 @@ deploy_to_vps() {
 
         # Create production environment file
         echo "⚙️  Setting up environment..."
-        cat > .env << 'ENVEOF'
+        cat > .env << 'ENV_EOF'
 NODE_ENV=production
 PORT=5000
 MONGO_USERNAME=admin
@@ -109,7 +109,7 @@ REACT_APP_MAP_CENTER_LAT=45.2671
 REACT_APP_MAP_CENTER_LON=19.8335
 CHOKIDAR_USEPOLLING=false
 GENERATE_SOURCEMAP=false
-ENVEOF
+ENV_EOF
 
         # Create data directories
         mkdir -p $DEPLOY_DIR/data/mongodb
@@ -120,24 +120,58 @@ ENVEOF
         docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull || true
         docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 
-        # Wait for services to be healthy
-        echo "🩺 Waiting for services to be healthy..."
+        # Wait for containers to start
+        echo "⏳ Waiting for containers to start..."
+        sleep 30
+
+        # Check container status
+        echo "📊 Container Status:"
+        docker-compose ps
+
+        # Show logs for debugging
+        echo "📋 Recent logs:"
+        docker-compose logs --tail=50
+
+        # Wait for services to be ready
+        echo "🩺 Waiting for services to be ready..."
+
+        # Wait for MongoDB
         for i in {1..30}; do
-            if docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps | grep -q "healthy"; then
-                echo "✅ Services are healthy!"
+            if docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet > /dev/null 2>&1; then
+                echo "✅ MongoDB is ready"
                 break
             fi
-            echo "Waiting... (\$i/30)"
-            sleep 10
+            echo "Waiting for MongoDB... (\$i/30)"
+            sleep 5
         done
 
-        # Show status
-        echo "📊 Service Status:"
-        docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
+        # Wait for Backend
+        for i in {1..30}; do
+            if docker-compose exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health > /dev/null 2>&1; then
+                echo "✅ Backend is ready"
+                break
+            fi
+            echo "Waiting for Backend... (\$i/30)"
+            sleep 5
+        done
+
+        # Wait for Frontend
+        for i in {1..30}; do
+            if docker-compose exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 > /dev/null 2>&1; then
+                echo "✅ Frontend is ready"
+                break
+            fi
+            echo "Waiting for Frontend... (\$i/30)"
+            sleep 5
+        done
+
+        # Final status check
+        echo "📊 Final Service Status:"
+        docker-compose ps
 
         # Clean up old images
         echo "🧹 Cleaning up old Docker images..."
-        docker image prune -f
+        docker image prune -f || true
 
         # Remove old backups (keep only last 3)
         echo "🗂️  Cleaning up old backups..."
@@ -155,18 +189,23 @@ EOF
     echo "🔍 Verifying deployment..."
     sleep 30
 
-    # Check if frontend is responding
-    if curl -f http://$VPS_HOST:3000 >/dev/null 2>&1; then
+    # Check if services are responding
+    FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://$VPS_HOST:3000 || echo "000")
+    BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://$VPS_HOST:5000/api/health || echo "000")
+
+    echo "Frontend Status: HTTP $FRONTEND_STATUS"
+    echo "Backend Status: HTTP $BACKEND_STATUS"
+
+    if [ "$FRONTEND_STATUS" = "200" ] || [ "$FRONTEND_STATUS" = "301" ] || [ "$FRONTEND_STATUS" = "302" ]; then
         echo "✅ Frontend is responding"
     else
-        echo "⚠️  Frontend might still be starting up"
+        echo "⚠️  Frontend not responding properly"
     fi
 
-    # Check if backend API is responding
-    if curl -f http://$VPS_HOST:5000/api/health >/dev/null 2>&1; then
+    if [ "$BACKEND_STATUS" = "200" ]; then
         echo "✅ Backend API is responding"
     else
-        echo "⚠️  Backend API might still be starting up"
+        echo "⚠️  Backend API not responding properly"
     fi
 
     echo ""
@@ -182,7 +221,7 @@ stop_services() {
     ssh $VPS_USER@$VPS_HOST << EOF
         cd $DEPLOY_DIR/$PROJECT_NAME
         if [ -f docker-compose.yml ]; then
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+            docker-compose down --timeout 30
             echo "✅ Services stopped"
         else
             echo "⚠️  No deployment found"
@@ -197,7 +236,7 @@ show_logs() {
     ssh $VPS_USER@$VPS_HOST << EOF
         cd $DEPLOY_DIR/$PROJECT_NAME
         if [ -f docker-compose.yml ]; then
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f --tail=100
+            docker-compose logs -f --tail=100
         else
             echo "⚠️  No deployment found"
         fi
@@ -212,7 +251,7 @@ clean_deployment() {
         cd $DEPLOY_DIR
         if [ -d "$PROJECT_NAME" ]; then
             cd $PROJECT_NAME
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v || true
+            docker-compose down -v --timeout 30 || true
             cd ..
             rm -rf $PROJECT_NAME
         fi
@@ -236,7 +275,28 @@ check_status() {
         cd $DEPLOY_DIR/$PROJECT_NAME 2>/dev/null || { echo "⚠️  No deployment found"; exit 0; }
 
         echo "Service Status:"
-        docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
+        docker-compose ps
+
+        echo ""
+        echo "Service Health:"
+        # Check if services are responding internally
+        if docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet >/dev/null 2>&1; then
+            echo "  ✅ MongoDB: Healthy"
+        else
+            echo "  ❌ MongoDB: Unhealthy"
+        fi
+
+        if docker-compose exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health >/dev/null 2>&1; then
+            echo "  ✅ Backend: Healthy"
+        else
+            echo "  ❌ Backend: Unhealthy"
+        fi
+
+        if docker-compose exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
+            echo "  ✅ Frontend: Healthy"
+        else
+            echo "  ❌ Frontend: Unhealthy"
+        fi
 
         echo ""
         echo "Docker System Info:"
@@ -245,6 +305,13 @@ check_status() {
         echo ""
         echo "Disk Usage:"
         df -h $DEPLOY_DIR
+
+        echo ""
+        echo "Recent Logs (last 10 lines per service):"
+        for service in mongodb backend frontend; do
+            echo "--- \$service ---"
+            docker-compose logs --tail=10 \$service 2>/dev/null || echo "No logs available"
+        done
 EOF
 }
 

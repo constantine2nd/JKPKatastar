@@ -11,7 +11,7 @@ services:
     volumes:
       - /opt/jkp-katastar/data/mongodb:/data/db
     ports:
-      - "127.0.0.1:27017:27017"  # Bind only to localhost for security
+      - "127.0.0.1:27017:27017" # Bind only to localhost for security
     command: --bind_ip_all --auth
     logging:
       driver: "json-file"
@@ -24,7 +24,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-      target: production
     restart: always
     environment:
       NODE_ENV: production
@@ -58,7 +57,6 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-      target: production
     restart: always
     environment:
       REACT_APP_API_URL: ${REACT_APP_API_URL}
