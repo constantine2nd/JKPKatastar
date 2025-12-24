@@ -142,8 +142,15 @@ echo "=================="
 if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ] && [ -f "$DEPLOY_DIR/$PROJECT_NAME/docker-compose.yml" ]; then
     cd "$DEPLOY_DIR/$PROJECT_NAME"
 
+    # Determine compose command
+    if docker compose version > /dev/null 2>&1; then
+        COMPOSE_CMD="docker compose"
+    else
+        COMPOSE_CMD="docker-compose"
+    fi
+
     echo "  📊 Container Status:"
-    docker-compose ps | while read line; do
+    $COMPOSE_CMD ps | while read line; do
         if [ -n "$line" ]; then
             echo "    $line"
         fi
@@ -154,11 +161,11 @@ if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ] && [ -f "$DEPLOY_DIR/$PROJECT_NAME/docker-
     echo "  🔍 Service Details:"
 
     # MongoDB
-    if docker-compose ps mongodb | grep -q "Up"; then
+    if $COMPOSE_CMD ps mongodb | grep -q "Up"; then
         echo "    ✅ MongoDB: Running"
 
         # Test MongoDB connection
-        if docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet >/dev/null 2>&1; then
             echo "    ✅ MongoDB: Connection OK"
         else
             echo "    ⚠️  MongoDB: Connection issues"
@@ -168,11 +175,11 @@ if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ] && [ -f "$DEPLOY_DIR/$PROJECT_NAME/docker-
     fi
 
     # Backend
-    if docker-compose ps backend | grep -q "Up"; then
+    if $COMPOSE_CMD ps backend | grep -q "Up"; then
         echo "    ✅ Backend: Running"
 
         # Test backend health
-        if docker-compose exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health >/dev/null 2>&1; then
             echo "    ✅ Backend: Health check OK"
         else
             echo "    ⚠️  Backend: Health check failed"
@@ -182,11 +189,11 @@ if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ] && [ -f "$DEPLOY_DIR/$PROJECT_NAME/docker-
     fi
 
     # Frontend
-    if docker-compose ps frontend | grep -q "Up"; then
+    if $COMPOSE_CMD ps frontend | grep -q "Up"; then
         echo "    ✅ Frontend: Running"
 
         # Test frontend
-        if docker-compose exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
             echo "    ✅ Frontend: Health check OK"
         else
             echo "    ⚠️  Frontend: Health check failed"
@@ -246,7 +253,7 @@ if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ] && [ -f "$DEPLOY_DIR/$PROJECT_NAME/docker-
 
     for service in mongodb backend frontend; do
         echo "  📄 $service logs:"
-        docker-compose logs --tail=10 $service 2>/dev/null | sed 's/^/    /' || echo "    (no logs available)"
+        $COMPOSE_CMD logs --tail=10 $service 2>/dev/null | sed 's/^/    /' || echo "    (no logs available)"
         echo ""
     done
 fi
@@ -287,7 +294,13 @@ fi
 
 if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ]; then
     cd "$DEPLOY_DIR/$PROJECT_NAME"
-    if ! docker-compose ps | grep -q "Up"; then
+    # Determine compose command for final check
+    if docker compose version > /dev/null 2>&1; then
+        FINAL_COMPOSE_CMD="docker compose"
+    else
+        FINAL_COMPOSE_CMD="docker-compose"
+    fi
+    if ! $FINAL_COMPOSE_CMD ps | grep -q "Up"; then
         ISSUES=$((ISSUES + 1))
     fi
 fi
@@ -302,10 +315,10 @@ fi
 
 echo ""
 echo "ℹ️  Useful Commands:"
-echo "   Restart services: cd $DEPLOY_DIR/$PROJECT_NAME && docker-compose restart"
-echo "   View logs: cd $DEPLOY_DIR/$PROJECT_NAME && docker-compose logs -f"
-echo "   Stop services: cd $DEPLOY_DIR/$PROJECT_NAME && docker-compose down"
-echo "   Start services: cd $DEPLOY_DIR/$PROJECT_NAME && docker-compose up -d"
+echo "   Restart services: cd $DEPLOY_DIR/$PROJECT_NAME && docker compose restart"
+echo "   View logs: cd $DEPLOY_DIR/$PROJECT_NAME && docker compose logs -f"
+echo "   Stop services: cd $DEPLOY_DIR/$PROJECT_NAME && docker compose down"
+echo "   Start services: cd $DEPLOY_DIR/$PROJECT_NAME && docker compose up -d"
 echo ""
 echo "🌐 Access URLs (if healthy):"
 echo "   Frontend: http://$VPS_HOST:3000"

@@ -15,14 +15,14 @@ cd /opt/jkp-katastar/JKPKatastar
 ```bash
 # On VPS server
 cd /opt/jkp-katastar/JKPKatastar
-docker-compose ps
+docker compose ps
 ```
 
 ### 3. View Logs
 ```bash
 # On VPS server
 cd /opt/jkp-katastar/JKPKatastar
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ## Common Issues and Solutions
@@ -36,7 +36,7 @@ docker-compose logs -f
 **Solutions:**
 ```bash
 # Check logs for specific errors
-docker-compose logs [service_name]
+docker compose logs [service_name]
 
 # Check if ports are already in use
 netstat -tlnp | grep -E "3000|5000|27017"
@@ -47,8 +47,8 @@ sudo fuser -k 5000/tcp
 sudo fuser -k 27017/tcp
 
 # Restart services
-docker-compose down --timeout 30
-docker-compose up -d
+docker compose down --timeout 30
+docker compose up -d
 ```
 
 ### Issue 2: Frontend Not Accessible (Port 3000)
@@ -67,10 +67,10 @@ sudo ufw status
 sudo ufw allow 3000
 
 # Check container port mapping
-docker-compose ps frontend
+docker compose ps frontend
 
 # Restart frontend service
-docker-compose restart frontend
+docker compose restart frontend
 ```
 
 ### Issue 3: Backend API Not Responding (Port 5000)
@@ -82,16 +82,16 @@ docker-compose restart frontend
 **Solutions:**
 ```bash
 # Check backend logs
-docker-compose logs backend
+docker compose logs backend
 
 # Test health endpoint internally
-docker-compose exec backend wget --spider http://localhost:5000/api/health
+docker compose exec backend wget --spider http://localhost:5000/api/health
 
 # Check environment variables
-docker-compose exec backend printenv | grep -E "MONGO|JWT|PORT"
+docker compose exec backend printenv | grep -E "MONGO|JWT|PORT"
 
 # Restart backend
-docker-compose restart backend
+docker compose restart backend
 ```
 
 ### Issue 4: MongoDB Connection Issues
@@ -103,18 +103,18 @@ docker-compose restart backend
 **Solutions:**
 ```bash
 # Check MongoDB status
-docker-compose logs mongodb
+docker compose logs mongodb
 
 # Test MongoDB connection
-docker-compose exec mongodb mongosh --eval "db.adminCommand('ping')"
+docker compose exec mongodb mongosh --eval "db.adminCommand('ping')"
 
 # Check MongoDB authentication
-docker-compose exec mongodb mongosh -u admin -p [password] --authenticationDatabase admin
+docker compose exec mongodb mongosh -u admin -p [password] --authenticationDatabase admin
 
 # Recreate MongoDB with fresh data (CAUTION: This deletes data)
-docker-compose down
+docker compose down
 docker volume prune -f
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Issue 5: Docker Compose Not Found
@@ -129,7 +129,7 @@ sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Verify installation
-docker-compose --version
+docker compose version  # or docker-compose --version
 ```
 
 ### Issue 6: Out of Disk Space
@@ -201,13 +201,14 @@ ls -la /opt/jkp-katastar/JKPKatastar/.env
 # Verify .env file content
 cat /opt/jkp-katastar/JKPKatastar/.env
 
+```bash
 # Check if containers are using the variables
-docker-compose exec backend printenv | grep MONGO
-docker-compose exec backend printenv | grep JWT
+docker compose exec backend printenv | grep MONGO
+docker compose exec backend printenv | grep JWT
 
 # Restart services to reload environment
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ## Performance Issues
@@ -247,7 +248,7 @@ docker-compose restart
 #       memory: 256M
 
 # Check for memory leaks in logs
-docker-compose logs | grep -i "memory\|leak\|oom"
+docker compose logs | grep -i "memory\|leak\|oom"
 ```
 
 ## Step-by-Step Recovery Process
@@ -258,7 +259,7 @@ If everything is broken, follow these steps:
 1. **Stop all services:**
 ```bash
 cd /opt/jkp-katastar/JKPKatastar
-docker-compose down --timeout 30
+docker compose down --timeout 30
 ```
 
 2. **Clean Docker system:**
@@ -290,10 +291,11 @@ export JWT_SECRET=your_jwt_secret
 ### Real-time Monitoring
 ```bash
 # Watch container status
-watch -n 2 'docker-compose ps'
+watch -n 2 'docker compose ps'
 
 # Follow all logs
-docker-compose logs -f
+docker compose logs -f
+```
 
 # Monitor system resources
 htop
@@ -327,13 +329,14 @@ When asking for help, provide these logs:
 # System info
 uname -a
 docker --version
-docker-compose --version
+docker compose version
 
 # Service status
-docker-compose ps
+docker compose ps
+```
 
 # Recent logs
-docker-compose logs --tail=100
+docker compose logs --tail=100
 
 # System resources
 free -h && df -h
@@ -367,9 +370,9 @@ Create `/opt/monitor.sh`:
 ```bash
 #!/bin/bash
 cd /opt/jkp-katastar/JKPKatastar
-if ! docker-compose ps | grep -q "Up"; then
+if ! docker compose ps | grep -q "Up"; then
     echo "$(date): Services not running, attempting restart" >> /var/log/jkp-monitor.log
-    docker-compose up -d
+    docker compose up -d
 fi
 ```
 

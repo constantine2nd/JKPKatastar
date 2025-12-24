@@ -73,7 +73,7 @@ deploy_to_vps() {
         if [ -d "$PROJECT_NAME" ] && [ -f "$PROJECT_NAME/docker-compose.yml" ]; then
             echo "🛑 Stopping existing services..."
             cd $PROJECT_NAME
-            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down || true
+            (docker compose -f docker-compose.yml -f docker-compose.prod.yml down || docker-compose -f docker-compose.yml -f docker-compose.prod.yml down) || true
             cd ..
         fi
 
@@ -115,10 +115,17 @@ ENV_EOF
         mkdir -p $DEPLOY_DIR/data/mongodb
         mkdir -p $DEPLOY_DIR/logs
 
+        # Determine compose command
+        if docker compose version > /dev/null 2>&1; then
+            COMPOSE_CMD="docker compose"
+        else
+            COMPOSE_CMD="docker-compose"
+        fi
+
         # Pull latest images and build
         echo "🔨 Building and starting services..."
-        docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull || true
-        docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+        $COMPOSE_CMD -f docker-compose.yml -f docker-compose.prod.yml pull || true
+        $COMPOSE_CMD -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 
         # Wait for containers to start
         echo "⏳ Waiting for containers to start..."
@@ -126,18 +133,18 @@ ENV_EOF
 
         # Check container status
         echo "📊 Container Status:"
-        docker-compose ps
+        $COMPOSE_CMD ps
 
         # Show logs for debugging
         echo "📋 Recent logs:"
-        docker-compose logs --tail=50
+        $COMPOSE_CMD logs --tail=50
 
         # Wait for services to be ready
         echo "🩺 Waiting for services to be ready..."
 
         # Wait for MongoDB
         for i in {1..30}; do
-            if docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet > /dev/null 2>&1; then
+            if $COMPOSE_CMD exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet > /dev/null 2>&1; then
                 echo "✅ MongoDB is ready"
                 break
             fi
@@ -147,7 +154,7 @@ ENV_EOF
 
         # Wait for Backend
         for i in {1..30}; do
-            if docker-compose exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health > /dev/null 2>&1; then
+            if $COMPOSE_CMD exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health > /dev/null 2>&1; then
                 echo "✅ Backend is ready"
                 break
             fi
@@ -157,7 +164,7 @@ ENV_EOF
 
         # Wait for Frontend
         for i in {1..30}; do
-            if docker-compose exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 > /dev/null 2>&1; then
+            if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 > /dev/null 2>&1; then
                 echo "✅ Frontend is ready"
                 break
             fi
@@ -167,7 +174,7 @@ ENV_EOF
 
         # Final status check
         echo "📊 Final Service Status:"
-        docker-compose ps
+        $COMPOSE_CMD ps
 
         # Clean up old images
         echo "🧹 Cleaning up old Docker images..."
@@ -221,7 +228,11 @@ stop_services() {
     ssh $VPS_USER@$VPS_HOST << EOF
         cd $DEPLOY_DIR/$PROJECT_NAME
         if [ -f docker-compose.yml ]; then
-            docker-compose down --timeout 30
+            if docker compose version > /dev/null 2>&1; then
+                docker compose down --timeout 30
+            else
+                docker-compose down --timeout 30
+            fi
             echo "✅ Services stopped"
         else
             echo "⚠️  No deployment found"
@@ -236,7 +247,11 @@ show_logs() {
     ssh $VPS_USER@$VPS_HOST << EOF
         cd $DEPLOY_DIR/$PROJECT_NAME
         if [ -f docker-compose.yml ]; then
-            docker-compose logs -f --tail=100
+            if docker compose version > /dev/null 2>&1; then
+                docker compose logs -f --tail=100
+            else
+                docker-compose logs -f --tail=100
+            fi
         else
             echo "⚠️  No deployment found"
         fi
@@ -251,7 +266,11 @@ clean_deployment() {
         cd $DEPLOY_DIR
         if [ -d "$PROJECT_NAME" ]; then
             cd $PROJECT_NAME
-            docker-compose down -v --timeout 30 || true
+            if docker compose version > /dev/null 2>&1; then
+                docker compose down -v --timeout 30 || true
+            else
+                docker-compose down -v --timeout 30 || true
+            fi
             cd ..
             rm -rf $PROJECT_NAME
         fi
@@ -274,25 +293,32 @@ check_status() {
     ssh $VPS_USER@$VPS_HOST << EOF
         cd $DEPLOY_DIR/$PROJECT_NAME 2>/dev/null || { echo "⚠️  No deployment found"; exit 0; }
 
+        # Determine compose command
+        if docker compose version > /dev/null 2>&1; then
+            COMPOSE_CMD="docker compose"
+        else
+            COMPOSE_CMD="docker-compose"
+        fi
+
         echo "Service Status:"
-        docker-compose ps
+        $COMPOSE_CMD ps
 
         echo ""
         echo "Service Health:"
         # Check if services are responding internally
-        if docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet >/dev/null 2>&1; then
             echo "  ✅ MongoDB: Healthy"
         else
             echo "  ❌ MongoDB: Unhealthy"
         fi
 
-        if docker-compose exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health >/dev/null 2>&1; then
             echo "  ✅ Backend: Healthy"
         else
             echo "  ❌ Backend: Unhealthy"
         fi
 
-        if docker-compose exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
             echo "  ✅ Frontend: Healthy"
         else
             echo "  ❌ Frontend: Unhealthy"
@@ -310,7 +336,7 @@ check_status() {
         echo "Recent Logs (last 10 lines per service):"
         for service in mongodb backend frontend; do
             echo "--- \$service ---"
-            docker-compose logs --tail=10 \$service 2>/dev/null || echo "No logs available"
+            $COMPOSE_CMD logs --tail=10 \$service 2>/dev/null || echo "No logs available"
         done
 EOF
 }
