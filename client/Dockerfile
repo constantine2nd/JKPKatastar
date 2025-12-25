@@ -12,7 +12,10 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build the app
+# Build the app with increased memory limit and optimizations
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV GENERATE_SOURCEMAP=false
+ENV CI=false
 RUN npm run build
 
 # Production stage with Nginx
