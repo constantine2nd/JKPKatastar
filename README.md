@@ -5,7 +5,7 @@ Modern web application for managing cemetery burial plots.
 ## 🚀 Quick Start - ONE Command
 
 ```bash
-git clone <your-repo>
+git clone https://github.com/constantine2nd/JKPKatastar.git
 cd JKPKatastar
 ./dev.sh
 ```
@@ -103,29 +103,54 @@ Docker automatically reads your `.env` file:
 
 ## 🌐 Production Deployment (VPS)
 
-Deploy to your VPS server at `194.146.58.124` automatically with GitHub Actions or manually.
+Deploy to your VPS server automatically with GitHub Actions or manually.
+
+### Configuration
+
+All deployment settings are centralized in `deployment.config`. Key variables:
+
+```bash
+# Server Configuration
+VPS_HOST=194.146.58.124          # Your VPS IP address
+VPS_USER=root                    # SSH user
+PROJECT_NAME=JKPKatastar         # Project name
+
+# Service URLs (auto-generated from VPS_HOST)
+FRONTEND_URL=http://194.146.58.124:3000
+BACKEND_URL=http://194.146.58.124:5000
+API_URL=http://194.146.58.124:5000/api
+```
+
+**Customize for your server:**
+```bash
+# Set your VPS IP address
+export VPS_HOST=your.vps.ip.address
+export VPS_USER=your-user
+```
 
 ### Automatic Deployment (GitHub Actions)
 
 **Setup once:**
-1. **VPS Setup:**
+
+1. **VPS Setup - Automated:**
    ```bash
    # SSH into your VPS
-   ssh root@194.146.58.124
+   ssh root@your.vps.ip.address
    
+   # Download and run setup script
+   curl -fsSL https://raw.githubusercontent.com/constantine2nd/JKPKatastar/main/setup-vps-server.sh -o setup.sh
+   chmod +x setup.sh
+   ./setup.sh
+   ```
+
+   **Or manual setup:**
+   ```bash
    # Install Docker & Docker Compose
-   curl -fsSL https://get.docker.com -o get-docker.sh
-   sh get-docker.sh
-   curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-   chmod +x /usr/local/bin/docker-compose
-   
-   # Create deployment directory
-   mkdir -p /opt/jkp-katastar
+   curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
    
    # Setup SSH key for GitHub Actions
-   ssh-keygen -t rsa -b 4096 -C "github-actions" -f /root/.ssh/github_actions -N ""
-   cat /root/.ssh/github_actions.pub >> /root/.ssh/authorized_keys
-   cat /root/.ssh/github_actions  # Copy this private key
+   ssh-keygen -t rsa -b 4096 -C "github-actions" -f ~/.ssh/github_actions -N ""
+   cat ~/.ssh/github_actions.pub >> ~/.ssh/authorized_keys
    
    # Configure firewall
    ufw allow 22 && ufw allow 3000 && ufw allow 5000 && ufw --force enable
@@ -133,12 +158,14 @@ Deploy to your VPS server at `194.146.58.124` automatically with GitHub Actions 
 
 2. **GitHub Secrets:**
    Go to Repository → Settings → Secrets → Add these:
-   - `VPS_HOST`: `194.146.58.124`
+   - `VPS_HOST`: `your.vps.ip.address` (your actual VPS IP)
    - `VPS_USER`: `root`
-   - `VPS_SSH_KEY`: (paste the private key from above)
+   - `VPS_SSH_KEY`: (paste the private key from VPS setup)
    - `MONGO_PASSWORD`: Your secure MongoDB password
    - `JWT_SECRET`: Your secure JWT secret
-   - `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_SECRET`
+   - `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_SECRET` (optional)
+
+   *URLs are auto-generated from VPS_HOST (no need for separate CLIENT_HOST_URI and REACT_APP_API_URL secrets)*
 
 **Deploy:**
 - Push to `main` branch → Automatic deployment
@@ -147,6 +174,10 @@ Deploy to your VPS server at `194.146.58.124` automatically with GitHub Actions 
 ### Manual Deployment
 
 ```bash
+# Configure your server (one-time)
+export VPS_HOST=your.vps.ip.address
+export VPS_USER=root
+
 # Set environment variables
 export MONGO_PASSWORD=your_secure_password
 export JWT_SECRET=your_secure_jwt_secret
@@ -161,21 +192,40 @@ export JWT_SECRET=your_secure_jwt_secret
 ./deploy-vps.sh clean    # Clean reset
 ```
 
+### Configuration Management
+
+```bash
+# View current configuration
+source deployment.config show
+
+# Validate configuration
+source deployment.config validate
+
+# Test VPS readiness
+./test-vps-ready.sh
+```
+
 ### Production URLs
-- **Frontend**: http://194.146.58.124:3000
-- **Backend API**: http://194.146.58.124:5000/api
-- **Health Check**: http://194.146.58.124:5000/api/health
+After deployment, your app will be available at:
+- **Frontend**: http://your.vps.ip.address:3000
+- **Backend API**: http://your.vps.ip.address:5000/api
+- **Health Check**: http://your.vps.ip.address:5000/api/health
+
+*Replace `your.vps.ip.address` with your actual VPS IP address*
 
 ### Troubleshooting
 ```bash
-# Run health check on VPS
+# Run comprehensive health check on VPS
 ./health-check.sh
 
-# Check service status
-docker-compose ps
+# Quick status check
+./deploy-vps.sh status
 
 # View logs
-docker-compose logs -f
+./deploy-vps.sh logs
+
+# Test VPS readiness
+./test-vps-ready.sh
 ```
 
 📖 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed debugging guide.

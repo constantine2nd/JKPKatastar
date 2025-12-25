@@ -58,7 +58,7 @@ jobs:
 
           # Clone fresh repository
           echo "📥 Cloning repository..."
-          git clone https://github.com/constantine2nd/JKPKatastar.git JKPKatastar
+          git clone https://github.com/${{ github.repository }}.git JKPKatastar
           cd JKPKatastar
 
           # Create production environment file
@@ -76,8 +76,8 @@ jobs:
           EMAIL_PORT=REPLACE_EMAIL_PORT
           EMAIL_USER=REPLACE_EMAIL_USER
           EMAIL_SECRET=REPLACE_EMAIL_SECRET
-          CLIENT_HOST_URI=http://194.146.58.124:3000
-          REACT_APP_API_URL=http://194.146.58.124:5000/api
+          CLIENT_HOST_URI=http://${{ secrets.VPS_HOST }}:3000
+          REACT_APP_API_URL=http://${{ secrets.VPS_HOST }}:5000/api
           REACT_APP_MAP_CENTER_LAT=45.2671
           REACT_APP_MAP_CENTER_LON=19.8335
           CHOKIDAR_USEPOLLING=false
@@ -189,9 +189,9 @@ jobs:
           echo "🎉 Deployment completed!"
           echo ""
           echo "🌐 Access URLs:"
-          echo "   Frontend: http://194.146.58.124:3000"
-          echo "   Backend:  http://194.146.58.124:5000/api"
-          echo "   Health:   http://194.146.58.124:5000/api/health"
+          echo "   Frontend: http://${{ secrets.VPS_HOST }}:3000"
+          echo "   Backend:  http://${{ secrets.VPS_HOST }}:5000/api"
+          echo "   Health:   http://${{ secrets.VPS_HOST }}:5000/api/health"
           SCRIPT_EOF
 
           chmod +x deploy.sh

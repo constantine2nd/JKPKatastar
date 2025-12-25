@@ -5,7 +5,7 @@
 
 set -e
 
-VPS_HOST="194.146.58.124"
+VPS_HOST="${VPS_HOST:-194.146.58.124}"
 DEPLOY_DIR="/opt/jkp-katastar"
 
 echo "🏛️  JKP Katastar - VPS Readiness Test"

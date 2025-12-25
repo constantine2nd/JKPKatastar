@@ -5,7 +5,7 @@
 
 set -e
 
-VPS_HOST="194.146.58.124"
+VPS_HOST="${VPS_HOST:-194.146.58.124}"
 VPS_USER="root"
 DEPLOY_DIR="/opt/jkp-katastar"
 PROJECT_NAME="JKPKatastar"
@@ -85,7 +85,7 @@ deploy_to_vps() {
 
         # Clone fresh repository
         echo "📥 Cloning repository..."
-        git clone https://github.com/constantine2nd/JKPKatastar.git $PROJECT_NAME
+        git clone https://github.com/${GITHUB_REPOSITORY:-constantine2nd/JKPKatastar}.git JKPKatastar
         cd $PROJECT_NAME
 
         # Create production environment file
@@ -103,8 +103,8 @@ EMAIL_HOST=${EMAIL_HOST:-}
 EMAIL_PORT=${EMAIL_PORT:-587}
 EMAIL_USER=${EMAIL_USER:-}
 EMAIL_SECRET=${EMAIL_SECRET:-}
-CLIENT_HOST_URI=http://$VPS_HOST:3000
-REACT_APP_API_URL=http://$VPS_HOST:5000/api
+CLIENT_HOST_URI=${CLIENT_HOST_URI:-http://$VPS_HOST:3000}
+REACT_APP_API_URL=${REACT_APP_API_URL:-http://$VPS_HOST:5000/api}
 REACT_APP_MAP_CENTER_LAT=45.2671
 REACT_APP_MAP_CENTER_LON=19.8335
 CHOKIDAR_USEPOLLING=false
