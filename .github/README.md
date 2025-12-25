@@ -1,6 +1,6 @@
-# JKP Katastar - Production Deployment & CI/CD
+# JKP Katastar - Production Deployment (GitHub Actions)
 
-This directory contains everything needed for production deployment and continuous integration/continuous deployment (CI/CD) of the JKP Katastar Cemetery Management System.
+This directory contains everything needed for automated production deployment of the JKP Katastar Cemetery Management System using GitHub Actions.
 
 ## 📁 Directory Structure
 
@@ -8,26 +8,25 @@ This directory contains everything needed for production deployment and continuo
 .github/
 ├── workflows/
 │   └── deploy.yml                  # GitHub Actions deployment workflow
-├── scripts/
-│   ├── deploy-vps.sh              # Manual VPS deployment script
+├── scripts/                        # Support scripts (used by GitHub Actions)
 │   ├── debug-vps.sh               # VPS debugging tools
 │   ├── health-check.sh            # Production health checks
 │   ├── setup-vps-server.sh        # VPS server setup automation
-│   ├── test-vps-ready.sh          # VPS readiness validation
-│   └── migrate-config.sh          # Configuration migration helper
+│   └── test-vps-ready.sh          # VPS readiness validation
 ├── docs/
 │   ├── VPS_DEPLOYMENT_STRATEGIES.md  # Deployment strategy comparison
 │   ├── TROUBLESHOOTING.md         # Production troubleshooting guide
 │   └── FRONTEND_FIX.md            # Frontend deployment fixes
-├── deployment.config              # Main deployment configuration
-├── deployment.config.example      # Template for custom deployments
 └── README.md                      # This file
 ```
 
-## 🚀 Automated Deployment (GitHub Actions)
+## 🚀 GitHub Actions Deployment
 
 ### Quick Setup
-1. **Configure GitHub Secrets** (Repository → Settings → Secrets):
+
+1. **Configure GitHub Secrets** (Repository → Settings → Secrets and variables → Actions):
+
+   **Required Secrets:**
    ```
    VPS_HOST=your.vps.ip.address
    VPS_USER=root
@@ -36,87 +35,102 @@ This directory contains everything needed for production deployment and continuo
    JWT_SECRET=your_secure_jwt_secret
    ```
 
-2. **Deploy**: Push to `main` branch → Automatic deployment
+   **Optional Email Secrets (for notifications):**
+   ```
+   EMAIL_SERVICE=gmail
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_SECRET=your_app_password
+   ```
 
-### Workflow Details
-- **File**: [`workflows/deploy.yml`](workflows/deploy.yml)
+2. **Deploy**: Push to `main` branch → Automatic deployment ✅
+
+### Environment Variables with Default Values
+
+The deployment automatically configures these environment variables:
+
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `NODE_ENV` | `production` | Application environment |
+| `PORT` | `5000` | Backend API port |
+| `MONGO_USERNAME` | `admin` | MongoDB username |
+| `MONGO_DATABASE` | `graves_prod` | Production database name |
+| `MONGO_URI` | `mongodb://admin:${MONGO_PASSWORD}@mongodb:27017/graves_prod?authSource=admin` | Database connection string |
+| `CLIENT_HOST_URI` | `http://${VPS_HOST}:3000` | Frontend URL (auto-generated) |
+| `REACT_APP_API_URL` | `http://${VPS_HOST}:5000/api` | API URL for frontend (auto-generated) |
+| `REACT_APP_MAP_CENTER_LAT` | `45.2671` | Default map center latitude |
+| `REACT_APP_MAP_CENTER_LON` | `19.8335` | Default map center longitude |
+| `CHOKIDAR_USEPOLLING` | `false` | File watching in production |
+| `GENERATE_SOURCEMAP` | `false` | Source maps disabled in production |
+
+### Deployment Process
+
 - **Trigger**: Push to main branch or manual trigger
-- **Process**: Build → Deploy → Health Check → Verify
-- **Target**: VPS with Docker support
+- **Process**: Clone → Build → Deploy → Health Check → Verify
+- **Target**: VPS with Docker support (2GB+ RAM recommended)
+- **Duration**: ~5-15 minutes depending on VPS resources
 
-## 🛠️ Manual Deployment Scripts
+## 🌐 VPS Requirements
 
-### Primary Scripts
-```bash
-# Deploy to VPS manually
-./scripts/deploy-vps.sh deploy
+### Minimum Specifications
+- **OS**: Ubuntu 20.04+ (recommended)
+- **RAM**: 2GB minimum (optimized for memory-constrained VPS)
+- **CPU**: 1 core minimum
+- **Storage**: 20GB minimum
+- **Docker**: Latest version with Docker Compose
 
-# Check deployment status
-./scripts/deploy-vps.sh status
+### Automatic VPS Setup
+The workflow can automatically prepare your VPS. Just ensure:
+1. SSH key-based authentication configured
+2. User has sudo privileges
+3. Firewall allows ports 22, 3000, 5000
 
-# View deployment logs
-./scripts/deploy-vps.sh logs
+## 📊 After Deployment
 
-# Debug deployment issues
-./scripts/debug-vps.sh
+### Service URLs
+- **Frontend**: `http://your-vps-ip:3000`
+- **Backend API**: `http://your-vps-ip:5000/api`
+- **Health Check**: `http://your-vps-ip:5000/api/health`
+- **MongoDB**: Internal access only (not exposed publicly)
 
-# Run health checks
-./scripts/health-check.sh
-```
+### Verification
+The GitHub Actions workflow automatically:
+1. ✅ Builds all Docker images with memory optimization
+2. ✅ Starts all services (MongoDB, Backend, Frontend)
+3. ✅ Performs health checks on all endpoints
+4. ✅ Verifies frontend and API accessibility
+5. ✅ Reports deployment status
 
-### Setup Scripts
-```bash
-# Setup a new VPS server (one-time)
-./scripts/setup-vps-server.sh
+### Monitoring
+- GitHub Actions provides detailed deployment logs
+- Health checks run automatically
+- Failed deployments trigger clear error messages
 
-# Test VPS readiness
-./scripts/test-vps-ready.sh
+## 🔧 Configuration
 
-# Migrate configuration
-./scripts/migrate-config.sh
-```
+### GitHub Secrets Setup
+Go to: Repository → Settings → Secrets and variables → Actions → New repository secret
 
-## ⚙️ Configuration Management
+**Core Secrets (Required):**
+- `VPS_HOST`: Your VPS IP address (e.g., `194.146.58.124`)
+- `VPS_USER`: SSH username (usually `root`)
+- `VPS_SSH_KEY`: Private SSH key content for VPS access
+- `MONGO_PASSWORD`: Secure MongoDB password (generate strong password)
+- `JWT_SECRET`: Secure JWT signing key (generate strong secret)
 
-### Main Configuration
-- **File**: [`deployment.config`](deployment.config)
-- **Template**: [`deployment.config.example`](deployment.config.example)
-- **Purpose**: Centralized deployment settings
+**Email Secrets (Optional):**
+- `EMAIL_SERVICE`: Email service provider (default: `gmail`)
+- `EMAIL_HOST`: SMTP host (default: `smtp.gmail.com`)
+- `EMAIL_PORT`: SMTP port (default: `587`)
+- `EMAIL_USER`: Your email address
+- `EMAIL_SECRET`: App password or email password
 
-### Key Variables
-```bash
-VPS_HOST=194.146.58.124          # Your VPS IP address
-VPS_USER=root                    # SSH user
-PROJECT_NAME=JKPKatastar         # Project name
-MONGO_PASSWORD=secure_password   # MongoDB password
-JWT_SECRET=secure_jwt_secret     # JWT secret key
-```
-
-### Usage
-```bash
-# Load configuration
-source deployment.config
-
-# View current configuration
-source deployment.config show
-
-# Validate configuration
-source deployment.config validate
-```
-
-## 📊 Deployment Strategies
-
-### Current Strategy: Build on VPS
-- **File**: [`workflows/deploy.yml`](workflows/deploy.yml)
-- **Process**: Clone → Build → Deploy on VPS
-- **Memory**: Optimized for 2GB VPS with 1.5GB heap limit
-
-### Alternative Strategy: Pre-built Images
-- **File**: [`workflows-backup/deploy-prebuilt.yml`](workflows-backup/deploy-prebuilt.yml)
-- **Process**: Build on GitHub → Push to registry → Pull on VPS
-- **Memory**: More efficient for resource-constrained VPS
-
-See [`docs/VPS_DEPLOYMENT_STRATEGIES.md`](docs/VPS_DEPLOYMENT_STRATEGIES.md) for detailed comparison.
+### Security Notes
+- MongoDB authentication is enabled in production
+- JWT secrets should be cryptographically strong
+- SSH uses key-based authentication (no passwords)
+- Email credentials are optional but recommended for notifications
 
 ## 📚 Documentation
 
@@ -125,121 +139,36 @@ See [`docs/VPS_DEPLOYMENT_STRATEGIES.md`](docs/VPS_DEPLOYMENT_STRATEGIES.md) for
 - **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)**: Common issues and solutions
 - **[Frontend Fixes](docs/FRONTEND_FIX.md)**: Frontend-specific deployment fixes
 
-### Quick References
-- **Health Check**: `./scripts/health-check.sh`
-- **Debug Issues**: `./scripts/debug-vps.sh`
-- **View Logs**: `./scripts/deploy-vps.sh logs`
-- **Clean Deploy**: `./scripts/deploy-vps.sh clean && ./scripts/deploy-vps.sh deploy`
-
-## 🔧 Production Environment
-
-### VPS Requirements
-- **OS**: Ubuntu 20.04+ (recommended)
-- **RAM**: 2GB minimum (4GB recommended)
-- **CPU**: 1 core minimum (2+ cores recommended)
-- **Storage**: 20GB minimum
-- **Docker**: Latest version with Docker Compose
-
-### Service URLs (After Deployment)
-- **Frontend**: http://your-vps-ip:3000
-- **Backend API**: http://your-vps-ip:5000/api
-- **Health Check**: http://your-vps-ip:5000/api/health
-- **MongoDB**: mongodb://your-vps-ip:27017 (internal access)
-
-## 🚨 Production Monitoring
-
-### Health Checks
+### Quick Status Checks
+After deployment, verify your application:
 ```bash
-# Automated health check
-./scripts/health-check.sh
-
-# Manual service verification
-curl http://your-vps-ip:3000        # Frontend
-curl http://your-vps-ip:5000/api/health  # Backend
+curl http://your-vps-ip:3000        # Frontend should return HTML
+curl http://your-vps-ip:5000/api/health  # Backend should return JSON status
 ```
 
-### Debugging
-```bash
-# Real-time debugging
-./scripts/debug-vps.sh
+## 🚨 Troubleshooting
 
-# View container logs
-ssh user@vps "cd /opt/jkp-katastar/JKPKatastar && docker compose logs"
+### Common Issues
+1. **Build fails with memory errors**: VPS needs at least 2GB RAM
+2. **SSH connection fails**: Check VPS_SSH_KEY secret format
+3. **Services don't start**: Check VPS firewall and Docker installation
+4. **Frontend/Backend not accessible**: Check VPS_HOST is correct IP
 
-# Check container status
-ssh user@vps "cd /opt/jkp-katastar/JKPKatastar && docker compose ps"
-```
+### Getting Help
+1. **Check GitHub Actions logs**: Repository → Actions → Latest run
+2. **Review deployment status**: Workflow shows detailed progress
+3. **Consult documentation**: See [`docs/`](docs/) directory for detailed guides
 
-## 🔐 Security Considerations
+## ✅ Success Indicators
 
-### GitHub Secrets (Required)
-- `VPS_HOST`: VPS IP address
-- `VPS_USER`: SSH username
-- `VPS_SSH_KEY`: Private SSH key for VPS access
-- `MONGO_PASSWORD`: Secure MongoDB password
-- `JWT_SECRET`: Secure JWT signing key
-
-### Optional Secrets
-- `EMAIL_SERVICE`: Email service provider
-- `EMAIL_HOST`: SMTP host
-- `EMAIL_PORT`: SMTP port
-- `EMAIL_USER`: Email username
-- `EMAIL_SECRET`: Email password/token
-
-### VPS Security
-- SSH key-based authentication (no password login)
-- Firewall configured (ports 22, 3000, 5000 only)
-- MongoDB authentication enabled
-- SSL/TLS recommended for production
-
-## 🔄 CI/CD Pipeline
-
-### Automated Flow
-1. **Trigger**: Push to main branch
-2. **Setup**: Checkout code, setup SSH
-3. **Deploy**: Run deployment script on VPS
-4. **Build**: Docker build with memory optimization
-5. **Start**: Launch services with health checks
-6. **Verify**: Test frontend and API endpoints
-7. **Cleanup**: Remove temporary files
-
-### Manual Override
-```bash
-# Trigger manual deployment
-# Go to GitHub → Actions → Deploy to VPS → Run workflow
-
-# Or deploy manually
-./scripts/deploy-vps.sh deploy
-```
-
-## ⚡ Quick Commands
-
-### Deploy
-```bash
-# Automatic (GitHub Actions)
-git push origin main
-
-# Manual
-./scripts/deploy-vps.sh deploy
-```
-
-### Monitor
-```bash
-./scripts/health-check.sh         # Full health check
-./scripts/deploy-vps.sh status    # Quick status
-./scripts/debug-vps.sh            # Real-time debugging
-```
-
-### Troubleshoot
-```bash
-./scripts/deploy-vps.sh logs      # View logs
-./scripts/test-vps-ready.sh       # Test VPS setup
-# See docs/TROUBLESHOOTING.md for detailed guide
-```
+Your deployment is successful when you see:
+- ✅ GitHub Actions workflow completes without errors
+- ✅ Frontend accessible at `http://your-vps-ip:3000`
+- ✅ Backend API responds at `http://your-vps-ip:5000/api/health`
+- ✅ All health checks pass in the workflow logs
 
 ---
 
-**Production deployment made simple!** 🚀
+**Automated production deployment made simple!** 🚀
 
-For detailed guides, see the [`docs/`](docs/) directory.
 For local development, see [`../development/`](../development/).
