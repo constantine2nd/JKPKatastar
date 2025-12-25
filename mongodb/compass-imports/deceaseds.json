@@ -1,0 +1,29 @@
+[
+  {
+    "_id": {"$oid": "65d64b5a57df02152b8d7b6c"},
+    "name": "Molly",
+    "surname": " Pierce",
+    "grave": {"$oid": "65d64b5957df02152b8d7b17"},
+    "dateBirth": {"$date": "1925-11-10T23:00:00.000Z"},
+    "dateDeath": {"$date": "2004-04-15T22:00:00.000Z"},
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "65d64b5a57df02152b8d7b6b"},
+    "name": "Tasnim",
+    "surname": "Macdonald",
+    "grave": {"$oid": "65d64b5957df02152b8d7b17"},
+    "dateBirth": {"$date": "1967-09-05T23:00:00.000Z"},
+    "dateDeath": {"$date": "1993-01-17T23:00:00.000Z"},
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "65d64b5a57df02152b8d7b6f"},
+    "name": "Osman",
+    "surname": "Randall",
+    "grave": {"$oid": "65d64b5957df02152b8d7b1b"},
+    "dateBirth": {"$date": "1957-01-12T23:00:00.000Z"},
+    "dateDeath": {"$date": "1989-03-27T22:00:00.000Z"},
+    "__v": 0
+  }
+]

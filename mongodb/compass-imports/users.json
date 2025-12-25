@@ -1,0 +1,78 @@
+[
+  {
+    "_id": {"$oid": "6522fdd232a4789a340cb536"},
+    "name": "Zeljko",
+    "email": "zeko@email.com",
+    "password": "$2a$10$kea9Pw0xbWrNRpFDZj3B0u7zFT96WHGm.3a8/3d.WXiUQgqwBhoSe",
+    "__v": 0,
+    "role": "ADMINISTRATOR",
+    "isActive": true,
+    "isVerified": true
+  },
+  {
+    "_id": {"$oid": "6522fe5f32a4789a340cb53a"},
+    "name": "Marko",
+    "email": "marko@email.com",
+    "password": "$2a$10$gNBBJ/JNHKxsb3hmC.7EROUHim9E5BvUmMKBBPoe7MxdMGlNLYrJq",
+    "__v": 0,
+    "role": "ADMINISTRATOR",
+    "isActive": true,
+    "isVerified": true
+  },
+  {
+    "_id": {"$oid": "652302fffdb317389f16bee7"},
+    "name": "Aljbin",
+    "email": "aljbin@email.com",
+    "password": "$2a$10$ppZktKULQzzOO.p7aqIoVeKVd5BUt31jl7ivXm4wqmv/9Qunu3cZe",
+    "__v": 0,
+    "role": "VISITOR",
+    "isActive": true,
+    "isVerified": true
+  },
+  {
+    "_id": {"$oid": "6536a182bf55970f0eeeb607"},
+    "name": "Misoooooo",
+    "email": "miso@email.com",
+    "password": "$2a$10$VG6KD0o7I1/RQKbGLFOXa.C7u3b/bu3aaU.jALV7Y2qygQY2P5WP.",
+    "isActive": true,
+    "__v": 0,
+    "role": "VISITOR",
+    "isVerified": true
+  },
+  {
+    "_id": {"$oid": "659f1dfc0c1a10b32f07404a"},
+    "name": "Peraaaaaa",
+    "email": "pera@detlic.com",
+    "password": "$2a$10$CSvDq6cywKp9IfCZ9SnWH.OPvYr5/6p8GOPcT3ko5IheZnQhWU2sq",
+    "role": "OFFICER",
+    "isActive": true,
+    "__v": 0,
+    "isVerified": true
+  },
+  {
+    "_id": {"$oid": "65c3e7cf7f89613cb5d947d7"},
+    "name": "Marko",
+    "email": "marko.milic@yahoo.com",
+    "password": "$2a$10$ZGPmQsGQpOQtQNl.GgJYAug.0J3DOW2vjSgTjkDUawzfqjj/htKaC",
+    "role": "VISITOR",
+    "isActive": true,
+    "isVerified": true,
+    "pseudoRandomToken": "87937f4e321d25d36c0c6fe515a177532d9f94fd210456ffc29744e71e81fc14590b9d236c1203e1853ba0d3ac696233f726a24b376ab0ba96f7d3f83cdbd2fac17585fd5652f39ccdbafd85134c491dc1799677762eb636e4e64094e7d95611bcde6a334f8136ad673c5dae898f26849fe8c3736deb49850f27424338c90ad3",
+    "pseudoRandomTokenTillDate": {"$date": "2024-02-07T20:20:14.338Z"},
+    "__v": 0,
+    "avatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocKWqj_up9F4XokZoXC_VOmIi1HJ4ZuBMsc9MVioEu-AuqU=s576-c-no"
+  },
+  {
+    "_id": {"$oid": "6947f30673a0ccb0acd18b15"},
+    "name": "Test User",
+    "email": "test@email.com",
+    "password": "$2a$10$LFC1CC2c8zmGuwBSKYq2r.kybZHBaUQ4CMXJnkoyOlYwKzf/ly/me",
+    "role": "VISITOR",
+    "avatarUrl": "",
+    "isActive": true,
+    "isVerified": true,
+    "pseudoRandomToken": "f979c1c6e453d0515c1d3529d2b8bd86a3e55637637f8750479444eab50aa39d8d16ebdd840f3c04e71fe5161efb09fba0c69cf3f7b51f2d1ca007981f8ae10b991961e222b45f38bbdf2433be6c20c5da8ef49ad39661dcdaed6e5b9edb301940a81851e5d5076772ba44fb1a46f76930cf22e88a9593f85bdb916c9b83b4b3",
+    "pseudoRandomTokenTillDate": {"$date": "2025-12-21T13:15:01.268Z"},
+    "__v": 0
+  }
+]

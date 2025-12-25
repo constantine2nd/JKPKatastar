@@ -7,7 +7,7 @@ print("Starting MongoDB initialization for JKP Katastar...");
 // Get environment variables (these are set by Docker from .env file)
 const MONGO_USERNAME = "admin"; // From .env: MONGO_USERNAME
 const MONGO_PASSWORD = "password123"; // From .env: MONGO_PASSWORD
-const DATABASE_NAME = "graves_test"; // From .env: MONGO_URI database name
+const DATABASE_NAME = "graves_dev"; // From .env: MONGO_URI database name
 
 print("Using database: " + DATABASE_NAME);
 print("Using admin user: " + MONGO_USERNAME);

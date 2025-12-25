@@ -1,0 +1,40 @@
+[
+  {
+    "_id": {"$oid": "65d64a88c870fd5c45635970"},
+    "number": 5,
+    "row": 1,
+    "field": 1,
+    "LAT": 45.41283561346769,
+    "LON": 19.8794976437594,
+    "status": "FREE",
+    "cemetery": {"$oid": "6636b557d362f41689ce600f"},
+    "graveType": {"$oid": "6636b557d362f41689ce600e"},
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "65d64a88c870fd5c45635974"},
+    "number": 2,
+    "row": 1,
+    "field": 1,
+    "LAT": 45.412766417095675,
+    "LON": 19.879461433941685,
+    "status": "FREE",
+    "cemetery": {"$oid": "6544104f08c454f5495ee245"},
+    "graveType": {"$oid": "654ccb9c5b43c40f706613bc"},
+    "__v": 0,
+    "contractTo": {"$date": "2024-05-22T00:00:00.000Z"}
+  },
+  {
+    "_id": {"$oid": "65d64a88c870fd5c45635972"},
+    "number": 4,
+    "row": 1,
+    "field": 1,
+    "LAT": 45.41280925296644,
+    "LON": 19.879480209402722,
+    "status": "FREE",
+    "cemetery": {"$oid": "6544104f08c454f5495ee245"},
+    "graveType": {"$oid": "654cc82cacdd97ad9c69e1c7"},
+    "__v": 0,
+    "contractTo": {"$date": "2024-05-10T00:00:00.000Z"}
+  }
+]

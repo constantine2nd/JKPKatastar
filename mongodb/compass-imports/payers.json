@@ -1,0 +1,24 @@
+[
+  {
+    "_id": {"$oid": "65d67baf88e1e76d3c6b20be"},
+    "name": "Hristo",
+    "surname": "Stoickov",
+    "grave": {"$oid": "65d64b5957df02152b8d7b1d"},
+    "address": "Goce Delceva 12",
+    "phone": "3577727575",
+    "jmbg": 380085265447,
+    "active": true,
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "6638a771d193d080092517e1"},
+    "name": "Aljbin",
+    "surname": "Kurti",
+    "grave": {"$oid": "65d64b5957df02152b8d7b1b"},
+    "address": "5579 Moore Hills",
+    "phone": "3577727575",
+    "jmbg": 45275757575,
+    "active": true,
+    "__v": 0
+  }
+]

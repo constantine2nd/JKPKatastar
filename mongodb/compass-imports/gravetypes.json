@@ -1,0 +1,37 @@
+[
+  {
+    "_id": {"$oid": "654cc82cacdd97ad9c69e1c7"},
+    "name": "GM1",
+    "capacity": 1,
+    "description": "grobno mesto GM1, dimenzije 1,5x3m",
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "654cc840acdd97ad9c69e1c9"},
+    "name": "GM2",
+    "capacity": 2,
+    "description": "dvojno grobno mesto GM2, dimenzije 2,5x3m",
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "654cc84bb1c1e912286e7627"},
+    "name": "GR2",
+    "capacity": 2,
+    "description": "grobnica za 2 osobe GR2, dimenzije 1,5x3m",
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "654cc860b1c1e912286e7629"},
+    "name": "GR4",
+    "capacity": 4,
+    "description": "grobnica za 4 osobe GR4, dimenzije 2,5x3m",
+    "__v": 0
+  },
+  {
+    "_id": {"$oid": "654ccb9c5b43c40f706613bc"},
+    "name": "GR6",
+    "capacity": 6,
+    "description": "grobnica za 6 osoba GR6, dimenzije 2,5x3m",
+    "__v": 0
+  }
+]
