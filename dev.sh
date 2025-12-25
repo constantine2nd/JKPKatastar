@@ -14,24 +14,36 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
+# Detect Docker Compose command (v1 or v2)
+if command -v docker-compose &> /dev/null; then
+    COMPOSE_CMD="docker-compose"
+elif docker compose version &> /dev/null; then
+    COMPOSE_CMD="docker compose"
+else
+    echo "❌ Docker Compose not found. Please install Docker Compose."
+    exit 1
+fi
+
+echo "🔧 Using: $COMPOSE_CMD"
+
 # Handle command
 case "${1:-start}" in
     "start"|"")
         echo "🚀 Starting all services (MongoDB + Backend + Frontend)..."
-        docker-compose -f docker-compose.dev.yml up --build
+        $COMPOSE_CMD -f docker-compose.dev.yml up --build
         ;;
     "stop")
         echo "🛑 Stopping all services..."
-        docker-compose -f docker-compose.dev.yml down
+        $COMPOSE_CMD -f docker-compose.dev.yml down
         ;;
     "clean")
         echo "🧹 Cleaning up everything..."
-        docker-compose -f docker-compose.dev.yml down -v
+        $COMPOSE_CMD -f docker-compose.dev.yml down -v
         docker system prune -f
         ;;
     "logs")
         echo "📋 Showing logs..."
-        docker-compose -f docker-compose.dev.yml logs -f
+        $COMPOSE_CMD -f docker-compose.dev.yml logs -f
         ;;
     "help")
         echo ""
