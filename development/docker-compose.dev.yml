@@ -25,7 +25,7 @@ services:
   # Backend API Server - Development Configuration
   backend:
     build:
-      context: ./server
+      context: ../server
       dockerfile: Dockerfile
     container_name: jkp-backend-dev
     restart: unless-stopped
@@ -43,7 +43,7 @@ services:
       EMAIL_SECRET: ${EMAIL_SECRET}
       CLIENT_HOST_URI: ${CLIENT_HOST_URI:-http://localhost:3000}
     volumes:
-      - ./server:/app
+      - ../server:/app
       - /app/node_modules
     depends_on:
       mongodb:
@@ -67,7 +67,7 @@ services:
   # Frontend React App - Development Configuration
   frontend:
     build:
-      context: ./client
+      context: ../client
       dockerfile: Dockerfile.dev
     container_name: jkp-frontend-dev
     restart: unless-stopped
@@ -80,8 +80,8 @@ services:
       REACT_APP_MAP_CENTER_LAT: ${REACT_APP_MAP_CENTER_LAT:-45.2671}
       REACT_APP_MAP_CENTER_LON: ${REACT_APP_MAP_CENTER_LON:-19.8335}
     volumes:
-      - ./client/src:/app/src
-      - ./client/public:/app/public
+      - ../client/src:/app/src
+      - ../client/public:/app/public
       - /app/node_modules
     depends_on:
       backend:

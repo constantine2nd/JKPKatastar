@@ -16,22 +16,21 @@ cd JKPKatastar
 ```
 
 **That's it!** Full stack running at:
-- **Validation**: `./check-dev-setup.sh` (optional - validates your environment)
 - **Frontend**: http://localhost:3000 (React app with hot reload)
-- **Backend**: http://localhost:5000/api (Node.js API)
+- **Backend**: http://localhost:5000/api (Node.js API)  
 - **Database**: Automatically set up MongoDB
 
 ## 🛠️ Development Commands
 
 ```bash
 ./dev.sh         # Start all services (default)
-./dev.sh stop    # Stop all services
+./dev.sh stop    # Stop all services  
 ./dev.sh clean   # Clean reset everything
 ./dev.sh logs    # View logs
 ./dev.sh help    # Show all commands
 
-# Validate your setup (optional)
-./check-dev-setup.sh  # Check if everything is properly configured
+# Validate your setup (optional)  
+./development/scripts/check-dev-setup.sh  # Check environment
 ```
 
 ## 📁 Project Structure
@@ -39,10 +38,17 @@ cd JKPKatastar
 ```
 JKPKatastar/
 ├── client/              # React frontend (TypeScript + Material-UI)
-├── server/              # Node.js backend (Express + MongoDB)
-├── docker-compose.dev.yml  # Development services
-├── dev.sh              # Development startup script
-└── README.md           # This file
+├── server/              # Node.js backend (Express + MongoDB)  
+├── development/         # Local development tools & docs
+│   ├── dev.sh          # Main development script
+│   ├── docker-compose.dev.yml  # Development services
+│   └── scripts/        # Development utilities
+├── .github/            # Production deployment & CI/CD
+│   ├── workflows/      # GitHub Actions
+│   ├── scripts/        # Deployment scripts
+│   └── docs/          # Production documentation
+├── dev.sh             # Convenience wrapper → development/dev.sh
+└── README.md          # This file
 ```
 
 ## 🔧 Tech Stack

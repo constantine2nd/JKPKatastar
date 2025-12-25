@@ -85,8 +85,8 @@ echo ""
 echo -e "${BLUE}📋 Checking Project Files...${NC}"
 
 files_to_check=(
-    "dev.sh"
-    "docker-compose.dev.yml"
+    "development/dev.sh"
+    "development/docker-compose.dev.yml"
     "client/package.json"
     "client/Dockerfile.dev"
     "server/package.json"
@@ -103,11 +103,11 @@ for file in "${files_to_check[@]}"; do
 done
 
 # Check dev.sh permissions
-if [ -x "dev.sh" ]; then
-    echo -e "${GREEN}✅ dev.sh is executable${NC}"
+if [ -x "development/dev.sh" ]; then
+    echo -e "${GREEN}✅ development/dev.sh is executable${NC}"
 else
-    echo -e "${YELLOW}⚠️  dev.sh is not executable${NC}"
-    echo "   Fix with: chmod +x dev.sh"
+    echo -e "${YELLOW}⚠️  development/dev.sh is not executable${NC}"
+    echo "   Fix with: chmod +x development/dev.sh"
 fi
 
 # Summary
@@ -149,8 +149,9 @@ else
     echo -e "${GREEN}🎉 Environment Check Passed!${NC}"
     echo ""
     echo -e "${BLUE}✨ Ready to start development:${NC}"
-    echo "   ./dev.sh        # Start all services"
+    echo "   ./dev.sh        # Start all services (wrapper)"
     echo "   ./dev.sh help   # View all commands"
+    echo "   cd development && ./dev.sh  # Direct access"
     echo ""
     echo -e "${BLUE}📱 Access URLs after starting:${NC}"
     echo "   Frontend:  http://localhost:3000"
