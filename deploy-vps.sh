@@ -164,7 +164,7 @@ ENV_EOF
 
         # Wait for Frontend
         for i in {1..30}; do
-            if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 > /dev/null 2>&1; then
+            if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:80 > /dev/null 2>&1; then
                 echo "✅ Frontend is ready"
                 break
             fi
@@ -318,7 +318,7 @@ check_status() {
             echo "  ❌ Backend: Unhealthy"
         fi
 
-        if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:80 >/dev/null 2>&1; then
             echo "  ✅ Frontend: Healthy"
         else
             echo "  ❌ Frontend: Unhealthy"

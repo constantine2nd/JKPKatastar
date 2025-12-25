@@ -193,7 +193,7 @@ if [ -d "$DEPLOY_DIR/$PROJECT_NAME" ] && [ -f "$DEPLOY_DIR/$PROJECT_NAME/docker-
         echo "    ✅ Frontend: Running"
 
         # Test frontend
-        if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:3000 >/dev/null 2>&1; then
+        if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:80 >/dev/null 2>&1; then
             echo "    ✅ Frontend: Health check OK"
         else
             echo "    ⚠️  Frontend: Health check failed"

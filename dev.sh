@@ -18,20 +18,20 @@ fi
 case "${1:-start}" in
     "start"|"")
         echo "🚀 Starting all services (MongoDB + Backend + Frontend)..."
-        docker-compose up --build
+        docker-compose -f docker-compose.dev.yml up --build
         ;;
     "stop")
         echo "🛑 Stopping all services..."
-        docker-compose down
+        docker-compose -f docker-compose.dev.yml down
         ;;
     "clean")
         echo "🧹 Cleaning up everything..."
-        docker-compose down -v
+        docker-compose -f docker-compose.dev.yml down -v
         docker system prune -f
         ;;
     "logs")
         echo "📋 Showing logs..."
-        docker-compose logs -f
+        docker-compose -f docker-compose.dev.yml logs -f
         ;;
     "help")
         echo ""
