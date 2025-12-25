@@ -12,8 +12,8 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Build the app with increased memory limit and optimizations
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+# Build the app with increased memory limit and optimizations (1.5GB for 2GB VPS)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 ENV GENERATE_SOURCEMAP=false
 ENV CI=false
 RUN npm run build
