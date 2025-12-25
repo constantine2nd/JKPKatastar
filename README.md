@@ -1,235 +1,149 @@
 # JKP Katastar - Cemetery Management System 🏛️
 
-Modern web application for managing cemetery burial plots.
+Modern web application for managing cemetery burial plots with React frontend, Node.js backend, and MongoDB database.
 
-## 🚀 Quick Start - ONE Command
+## 🚀 Quick Start (Local Development)
 
+### Prerequisites
+- Docker & Docker Compose installed
+- Git
+
+### One Command Setup
 ```bash
 git clone https://github.com/constantine2nd/JKPKatastar.git
 cd JKPKatastar
 ./dev.sh
 ```
 
-**Done!** Full stack running with MongoDB included:
-- ✅ Local MongoDB database (no cloud setup needed)
-- ✅ Node.js backend API with auto-restart  
-- ✅ React frontend with hot reload
-- ✅ All services monitored with health checks
+**That's it!** Full stack running at:
+- **Frontend**: http://localhost:3000 (React app with hot reload)
+- **Backend**: http://localhost:5000/api (Node.js API)
+- **Database**: Automatically set up MongoDB
 
-## 📱 Access Your App
-
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000/api  
-- **Database**: mongodb://admin:password123@localhost:27017
-
-## 🛠️ Commands
+## 🛠️ Development Commands
 
 ```bash
-./dev.sh        # Start all services (MongoDB + Backend + Frontend)
-./dev.sh stop   # Stop all services
-./dev.sh clean  # Clean reset everything
-./dev.sh logs   # View all logs
-./dev.sh help   # Show help
+./dev.sh         # Start all services (default)
+./dev.sh stop    # Stop all services
+./dev.sh clean   # Clean reset everything
+./dev.sh logs    # View logs
+./dev.sh help    # Show all commands
 ```
-
-## 🏗️ Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React App     │◄──►│   Express API   │◄──►│   MongoDB       │
-│   localhost:3000│    │   localhost:5000│    │   localhost:27017│
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## 🔧 Tech Stack
-
-**Frontend**: React 18 + TypeScript + Material-UI + Redux + Leaflet Maps  
-**Backend**: Node.js + Express + Mongoose + JWT + Nodemailer  
-**Database**: MongoDB 6.0  
-**Development**: Docker Compose + Hot Reload
 
 ## 📁 Project Structure
 
 ```
 JKPKatastar/
-├── client/         # React frontend
-├── server/         # Node.js backend  
-├── docker-compose.yml  # All services
-└── dev.sh         # Start script
+├── client/              # React frontend (TypeScript + Material-UI)
+├── server/              # Node.js backend (Express + MongoDB)
+├── docker-compose.dev.yml  # Development services
+├── dev.sh              # Development startup script
+└── README.md           # This file
 ```
 
-## 🛠️ Development
+## 🔧 Tech Stack
 
-1. **Start**: `./dev.sh`
-2. **Edit**: Files in `client/src/` or `server/`
-3. **See Changes**: Auto-reload in browser
-4. **Debug**: `./dev.sh logs`
+- **Frontend**: React 18, TypeScript, Material-UI, Redux Toolkit, Leaflet Maps
+- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT, Nodemailer
+- **Development**: Docker Compose, Hot Reload, Health Checks
 
-## 🚨 Troubleshooting
+## 💻 Development Workflow
 
-**Port conflicts:**
+1. **Start development**: `./dev.sh`
+2. **Edit frontend**: Files in `client/src/` auto-reload
+3. **Edit backend**: Files in `server/` auto-restart
+4. **View logs**: `./dev.sh logs`
+5. **Stop when done**: `./dev.sh stop`
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
 ```bash
+# Find what's using the ports
 lsof -i :3000 :5000 :27017
+
+# Kill processes if needed
+sudo kill -9 <PID>
 ```
 
-**Clean restart:**
+### Clean Reset
 ```bash
-./dev.sh clean
-./dev.sh
+./dev.sh clean    # Removes all containers and data
+./dev.sh          # Start fresh
 ```
 
-**View logs:**
+### Docker Issues
 ```bash
-./dev.sh logs
+# Restart Docker service
+sudo systemctl restart docker
+
+# Clean Docker system
+docker system prune -a
 ```
 
-## ✅ What's Fixed
+## ⚙️ Environment Configuration
 
-- **MongoDB Issue**: Now starts automatically with Docker (no external setup needed)
-- **Documentation**: Simplified to one README (removed redundant docs)  
-- **Scripts**: Single `./dev.sh` script (removed multiple competing scripts)
-- **Configuration**: Uses your `.env` file for all settings (Docker reads environment variables)
-- **Health Checks**: All services monitored and dependencies managed
-
-## ⚙️ Configuration
-
-Docker automatically reads your `.env` file:
-- **MONGO_URI**: Database connection (uses your `graves_test` database)
-- **JWT_SECRET**: Authentication security
-- **EMAIL_***: Email notification settings
-- **PORT**: Backend port (default: 5000)
-
-**Note**: All Docker services now use values from your `.env` file!
-
-## 🌐 Production Deployment (VPS)
-
-Deploy to your VPS server automatically with GitHub Actions or manually.
-
-### Configuration
-
-All deployment settings are centralized in `deployment.config`. Key variables:
+Create `.env` file in the root directory for custom settings:
 
 ```bash
-# Server Configuration
-VPS_HOST=194.146.58.124          # Your VPS IP address
-VPS_USER=root                    # SSH user
-PROJECT_NAME=JKPKatastar         # Project name
+# Database
+MONGO_USERNAME=admin
+MONGO_PASSWORD=your_password
+MONGO_DATABASE=graves_dev
 
-# Service URLs (auto-generated from VPS_HOST)
-FRONTEND_URL=http://194.146.58.124:3000
-BACKEND_URL=http://194.146.58.124:5000
-API_URL=http://194.146.58.124:5000/api
+# JWT
+JWT_SECRET=your_jwt_secret_key
+
+# Email (optional)
+EMAIL_SERVICE=gmail
+EMAIL_USER=your_email@gmail.com
+EMAIL_SECRET=your_app_password
+
+# API Settings
+PORT=5000
+NODE_ENV=development
 ```
 
-**Customize for your server:**
-```bash
-# Set your VPS IP address
-export VPS_HOST=your.vps.ip.address
-export VPS_USER=your-user
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    HTTP    ┌─────────────────┐    TCP     ┌─────────────────┐
+│   React Client  │ ◄─────────► │  Express API    │ ◄─────────► │    MongoDB      │
+│   Port 3000     │             │   Port 5000     │             │   Port 27017    │
+│   (Frontend)    │             │   (Backend)     │             │   (Database)    │
+└─────────────────┘             └─────────────────┘             └─────────────────┘
 ```
 
-### Automatic Deployment (GitHub Actions)
+## 🌐 Production Deployment
 
-**Setup once:**
+For production deployment to VPS or cloud servers:
 
-1. **VPS Setup - Automated:**
-   ```bash
-   # SSH into your VPS
-   ssh root@your.vps.ip.address
-   
-   # Download and run setup script
-   curl -fsSL https://raw.githubusercontent.com/constantine2nd/JKPKatastar/main/setup-vps-server.sh -o setup.sh
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+1. **Quick Deploy**: Push to `main` branch → GitHub Actions auto-deploys
+2. **Manual Deploy**: Use `./deploy-vps.sh` script
+3. **Configure**: Set up GitHub secrets for your VPS
 
-   **Or manual setup:**
-   ```bash
-   # Install Docker & Docker Compose
-   curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-   
-   # Setup SSH key for GitHub Actions
-   ssh-keygen -t rsa -b 4096 -C "github-actions" -f ~/.ssh/github_actions -N ""
-   cat ~/.ssh/github_actions.pub >> ~/.ssh/authorized_keys
-   
-   # Configure firewall
-   ufw allow 22 && ufw allow 3000 && ufw allow 5000 && ufw --force enable
-   ```
+See [deployment documentation](VPS_DEPLOYMENT_STRATEGIES.md) for detailed instructions.
 
-2. **GitHub Secrets:**
-   Go to Repository → Settings → Secrets → Add these:
-   - `VPS_HOST`: `your.vps.ip.address` (your actual VPS IP)
-   - `VPS_USER`: `root`
-   - `VPS_SSH_KEY`: (paste the private key from VPS setup)
-   - `MONGO_PASSWORD`: Your secure MongoDB password
-   - `JWT_SECRET`: Your secure JWT secret
-   - `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_SECRET` (optional)
+## 📚 Additional Documentation
 
-   *URLs are auto-generated from VPS_HOST (no need for separate CLIENT_HOST_URI and REACT_APP_API_URL secrets)*
+- [VPS_DEPLOYMENT_STRATEGIES.md](VPS_DEPLOYMENT_STRATEGIES.md) - Production deployment options
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions
+- [FRONTEND_FIX.md](FRONTEND_FIX.md) - Frontend-specific fixes
 
-**Deploy:**
-- Push to `main` branch → Automatic deployment
-- Or manually trigger in GitHub Actions tab
+## 🤝 Contributing
 
-### Manual Deployment
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Start development: `./dev.sh`
+4. Make changes and test locally
+5. Commit: `git commit -m "Add new feature"`
+6. Push: `git push origin feature/new-feature`
+7. Create Pull Request
 
-```bash
-# Configure your server (one-time)
-export VPS_HOST=your.vps.ip.address
-export VPS_USER=root
+## 📝 License
 
-# Set environment variables
-export MONGO_PASSWORD=your_secure_password
-export JWT_SECRET=your_secure_jwt_secret
-
-# Deploy
-./deploy-vps.sh deploy
-
-# Other commands
-./deploy-vps.sh status   # Check status
-./deploy-vps.sh logs     # View logs  
-./deploy-vps.sh stop     # Stop services
-./deploy-vps.sh clean    # Clean reset
-```
-
-### Configuration Management
-
-```bash
-# View current configuration
-source deployment.config show
-
-# Validate configuration
-source deployment.config validate
-
-# Test VPS readiness
-./test-vps-ready.sh
-```
-
-### Production URLs
-After deployment, your app will be available at:
-- **Frontend**: http://your.vps.ip.address:3000
-- **Backend API**: http://your.vps.ip.address:5000/api
-- **Health Check**: http://your.vps.ip.address:5000/api/health
-
-*Replace `your.vps.ip.address` with your actual VPS IP address*
-
-### Troubleshooting
-```bash
-# Run comprehensive health check on VPS
-./health-check.sh
-
-# Quick status check
-./deploy-vps.sh status
-
-# View logs
-./deploy-vps.sh logs
-
-# Test VPS readiness
-./test-vps-ready.sh
-```
-
-📖 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed debugging guide.
+This project is licensed under the MIT License.
 
 ---
 
-**Ready to develop!** Just run `./dev.sh` and start coding! 🚀
+**Ready to develop!** Run `./dev.sh` and start coding! 🚀
