@@ -16,6 +16,7 @@ cd JKPKatastar
 ```
 
 **That's it!** Full stack running at:
+- **Validation**: `./check-dev-setup.sh` (optional - validates your environment)
 - **Frontend**: http://localhost:3000 (React app with hot reload)
 - **Backend**: http://localhost:5000/api (Node.js API)
 - **Database**: Automatically set up MongoDB
@@ -28,6 +29,9 @@ cd JKPKatastar
 ./dev.sh clean   # Clean reset everything
 ./dev.sh logs    # View logs
 ./dev.sh help    # Show all commands
+
+# Validate your setup (optional)
+./check-dev-setup.sh  # Check if everything is properly configured
 ```
 
 ## 📁 Project Structure
@@ -54,6 +58,8 @@ JKPKatastar/
 3. **Edit backend**: Files in `server/` auto-restart
 4. **View logs**: `./dev.sh logs`
 5. **Stop when done**: `./dev.sh stop`
+
+**Pro tip**: Run `./check-dev-setup.sh` first to validate your environment is ready!
 
 ## 🐛 Troubleshooting
 
