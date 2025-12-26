@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+target/
+coverage/
+.logs/
+*.log
+*.min.js
+openapi*.json
+swagger*.yaml
