@@ -4,17 +4,17 @@ services:
   # MongoDB Database - Production Configuration
   mongodb:
     image: mongo:6.0
-    container_name: jkp-mongodb-prod
+    container_name: jkp-mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-graves_prod}
     volumes:
-      - /opt/jkp-katastar/data/mongodb:/data/db
+      - mongodb_data:/data/db
       - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     ports:
-      - "127.0.0.1:27017:27017" # Bind only to localhost for security
+      - "27017:27017" # Exposed for MongoDB Compass access
     networks:
       - jkp-network
     command: --bind_ip_all --auth
@@ -99,11 +99,6 @@ services:
 
 volumes:
   mongodb_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/jkp-katastar/data/mongodb
 
 networks:
   jkp-network:
