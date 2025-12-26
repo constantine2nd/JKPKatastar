@@ -563,3 +563,93 @@ The JKP Katastar system follows a modern **three-tier architecture** with clear 
 - **Developer Experience**: Hot reload in development, optimized builds in production
 
 The system is designed to efficiently manage cemetery operations for JKP Temerin while providing a modern, responsive user experience for administrators, officers, and visitors.
+
+## Current Deployment vs Intended Nginx Usage
+
+Based on the accessible URLs `http://185.237.15.242:3000` (frontend) and `http://185.237.15.242:5000/api/health` (backend), the system is currently running in **direct port exposure mode** rather than using the intended Nginx proxy configuration.
+
+### Current Setup Analysis
+
+**What's Actually Running**:
+```
+Frontend: http://185.237.15.242:3000 (React Dev Server or Direct Container)
+Backend:  http://185.237.15.242:5000 (Express API Direct Access)
+```
+
+This indicates you're likely using:
+- `docker-compose.yml` (development configuration) OR
+- `docker-compose.prod.yml` with direct port bindings
+
+### Nginx Configuration Status
+
+Your `client/nginx.conf` is configured but **not currently active** as the primary entry point because:
+
+1. **Frontend on Port 3000**: This suggests either:
+   - Development mode (React dev server)
+   - Production container running but not behind Nginx proxy
+
+2. **Backend on Port 5000**: Direct access indicates no reverse proxy layer
+
+### Intended Production Architecture
+
+According to your `nginx.conf`, the **intended production setup** should be:
+
+```
+User Request → http://185.237.15.242 (Port 80)
+                     ↓
+                 Nginx Container
+                     ↓
+    ┌─────────────────┼─────────────────┐
+    ↓                                   ↓
+Static Files                    API Requests (/api/*)
+(Served by Nginx)               (Proxied to backend:5000)
+```
+
+### How to Enable Nginx Proxy Mode
+
+To use your nginx.conf as intended, you should:
+
+1. **Modify docker-compose.prod.yml** to expose only port 80:
+```yaml
+frontend:
+  ports:
+    - "80:80"  # Only expose Nginx port
+    
+backend:
+  # Remove port exposure or bind to localhost only
+  ports:
+    - "127.0.0.1:5000:5000"
+```
+
+2. **Access everything through port 80**:
+```
+Frontend: http://185.237.15.242 (Nginx serves React build)
+API:      http://185.237.15.242/api/* (Nginx proxies to backend)
+```
+
+### Benefits of Using Nginx Proxy
+
+**Current Setup Issues**:
+- Two separate ports to manage
+- Potential CORS issues between ports 3000 and 5000
+- No static asset optimization
+- Missing security headers
+- No gzip compression
+
+**With Nginx Proxy**:
+- Single entry point on port 80
+- Optimized static file serving
+- Gzip compression active
+- Security headers applied
+- API and frontend unified under same domain
+
+### Migration Steps
+
+To activate your nginx.conf configuration:
+
+1. **Ensure production build**: Frontend should build React app, not run dev server
+2. **Single port exposure**: Only expose port 80 from the frontend container
+3. **Internal networking**: Backend should only be accessible from within Docker network
+4. **Update firewall**: Only allow port 80 (and 443 for HTTPS) externally
+
+The nginx.conf you have is well-configured for production use - it just needs to be the primary entry point rather than having direct port access to both services.
