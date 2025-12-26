@@ -3,6 +3,8 @@ version: "3.8"
 services:
   # MongoDB Database - Production Configuration
   mongodb:
+    image: mongo:6.0
+    container_name: jkp-mongodb-prod
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
@@ -10,14 +12,22 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-graves_prod}
     volumes:
       - /opt/jkp-katastar/data/mongodb:/data/db
+      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
     ports:
       - "127.0.0.1:27017:27017" # Bind only to localhost for security
+    networks:
+      - jkp-network
     command: --bind_ip_all --auth
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   # Backend API Server - Production Configuration
   backend:
@@ -38,8 +48,13 @@ services:
       CLIENT_HOST_URI: ${CLIENT_HOST_URI}
     volumes:
       - /opt/jkp-katastar/logs:/app/logs
-    ports:
-      - "0.0.0.0:5000:5000"
+    # Remove direct port exposure - only accessible through nginx proxy
+    expose:
+      - "5000"
+    depends_on:
+      - mongodb
+    networks:
+      - jkp-network
     logging:
       driver: "json-file"
       options:
@@ -52,18 +67,24 @@ services:
         reservations:
           memory: 256M
 
-  # Frontend React App - Production Configuration
+  # Frontend with Nginx - Production Configuration
   frontend:
     build:
       context: ./client
       dockerfile: Dockerfile
     restart: always
     environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL}
+      # API URL should be relative for nginx proxy
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
       REACT_APP_MAP_CENTER_LAT: ${REACT_APP_MAP_CENTER_LAT:-45.2671}
       REACT_APP_MAP_CENTER_LON: ${REACT_APP_MAP_CENTER_LON:-19.8335}
     ports:
-      - "0.0.0.0:3000:80"
+      # Single entry point - Nginx serves everything on port 80
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - jkp-network
     logging:
       driver: "json-file"
       options:

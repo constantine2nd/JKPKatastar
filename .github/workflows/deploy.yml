@@ -37,12 +37,14 @@ jobs:
           cd $DEPLOY_DIR
 
           # Stop existing services if they exist
-          if [ -d "JKPKatastar" ] && [ -f "JKPKatastar/docker-compose.yml" ]; then
+          if [ -d "JKPKatastar" ]; then
             echo "🛑 Stopping existing services..."
             cd JKPKatastar
             if command -v docker > /dev/null 2>&1 && docker compose version > /dev/null 2>&1; then
+              docker compose -f docker-compose.prod.yml down --timeout 30 || true
               docker compose down --timeout 30 || true
             elif command -v docker-compose > /dev/null 2>&1; then
+              docker-compose -f docker-compose.prod.yml down --timeout 30 || true
               docker-compose down --timeout 30 || true
             else
               echo "⚠️  Docker Compose not found, skipping service stop"
@@ -76,8 +78,8 @@ jobs:
           EMAIL_PORT=REPLACE_EMAIL_PORT
           EMAIL_USER=REPLACE_EMAIL_USER
           EMAIL_SECRET=REPLACE_EMAIL_SECRET
-          CLIENT_HOST_URI=http://${{ secrets.VPS_HOST }}:3000
-          REACT_APP_API_URL=http://${{ secrets.VPS_HOST }}:5000/api
+          CLIENT_HOST_URI=http://${{ secrets.VPS_HOST }}
+          REACT_APP_API_URL=/api
           REACT_APP_MAP_CENTER_LAT=45.2671
           REACT_APP_MAP_CENTER_LON=19.8335
           CHOKIDAR_USEPOLLING=false
@@ -124,9 +126,9 @@ jobs:
           docker pull node:18-alpine || true
           docker pull nginx:alpine || true
 
-          # Build and start services
-          echo "🔨 Building and starting services..."
-          $COMPOSE_CMD up --build -d --remove-orphans
+          # Build and start services using production configuration
+          echo "🔨 Building and starting services (production mode)..."
+          $COMPOSE_CMD -f docker-compose.prod.yml up --build -d --remove-orphans
 
           # Wait for containers to start
           echo "⏳ Waiting for containers to start..."
@@ -134,18 +136,18 @@ jobs:
 
           # Check container status
           echo "📊 Container Status:"
-          $COMPOSE_CMD ps
+          $COMPOSE_CMD -f docker-compose.prod.yml ps
 
           # Show logs for debugging
           echo "📋 Recent logs:"
-          $COMPOSE_CMD logs --tail=50
+          $COMPOSE_CMD -f docker-compose.prod.yml logs --tail=50
 
           # Wait for services to be ready
           echo "🩺 Waiting for services to be ready..."
 
           # Wait for MongoDB
           for i in {1..30}; do
-            if $COMPOSE_CMD exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet > /dev/null 2>&1; then
+            if $COMPOSE_CMD -f docker-compose.prod.yml exec -T mongodb mongosh --eval "db.adminCommand('ping')" --quiet > /dev/null 2>&1; then
               echo "✅ MongoDB is ready"
               break
             fi
@@ -153,9 +155,9 @@ jobs:
             sleep 5
           done
 
-          # Wait for Backend
+          # Wait for Backend (internal check)
           for i in {1..30}; do
-            if $COMPOSE_CMD exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health > /dev/null 2>&1; then
+            if $COMPOSE_CMD -f docker-compose.prod.yml exec -T backend wget --spider --quiet --timeout=5 --tries=1 http://localhost:5000/api/health > /dev/null 2>&1; then
               echo "✅ Backend is ready"
               break
             fi
@@ -163,9 +165,9 @@ jobs:
             sleep 5
           done
 
-          # Wait for Frontend
+          # Wait for Frontend (nginx proxy)
           for i in {1..30}; do
-            if $COMPOSE_CMD exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:80 > /dev/null 2>&1; then
+            if $COMPOSE_CMD -f docker-compose.prod.yml exec -T frontend wget --spider --quiet --timeout=5 --tries=1 http://localhost:80 > /dev/null 2>&1; then
               echo "✅ Frontend is ready"
               break
             fi
@@ -175,7 +177,7 @@ jobs:
 
           # Final status check
           echo "📊 Final Service Status:"
-          $COMPOSE_CMD ps
+          $COMPOSE_CMD -f docker-compose.prod.yml ps
 
           # Clean up old images
           echo "🧹 Cleaning up old Docker images..."
@@ -189,9 +191,9 @@ jobs:
           echo "🎉 Deployment completed!"
           echo ""
           echo "🌐 Access URLs:"
-          echo "   Frontend: http://${{ secrets.VPS_HOST }}:3000"
-          echo "   Backend:  http://${{ secrets.VPS_HOST }}:5000/api"
-          echo "   Health:   http://${{ secrets.VPS_HOST }}:5000/api/health"
+          echo "   Application: http://${{ secrets.VPS_HOST }}"
+          echo "   Backend API: http://${{ secrets.VPS_HOST }}/api"
+          echo "   Health:      http://${{ secrets.VPS_HOST }}/api/health"
           SCRIPT_EOF
 
           chmod +x deploy.sh
@@ -215,8 +217,8 @@ jobs:
           sleep 60
 
           # Check if services are responding
-          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }}:3000 || echo "000")
-          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }}:5000/api/health || echo "000")
+          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }} || echo "000")
+          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }}/api/health || echo "000")
 
           echo "Frontend Status: HTTP $FRONTEND_STATUS"
           echo "Backend Status: HTTP $BACKEND_STATUS"
@@ -240,7 +242,7 @@ jobs:
           # Get service status from VPS
           echo ""
           echo "📊 Service Status on VPS:"
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd /opt/jkp-katastar/JKPKatastar && (docker compose ps 2>/dev/null || docker-compose ps 2>/dev/null || echo 'No compose found')"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd /opt/jkp-katastar/JKPKatastar && (docker compose -f docker-compose.prod.yml ps 2>/dev/null || docker-compose -f docker-compose.prod.yml ps 2>/dev/null || echo 'No compose found')"
 
       - name: Cleanup
         if: always()
@@ -260,9 +262,9 @@ jobs:
           echo ""
           if [ "${{ job.status }}" == "success" ]; then
             echo "🎉 Deployment completed successfully!"
-            echo "🌐 Frontend: http://${{ secrets.VPS_HOST }}:3000"
-            echo "🔧 Backend API: http://${{ secrets.VPS_HOST }}:5000/api"
-            echo "🩺 Health Check: http://${{ secrets.VPS_HOST }}:5000/api/health"
+            echo "🌐 Application: http://${{ secrets.VPS_HOST }}"
+            echo "🔧 Backend API: http://${{ secrets.VPS_HOST }}/api"
+            echo "🩺 Health Check: http://${{ secrets.VPS_HOST }}/api/health"
           else
             echo "❌ Deployment encountered issues. Check the logs above."
           fi
@@ -270,4 +272,4 @@ jobs:
           echo "ℹ️  To check logs manually:"
           echo "   ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}"
           echo "   cd /opt/jkp-katastar/JKPKatastar"
-          echo "   docker compose logs  # or docker-compose logs"
+          echo "   docker compose -f docker-compose.prod.yml logs  # or docker-compose -f docker-compose.prod.yml logs"
