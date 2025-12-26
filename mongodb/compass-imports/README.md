@@ -1,6 +1,6 @@
 # MongoDB Compass Import Files
 
-This directory contains JSON files extracted from the `init-mongo.js` script, formatted for easy import into MongoDB Compass GUI.
+This directory contains JSON files with sample data, formatted for easy import into MongoDB Compass GUI.
 
 ## Collections Available
 
