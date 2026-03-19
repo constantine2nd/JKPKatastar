@@ -38,11 +38,15 @@ That's it! All services (React, Node.js, MongoDB) are running with hot reload.
 ## Development Commands
 
 ```bash
-./dev.sh        # Start all services
-./dev.sh stop   # Stop all services  
-./dev.sh clean  # Clean reset (removes data)
-./dev.sh logs   # View logs
-./dev.sh help   # Show all commands
+./dev.sh              # Start all services
+./dev.sh stop         # Stop all services
+./dev.sh restart      # Stop then start
+./dev.sh rebuild      # Rebuild images from scratch and start
+./dev.sh status       # Show running containers and health
+./dev.sh clean        # Clean reset (removes containers + data)
+./dev.sh logs         # View logs (all services)
+./dev.sh logs backend # View logs for a specific service
+./dev.sh help         # Show all commands
 ```
 
 ## What's Running
@@ -89,13 +93,13 @@ JKPKatastar/
 
 ### Port Already in Use
 ```bash
-# Find what's using the port
+# Find what's using the port (use whichever tool is available)
 lsof -i :3000
-lsof -i :5000  
-lsof -i :27017
+# or
+ss -ltn sport = :3000
 
 # Kill the process
-kill -9 <PID>
+kill <PID>
 ```
 
 ### Docker Issues
@@ -115,8 +119,13 @@ docker system prune -a
 
 ### Permission Issues (Linux)
 ```bash
-sudo chmod +x dev.sh
-sudo chown -R $USER:$USER .
+chmod +x dev.sh development/dev.sh
+```
+
+### Docker Group (Linux)
+If Docker requires `sudo`, add your user to the docker group:
+```bash
+sudo usermod -aG docker $(whoami) && newgrp docker
 ```
 
 ## Environment Variables
@@ -156,14 +165,20 @@ PORT=5000
 
 3. **View logs:**
    ```bash
-   ./dev.sh logs
+   ./dev.sh logs           # all services
+   ./dev.sh logs backend   # specific service
    ```
 
 4. **Test your changes:**
    - Frontend: http://localhost:3000
    - Backend: http://localhost:5000/api
 
-5. **Stop when done:**
+5. **Check status:**
+   ```bash
+   ./dev.sh status
+   ```
+
+6. **Stop when done:**
    ```bash
    ./dev.sh stop
    ```
@@ -177,18 +192,17 @@ PORT=5000
 
 ## Getting Help
 
-- **View logs**: `./dev.sh logs`
-- **Check container status**: `docker compose -f docker-compose.dev.yml ps`
-- **Restart everything**: `./dev.sh stop && ./dev.sh`
+- **View logs**: `./dev.sh logs` or `./dev.sh logs <service>`
+- **Check container status**: `./dev.sh status`
+- **Restart everything**: `./dev.sh restart`
 - **Clean reset**: `./dev.sh clean && ./dev.sh`
 
 ## Ready to Code!
 
-Once you see:
-```
-✅ Frontend ready at http://localhost:3000
-✅ Backend ready at http://localhost:5000/api  
-✅ MongoDB connected
-```
+Once all containers show `(healthy)` in `./dev.sh status`, you're ready:
 
-You're ready to start developing! Happy coding! 🚀
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000/api
+- **Health Check**: http://localhost:5000/api/health
+
+Happy coding! 🚀

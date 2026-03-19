@@ -7,15 +7,15 @@ This directory contains everything needed for local development of the JKP Katas
 From the **project root directory**:
 ```bash
 ./dev.sh              # Start all services
-./dev.sh stop          # Stop all services
-./dev.sh clean         # Clean reset everything
-./dev.sh logs          # View logs
+./dev.sh stop         # Stop all services
+./dev.sh clean        # Clean reset everything
+./dev.sh logs         # View logs
 ```
 
 Or directly from the development directory:
 ```bash
 cd development
-./dev.sh               # Start all services
+./dev.sh              # Start all services
 ```
 
 ## 📁 Directory Structure
@@ -34,11 +34,15 @@ development/
 
 ### `dev.sh` - Main Development Script
 ```bash
-./dev.sh         # Start all services (default)
-./dev.sh stop    # Stop all services  
-./dev.sh clean   # Clean reset (removes data)
-./dev.sh logs    # View logs
-./dev.sh help    # Show all commands
+./dev.sh              # Start all services (default)
+./dev.sh stop         # Stop all services
+./dev.sh restart      # Stop then start
+./dev.sh rebuild      # Rebuild images from scratch and start
+./dev.sh status       # Show running containers
+./dev.sh clean        # Clean reset (removes containers + data)
+./dev.sh logs         # View logs (all services)
+./dev.sh logs backend # View logs for a specific service
+./dev.sh help         # Show all commands
 ```
 
 ### `scripts/check-dev-setup.sh` - Environment Validator
@@ -60,7 +64,7 @@ Development Docker Compose configuration with:
 
 | Service | Port | URL | Purpose |
 |---------|------|-----|---------|
-| MongoDB | 27017 | mongodb://admin:password123@localhost:27017 | Database |
+| MongoDB | 27017 | mongodb://localhost:27017 (see .env for credentials) | Database |
 | Backend | 5000 | http://localhost:5000/api | Express API |
 | Frontend | 3000 | http://localhost:3000 | React App |
 
@@ -69,7 +73,8 @@ Development Docker Compose configuration with:
 ### Quick Reference
 - **Start developing**: Run `./dev.sh` from project root
 - **Validate setup**: Run `./scripts/check-dev-setup.sh`
-- **View logs**: Run `./dev.sh logs`
+- **View logs**: Run `./dev.sh logs` or `./dev.sh logs <service>`
+- **Check status**: Run `./dev.sh status`
 
 ### Detailed Guide
 See [`docs/LOCAL_DEVELOPMENT.md`](docs/LOCAL_DEVELOPMENT.md) for:
@@ -83,11 +88,13 @@ See [`docs/LOCAL_DEVELOPMENT.md`](docs/LOCAL_DEVELOPMENT.md) for:
 
 ### Port Conflicts
 ```bash
-# Check what's using the ports
+# Check what's using the ports (use whichever tool is available)
 lsof -i :3000 :5000 :27017
+# or
+ss -ltn sport = :3000
 
 # Kill conflicting processes
-sudo kill -9 <PID>
+kill <PID>
 ```
 
 ### Clean Reset
@@ -110,8 +117,9 @@ docker system prune -a
 1. **Start**: `./dev.sh` (from project root or development directory)
 2. **Code**: Edit files in `client/src/` or `server/`
 3. **Test**: Changes auto-reload in browser
-4. **Debug**: `./dev.sh logs` to view container logs
-5. **Stop**: `./dev.sh stop` when done
+4. **Debug**: `./dev.sh logs` or `./dev.sh logs <service>` to view logs
+5. **Status**: `./dev.sh status` to check container health
+6. **Stop**: `./dev.sh stop` when done
 
 ## ⚡ Hot Reload
 
@@ -121,17 +129,19 @@ docker system prune -a
 
 ## 🎯 Tips
 
-- Use `./dev.sh logs` to debug issues
+- Use `./dev.sh logs backend` to debug a specific service
+- Use `./dev.sh status` to check container health at a glance
 - Run `./scripts/check-dev-setup.sh` if you encounter problems
-- Database data persists - use `./dev.sh clean` to reset
-- All services start together with proper dependency ordering
+- Database data persists between restarts — use `./dev.sh clean` to reset
+- All services start with proper dependency ordering (MongoDB → Backend → Frontend)
 
 ## 🆘 Getting Help
 
 1. **Check setup**: `./scripts/check-dev-setup.sh`
-2. **View logs**: `./dev.sh logs`
-3. **Clean reset**: `./dev.sh clean && ./dev.sh`
-4. **Read detailed docs**: [`docs/LOCAL_DEVELOPMENT.md`](docs/LOCAL_DEVELOPMENT.md)
+2. **Check status**: `./dev.sh status`
+3. **View logs**: `./dev.sh logs` or `./dev.sh logs <service>`
+4. **Clean reset**: `./dev.sh clean && ./dev.sh`
+5. **Read detailed docs**: [`docs/LOCAL_DEVELOPMENT.md`](docs/LOCAL_DEVELOPMENT.md)
 
 ---
 
