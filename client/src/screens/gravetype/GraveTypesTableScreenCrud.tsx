@@ -65,11 +65,11 @@ const GraveTypesTableScreenCrud = () => {
     },
     {
       accessorKey: "capacity",
-      header: t("capacity"),
+      header: t("grave.capacity"),
     },
     {
       accessorKey: "description",
-      header: t("description"),
+      header: t("common.description"),
     },
     {
       accessorKey: "_id",
@@ -187,7 +187,7 @@ const GraveTypesTableScreenCrud = () => {
     //optionally customize modal content
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Create New Grave Type")}</DialogTitle>
+        <DialogTitle variant="h3">{t("grave-type.create-new")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
@@ -201,7 +201,7 @@ const GraveTypesTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Grave Type")}</DialogTitle>
+        <DialogTitle variant="h3">{t("grave-type.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -214,12 +214,12 @@ const GraveTypesTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("Delete")}>
+        <Tooltip title={t("actions.delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>
@@ -239,7 +239,7 @@ const GraveTypesTableScreenCrud = () => {
           // );
         }}
       >
-        {t("Create New Grave Type")}
+        {t("grave-type.create-new")}
       </Button>
     ),
     state: {
@@ -263,6 +263,6 @@ const validateRequired = (value: string) => !!value.length;
 
 function validateGraveType(row: GraveType) {
   return {
-    name: !validateRequired(row.name) ? t("Name is Required") : "",
+    name: !validateRequired(row.name) ? t("form.name-required") : "",
   };
 }

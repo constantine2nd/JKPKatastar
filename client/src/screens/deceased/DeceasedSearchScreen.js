@@ -115,7 +115,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             id="name"
-            label={t("name")}
+            label={t("form.name")}
             name="name"
             autoComplete="name"
             autoFocus
@@ -129,7 +129,7 @@ const DeceasedSearchScreen = () => {
             required
             fullWidth
             id="surname"
-            label={t("surname")}
+            label={t("form.surname")}
             name="surname"
             autoComplete="surname"
             autoFocus

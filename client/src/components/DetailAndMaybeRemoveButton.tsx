@@ -28,7 +28,7 @@ const DeleteAndMaybeRemoveButton = (
           });
         }}
       >
-        {t("details")}
+        {t("common.details")}
       </ButtonMUI>
       {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
         <ButtonMUI
@@ -36,7 +36,7 @@ const DeleteAndMaybeRemoveButton = (
           color="secondary"
           onClick={() => actionFunction(id.toString())}
         >
-          {t("delete")}
+          {t("actions.delete")}
         </ButtonMUI>
       )}
     </Box>

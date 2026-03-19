@@ -12,7 +12,7 @@ export function Copyright(props: any) {
       >
         {"Copyright © "}
         <Link color="inherit" href="https://mui.com/">
-          {t("CLIENT_YOUR_WEBSITE")}
+          {t("client.your-website")}
         </Link>{" "}
         {new Date().getFullYear()}
         {"."}

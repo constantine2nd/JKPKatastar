@@ -324,12 +324,12 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("Delete")}>
+        <Tooltip title={t("actions.delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>
@@ -372,6 +372,6 @@ const validateRequired = (value: string) => !!value.length;
 
 function validateDeceased(row: Deceased) {
   return {
-    name: !validateRequired(row.name) ? t("Name is Required") : "",
+    name: !validateRequired(row.name) ? t("form.name-required") : "",
   };
 }

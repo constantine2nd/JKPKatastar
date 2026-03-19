@@ -47,15 +47,15 @@ console.log(selectedCemetery._id)
   const { t, i18n } = useTranslation();
 
   const validationSchema = Yup.object().shape({
-    graveNumber: Yup.string().required(t("occupation")),
-    graveField: Yup.string().required(t("Field of grave is mandatory")),
-    graveRow: Yup.string().required(t("Row of grave is mandatory")),
+    graveNumber: Yup.string().required(t("grave.occupation")),
+    graveField: Yup.string().required(t("grave.field-mandatory")),
+    graveRow: Yup.string().required(t("grave.row-mandatory")),
     graveCapacity: Yup.string().required(
-      t("Capacity of grave is mandatory")
+      t("grave.capacity-mandatory")
     ),
-    LAT1: Yup.string().required(t("LATITUDE of grave is mandatory")),
-    LON1: Yup.string().required(t("LONGITUDE of grave is mandatory")),
-    contractTo: Yup.string().required(t("Expiration date of contract is mandatory")),
+    LAT1: Yup.string().required(t("grave.latitude-mandatory")),
+    LON1: Yup.string().required(t("grave.longitude-mandatory")),
+    contractTo: Yup.string().required(t("grave.contract-expiration-mandatory")),
   });
 
   const handleSubmit = async (values: FormData) => {
@@ -74,7 +74,7 @@ console.log(selectedCemetery._id)
 
   return (
     <Container>
-      <h1>{t("Enter the grave")}</h1>
+      <h1>{t("grave.enter")}</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -85,12 +85,12 @@ console.log(selectedCemetery._id)
             <Row>
               <Col>
                 <BootstrapForm.Group controlId="graveNumber">
-                  <BootstrapForm.Label>{t("Number of grave")}</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("grave.number-of")}</BootstrapForm.Label>
                   <Field
                     type="number"
                     name="graveNumber"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter the number of the grave")}
+                    placeholder={t("grave.enter-number")}
                   />
                   <ErrorMessage
                     name="graveNumber"
@@ -102,13 +102,13 @@ console.log(selectedCemetery._id)
               <Col>
                 <BootstrapForm.Group controlId="graveField">
                   <BootstrapForm.Label>
-                  {t("Field of grave")}
+                  {t("grave.field-of")}
                   </BootstrapForm.Label>
                   <Field
                     type="number"
                     name="graveField"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter the field of the grave")}
+                    placeholder={t("grave.enter-field")}
                   />
                   <ErrorMessage
                     name="graveField"
@@ -121,12 +121,12 @@ console.log(selectedCemetery._id)
             <Row>
               <Col>
                 <BootstrapForm.Group controlId="graveNumber">
-                  <BootstrapForm.Label>{t("Row of grave")}</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("grave.row-of")}</BootstrapForm.Label>
                   <Field
                     type="number"
                     name="graveRow"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter the row of the grave")}
+                    placeholder={t("grave.enter-row")}
                   />
                   <ErrorMessage
                     name="graveRow"
@@ -138,13 +138,13 @@ console.log(selectedCemetery._id)
               <Col>
                 <BootstrapForm.Group controlId="graveCapacity">
                   <BootstrapForm.Label>
-                  {t("Capacity of grave")}
+                  {t("grave.capacity-of")}
                   </BootstrapForm.Label>
                   <Field
                     type="number"
                     name="graveCapacity"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter the capacity of the grave")}
+                    placeholder={t("grave.enter-capacity")}
                   />
                   <ErrorMessage
                     name="graveCapacity"
@@ -158,13 +158,13 @@ console.log(selectedCemetery._id)
               <Col>
                 <BootstrapForm.Group controlId="LAT1">
                   <BootstrapForm.Label>
-                  {t("LATITUDE of grave")}
+                  {t("grave.latitude-of")}
                   </BootstrapForm.Label>
                   <Field
                     type="number"
                     name="LAT1"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter LATITUDE of the grave")}
+                    placeholder={t("grave.enter-latitude")}
                     step="any"
                   />
                   <ErrorMessage
@@ -177,13 +177,13 @@ console.log(selectedCemetery._id)
               <Col>
                 <BootstrapForm.Group controlId="LON1">
                   <BootstrapForm.Label>
-                  {t("LONGITUDE of grave")}
+                  {t("grave.longitude-of")}
                   </BootstrapForm.Label>
                   <Field
                     type="number"
                     name="LON1"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter LONGITUDE of the grave")}
+                    placeholder={t("grave.enter-longitude")}
                     step="any"
                   />
                   <ErrorMessage
@@ -198,13 +198,13 @@ console.log(selectedCemetery._id)
               <Col>
                 <BootstrapForm.Group controlId="contractTo">
                   <BootstrapForm.Label>
-                  {t("contract-expiration-date")}
+                  {t("grave.contract-expiration-date")}
                   </BootstrapForm.Label>
                   <Field
                     type="date"
                     name="contractTo"
                     as={BootstrapForm.Control}
-                    placeholder={t("Enter expiration date of contract")}
+                    placeholder={t("grave.enter-contract-expiration")}
                     step="any"
                   />
                   <ErrorMessage
@@ -220,7 +220,7 @@ console.log(selectedCemetery._id)
             <Row>
               <Col>
                 <Button type="submit" disabled={isSubmitting}>
-                {t("Send")}
+                {t("actions.send")}
                 </Button>
               </Col>
               <Col>
@@ -231,7 +231,7 @@ console.log(selectedCemetery._id)
                     });
                   }}
                 >
-                  {t("Back")}
+                  {t("actions.back")}
                 </Button>
               </Col>
             </Row>

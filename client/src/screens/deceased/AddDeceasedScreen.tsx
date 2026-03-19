@@ -33,7 +33,7 @@ const validationSchema = Yup.object().shape({
 
 const AddGrave: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const graveId = searchParams.get("id");
+  const graveId = searchParams.get("common.id");
 
   let navigate = useNavigate();
   const dispatch = useDispatch<any>();

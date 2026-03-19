@@ -51,8 +51,8 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   const { t, i18n } = useTranslation();
 
   const active = [
-    { label: t("yes"), value: true },
-    { label: t("no"), value: false },
+    { label: t("common.yes"), value: true },
+    { label: t("common.no"), value: false },
   ];
 
   const columns: MRT_ColumnDef<Payer>[] = [
@@ -97,7 +97,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "address",
-      header: t("address"),
+      header: t("form.address"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -114,7 +114,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "phone",
-      header: t("phone"),
+      header: t("form.phone"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -131,7 +131,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "jmbg",
-      header: t("jmbg"),
+      header: t("form.jmbg"),
       muiEditTextFieldProps: {
         type: "number",
         required: true,
@@ -148,7 +148,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "active",
-      header: t("Active"),
+      header: t("status.active"),
       editVariant: "select",
       editSelectOptions: active,
       muiEditTextFieldProps: {
@@ -236,7 +236,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
 
   // DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Payer>) => {
-    if (window.confirm(t("Are you sure you want to delete this user?"))) {
+    if (window.confirm(t("user.delete-confirmation"))) {
       deleteRow(row.original._id);
     }
   };
@@ -294,12 +294,12 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("Delete")}>
+        <Tooltip title={t("actions.delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>
@@ -341,6 +341,6 @@ const validateRequired = (value: string) => !!value.length;
 
 function validatePayer(row: Payer) {
   return {
-    name: !validateRequired(row.name) ? t("Name is Required") : "",
+    name: !validateRequired(row.name) ? t("form.name-required") : "",
   };
 }

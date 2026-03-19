@@ -235,7 +235,7 @@ const Header = () => {
                     <ListItemIcon>
                       <Login fontSize="small" />
                     </ListItemIcon>
-                    {t("Sign in")}
+                    {t("auth.sign-in")}
                   </MenuItem>
                 )}
                 {!user && (
@@ -243,7 +243,7 @@ const Header = () => {
                     <ListItemIcon>
                       <PersonAdd fontSize="small" />
                     </ListItemIcon>
-                    {t("Sign up")}
+                    {t("auth.sign-up")}
                   </MenuItem>
                 )}
                 {user && (
@@ -251,7 +251,7 @@ const Header = () => {
                     <ListItemIcon>
                       <Logout fontSize="small" />
                     </ListItemIcon>
-                    {t("Logout")}
+                    {t("actions.logout")}
                   </MenuItem>
                 )}
               </Menu>

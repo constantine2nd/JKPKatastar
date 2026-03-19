@@ -45,9 +45,9 @@ const expiredContract = (contractTo: string) => {
 const isActiveUser = (isActive: boolean) => {
   let result = null;
   if (isActive) {
-    result = <Chip label={t("yes")} color="success" />;
+    result = <Chip label={t("common.yes")} color="success" />;
   } else {
-    result = <Chip label={t("no")} color="error" />;
+    result = <Chip label={t("common.no")} color="error" />;
   }
   return result;
 };
@@ -55,9 +55,9 @@ const isActiveUser = (isActive: boolean) => {
 const isActivePayer = (isActive: boolean) => {
   let result = null;
   if (isActive) {
-    result = <Chip label={t("yes")} color="success" />;
+    result = <Chip label={t("common.yes")} color="success" />;
   } else {
-    result = <Chip label={t("no")} color="error" />;
+    result = <Chip label={t("common.no")} color="error" />;
   }
   return result;
 };

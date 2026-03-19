@@ -90,7 +90,7 @@ export default function ResetPasswordInitiation() {
             required
             fullWidth
             id="email"
-            label={t("email")}
+            label={t("form.email")}
             name="email"
             autoComplete="email"
             autoFocus
@@ -106,7 +106,7 @@ export default function ResetPasswordInitiation() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Submit")}
+            {t("actions.submit")}
           </Button>
         </Box>
       </Box>

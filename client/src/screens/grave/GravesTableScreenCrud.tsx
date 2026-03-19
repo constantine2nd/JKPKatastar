@@ -104,7 +104,7 @@ const GravesTableScreenCrud = () => {
     },
     {
       accessorKey: "number",
-      header: t("number"),
+      header: t("grave.number"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -121,7 +121,7 @@ const GravesTableScreenCrud = () => {
     },
     {
       accessorKey: "field",
-      header: t("field"),
+      header: t("grave.field"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -138,7 +138,7 @@ const GravesTableScreenCrud = () => {
     },
     {
       accessorKey: "row",
-      header: t("row"),
+      header: t("grave.row"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -155,7 +155,7 @@ const GravesTableScreenCrud = () => {
     },
     {
       accessorKey: "graveType._id",
-      header: t("grave type"),
+      header: t("grave-type.title"),
       editVariant: "select",
       editSelectOptions: myGraveTypes,
       enableEditing: true,
@@ -174,7 +174,7 @@ const GravesTableScreenCrud = () => {
       filterFn: "between",
       filterVariant: "date",
       sortingFn: "datetime",
-      header: t("contract-expiration-date"),
+      header: t("grave.contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
       enableEditing: false,
     },
@@ -184,7 +184,7 @@ const GravesTableScreenCrud = () => {
         return `${row.numberOfDeceaseds}/${row.graveType?.capacity}`;
       }, //accessorFn used to join multiple data into a single cell
       id: "occupation",
-      header: t("occupation"),
+      header: t("grave.occupation"),
       enableEditing: false,
       Cell: ({ renderedCellValue, row }) =>
         capacityExt(row.getValue("occupation")),
@@ -321,12 +321,12 @@ const GravesTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("Delete")}>
+        <Tooltip title={t("actions.delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>

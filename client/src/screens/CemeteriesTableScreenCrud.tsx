@@ -91,7 +91,7 @@ const CemeteriesTableScreenCrud = () => {
     },
     {
       accessorKey: "LAT",
-      header: t("LAT"),
+      header: t("location.lat"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -108,7 +108,7 @@ const CemeteriesTableScreenCrud = () => {
     },
     {
       accessorKey: "LON",
-      header: t("LON"),
+      header: t("location.lon"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -125,7 +125,7 @@ const CemeteriesTableScreenCrud = () => {
     },
     {
       accessorKey: "zoom",
-      header: t("Zoom"),
+      header: t("location.zoom"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -223,7 +223,7 @@ const CemeteriesTableScreenCrud = () => {
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<Cemetery>) => {
-    if (window.confirm(t("Are you sure you want to delete the row?"))) {
+    if (window.confirm(t("actions.delete-confirmation"))) {
       deleteRow(row.original._id);
     }
   };
@@ -283,13 +283,13 @@ const CemeteriesTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
         {user?.role === ADMINISTRATOR && (
-          <Tooltip title={t("Delete")}>
+          <Tooltip title={t("actions.delete")}>
             <IconButton
               color="error"
               onClick={() => openDeleteConfirmModal(row)}
@@ -376,11 +376,11 @@ const validateRequired = (value: string) => !!value.length;
 
 function validateCemetery(cemetery: Cemetery) {
   return {
-    name: !validateRequired(cemetery.name) ? t("Name is Required") : "",
+    name: !validateRequired(cemetery.name) ? t("form.name-required") : "",
     zoom: !validateRequired(cemetery.zoom.toString())
-      ? t("Zoom is Required")
+      ? t("location.zoom-required")
       : "",
-    LAT: !validateRequired(cemetery.LAT.toString()) ? t("LAT is Required") : "",
-    LON: !validateRequired(cemetery.LON.toString()) ? t("LON is Required") : "",
+    LAT: !validateRequired(cemetery.LAT.toString()) ? t("location.lat-required") : "",
+    LON: !validateRequired(cemetery.LON.toString()) ? t("location.lon-required") : "",
   };
 }

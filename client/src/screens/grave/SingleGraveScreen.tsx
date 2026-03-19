@@ -83,7 +83,7 @@ const SingleGraveScreen: React.FC = () => {
   };
 
   const [searchParams] = useSearchParams();
-  const graveId = searchParams.get("id");
+  const graveId = searchParams.get("common.id");
 
   const { t, i18n } = useTranslation();
 
@@ -164,36 +164,36 @@ const SingleGraveScreen: React.FC = () => {
               <Row>
                 <Col>
                   <h3>
-                    {t("number")}: {grave.number}
+                    {t("grave.number")}: {grave.number}
                   </h3>
                 </Col>
                 <Col>
                   <h3>
-                    {t("field")}: {grave.field}
-                  </h3>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <h3>
-                    {t("row")}: {grave.row}
-                  </h3>
-                </Col>
-                <Col>
-                  <h3>
-                    {t("capacity")}: {grave.graveType.capacity}
+                    {t("grave.field")}: {grave.field}
                   </h3>
                 </Col>
               </Row>
               <Row>
                 <Col>
                   <h3>
-                    {t("LAT")}: {grave.LAT}
+                    {t("grave.row")}: {grave.row}
                   </h3>
                 </Col>
                 <Col>
                   <h3>
-                    {t("LON")}: {grave.LON}
+                    {t("grave.capacity")}: {grave.graveType.capacity}
+                  </h3>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h3>
+                    {t("location.lat")}: {grave.LAT}
+                  </h3>
+                </Col>
+                <Col>
+                  <h3>
+                    {t("location.lon")}: {grave.LON}
                   </h3>
                 </Col>
               </Row>
@@ -218,7 +218,7 @@ const SingleGraveScreen: React.FC = () => {
                 </Col>
                 <Col>
                   <h3>
-                    {t("contract-expiration-date")}:{" "}
+                    {t("grave.contract-expiration-date")}:{" "}
                     <span className={getParagraphStyling(grave.contractTo)}>
                       {dateFormatter(grave.contractTo)}
                     </span>
@@ -255,36 +255,36 @@ const SingleGraveScreen: React.FC = () => {
                 <Row>
                   <Col>
                     <h3>
-                      {t("number")}: {grave.number}
+                      {t("grave.number")}: {grave.number}
                     </h3>
                   </Col>
                   <Col>
                     <h3>
-                      {t("field")}: {grave.field}
-                    </h3>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <h3>
-                      {t("row")}: {grave.row}
-                    </h3>
-                  </Col>
-                  <Col>
-                    <h3>
-                      {t("capacity")}: {grave.graveType.capacity}
+                      {t("grave.field")}: {grave.field}
                     </h3>
                   </Col>
                 </Row>
                 <Row>
                   <Col>
                     <h3>
-                      {t("LAT")}: {grave.LAT}
+                      {t("grave.row")}: {grave.row}
                     </h3>
                   </Col>
                   <Col>
                     <h3>
-                      {t("LON")}: {grave.LON}
+                      {t("grave.capacity")}: {grave.graveType.capacity}
+                    </h3>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <h3>
+                      {t("location.lat")}: {grave.LAT}
+                    </h3>
+                  </Col>
+                  <Col>
+                    <h3>
+                      {t("location.lon")}: {grave.LON}
                     </h3>
                   </Col>
                 </Row>
@@ -309,7 +309,7 @@ const SingleGraveScreen: React.FC = () => {
                   </Col>
                   <Col>
                     <h3>
-                      {t("contract-expiration-date")}:{" "}
+                      {t("grave.contract-expiration-date")}:{" "}
                       <span className={getParagraphStyling(grave.contractTo)}>
                         {dateFormatter(grave.contractTo)}
                       </span>

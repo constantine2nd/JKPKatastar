@@ -119,7 +119,7 @@ const AddGraveScreenMUI: React.FC = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {t("Create new grave")}
+          {t("grave.create-new")}
         </Typography>
         <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Box
@@ -133,7 +133,7 @@ const AddGraveScreenMUI: React.FC = () => {
             required
             fullWidth
             id="graveField"
-            label={t("graveField")}
+            label={t("grave.grave-field")}
             name="graveField"
             autoComplete="graveField"
             autoFocus
@@ -150,7 +150,7 @@ const AddGraveScreenMUI: React.FC = () => {
             required
             fullWidth
             name="graveRow"
-            label={t("graveRow")}
+            label={t("grave.grave-row")}
             id="graveRow"
             autoComplete="graveRow"
             value={formik.values.graveRow}
@@ -164,7 +164,7 @@ const AddGraveScreenMUI: React.FC = () => {
             required
             fullWidth
             name="graveNumber"
-            label={t("graveNumber")}
+            label={t("grave.grave-number")}
             id="graveNumber"
             autoComplete="graveNumber"
             value={formik.values.graveNumber}
@@ -180,7 +180,7 @@ const AddGraveScreenMUI: React.FC = () => {
             required
             fullWidth
             name="LAT"
-            label={t("LAT")}
+            label={t("location.lat")}
             id="LAT"
             autoComplete="LAT"
             value={formik.values.LAT}
@@ -194,7 +194,7 @@ const AddGraveScreenMUI: React.FC = () => {
             required
             fullWidth
             name="LON"
-            label={t("LON")}
+            label={t("location.lon")}
             id="LON"
             autoComplete="LON"
             value={formik.values.LON}
@@ -249,7 +249,7 @@ const AddGraveScreenMUI: React.FC = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("add-grave")}
+            {t("grave.add")}
           </Button>
         </Box>
       </Box>

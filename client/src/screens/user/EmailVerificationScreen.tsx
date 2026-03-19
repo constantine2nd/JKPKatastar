@@ -7,7 +7,7 @@ const statusMessageError = "Failed to verify email";
 
 const EmailVerificationScreen = () => {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("token");
+  const query = searchParams.get("dates.token");
   const [verificationStatus, setVerificationStatus] =
     useState("In progress..."); // https://react.dev/reference/react/useState#my-initializer-or-updater-function-runs-twice
 

@@ -38,7 +38,7 @@ const AddPayer: React.FC = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [activeChecked, setActiveChecked] = useState(true);
-  const graveId = searchParams.get("id");
+  const graveId = searchParams.get("common.id");
 
   const dispatch = useDispatch<any>();
 

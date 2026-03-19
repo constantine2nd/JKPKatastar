@@ -49,11 +49,11 @@ const GraveTypesTableScreen: React.FC = () => {
       },
       {
         accessorKey: "capacity",
-        header: t("capacity"),
+        header: t("grave.capacity"),
       },
       {
         accessorKey: "description",
-        header: t("description"),
+        header: t("common.description"),
       },
     ];
   const graveTypesStatus = useSelector(getAllGraveTypesStatus);

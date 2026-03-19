@@ -27,7 +27,7 @@ const UsersTableScreen: React.FC = () => {
   const columns: MRT_ColumnDef<User>[] = [
     {
       accessorKey: "_id",
-      header: t("id"),
+      header: t("common.id"),
     },
     {
       accessorKey: "name",
@@ -35,15 +35,15 @@ const UsersTableScreen: React.FC = () => {
     },
     {
       accessorKey: "email",
-      header: t("email"),
+      header: t("form.email"),
     },
     {
       accessorKey: "role",
-      header: t("role"),
+      header: t("roles.role"),
     },
     {
       accessorKey: "isActive",
-      header: t("Active"),
+      header: t("status.active"),
       Cell: ({ row }) => isActiveUser(row.original.isActive),
     },
   ];

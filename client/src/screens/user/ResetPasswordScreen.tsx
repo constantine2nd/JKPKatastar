@@ -29,7 +29,7 @@ const watchServerErrors: string[] = [
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("token");
+  const query = searchParams.get("dates.token");
 
   const { t } = useTranslation();
   const dispatch = useDispatch<any>();
@@ -98,7 +98,7 @@ export default function ResetPassword() {
             required
             fullWidth
             name="password"
-            label={t("password")}
+            label={t("form.password")}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -113,7 +113,7 @@ export default function ResetPassword() {
             required
             fullWidth
             name="repeated-password"
-            label={t("repeat-password")}
+            label={t("form.repeat-password")}
             type="password"
             id="repeated-password"
             autoComplete="current-password"
@@ -135,7 +135,7 @@ export default function ResetPassword() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Submit")}
+            {t("actions.submit")}
           </Button>
         </Box>
       </Box>

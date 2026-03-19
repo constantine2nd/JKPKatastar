@@ -49,26 +49,26 @@ const GravesTableScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
 
   const statuses = [
-    { label: t("FREE"), value: "FREE" },
-    { label: t("OCCUPIED"), value: "OCCUPIED" },
+    { label: t("status.free"), value: "FREE" },
+    { label: t("status.occupied"), value: "OCCUPIED" },
   ];
 
   const columns: MRT_ColumnDef<GraveData>[] = [
     {
       accessorKey: "number",
-      header: t("number"),
+      header: t("grave.number"),
     },
     {
       accessorKey: "field",
-      header: t("field"),
+      header: t("grave.field"),
     },
     {
       accessorKey: "row",
-      header: t("row"),
+      header: t("grave.row"),
     },
     {
       accessorKey: "graveType.name",
-      header: t("grave type"),
+      header: t("grave-type.title"),
     },
     {
       accessorKey: "cemetery.name",
@@ -77,7 +77,7 @@ const GravesTableScreen: React.FC = () => {
     {
       accessorFn: (row) => `${row.numberOfDeceaseds}/${row.graveType.capacity}`, //accessorFn used to join multiple data into a single cell
       id: "occupation",
-      header: t("occupation"),
+      header: t("grave.occupation"),
       Cell: ({ renderedCellValue, row }) =>
         capacityExt(row.getValue("occupation")),
     },
@@ -87,7 +87,7 @@ const GravesTableScreen: React.FC = () => {
       filterFn: "between",
       filterVariant: "date",
       sortingFn: "datetime",
-      header: t("contract-expiration-date"),
+      header: t("grave.contract-expiration-date"),
       Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
     },
     {
@@ -160,7 +160,7 @@ const GravesTableScreen: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <div>{t("graves-table-screen")}</div>
+        <div>{t("grave.table-screen")}</div>
         <br />
         {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
           <ButtonMUI

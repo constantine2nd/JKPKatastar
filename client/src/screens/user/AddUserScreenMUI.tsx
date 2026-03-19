@@ -91,7 +91,7 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {t("Sign up")}
+          {t("auth.sign-up")}
         </Typography>
         <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Box
@@ -105,7 +105,7 @@ export default function SignUp() {
             required
             fullWidth
             id="name"
-            label={t("name")}
+            label={t("form.name")}
             name="name"
             autoComplete="name"
             autoFocus
@@ -134,7 +134,7 @@ export default function SignUp() {
             required
             fullWidth
             name="password"
-            label={t("password")}
+            label={t("form.password")}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -149,7 +149,7 @@ export default function SignUp() {
             required
             fullWidth
             name="repeated-password"
-            label={t("repeat-password")}
+            label={t("form.repeat-password")}
             type="password"
             id="repeated-password"
             autoComplete="current-password"
@@ -171,7 +171,7 @@ export default function SignUp() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Sign up")}
+            {t("auth.sign-up")}
           </Button>
         </Box>
       </Box>

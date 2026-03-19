@@ -89,7 +89,7 @@ export default function SignIn() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {t("Sign in")}
+          {t("auth.sign-in")}
         </Typography>
         <ServerErrorComponent {...{ error, watchServerErrors }} />
         <Box
@@ -103,7 +103,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label={t("email")}
+            label={t("form.email")}
             name="email"
             autoComplete="email"
             autoFocus
@@ -118,7 +118,7 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label={t("password")}
+            label={t("form.password")}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -130,7 +130,7 @@ export default function SignIn() {
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
-            label={t("Remember me")}
+            label={t("auth.remember-me")}
           />
           <Button
             type="submit"
@@ -138,17 +138,17 @@ export default function SignIn() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {t("Sign in")}
+            {t("auth.sign-in")}
           </Button>
           <Grid container>
             <Grid item xs>
               <Link href="/reset-password-initiation" variant="body2">
-                {t("Forgot password?")}
+                {t("auth.forgot-password")}
               </Link>
             </Grid>
             <Grid item>
               <Link href="/add-user" variant="body2">
-                {t("Don't have an account? Sign Up")}
+                {t("auth.no-account")}
               </Link>
             </Grid>
           </Grid>

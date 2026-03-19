@@ -228,16 +228,16 @@ const GraveRequestStepperScreen: React.FC = () => {
                 }}
               >
                 <h4>
-                  {t("number")}: {selectedGrave.number}
+                  {t("grave.number")}: {selectedGrave.number}
                 </h4>
                 <h4>
-                  {t("row")}: {selectedGrave.row}
+                  {t("grave.row")}: {selectedGrave.row}
                 </h4>
                 <h4>
-                  {t("field")}: {selectedGrave.field}
+                  {t("grave.field")}: {selectedGrave.field}
                 </h4>
                 <h4>
-                  {t("capacity")}: {selectedGrave.graveType.capacity}
+                  {t("grave.capacity")}: {selectedGrave.graveType.capacity}
                 </h4>
               </Paper>
 

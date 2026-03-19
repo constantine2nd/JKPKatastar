@@ -109,7 +109,7 @@ const GraveRequestTableScreenCrud = () => {
     },
     {
       accessorKey: "phone",
-      header: t("phone"),
+      header: t("form.phone"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
@@ -137,7 +137,7 @@ const GraveRequestTableScreenCrud = () => {
       filterFn: "between",
       filterVariant: "date",
       sortingFn: "datetime",
-      header: t("created-at"),
+      header: t("dates.created-at"),
       Cell: ({ cell }) => dateFormatter(cell.getValue<string>()),
     },
     {
@@ -147,7 +147,7 @@ const GraveRequestTableScreenCrud = () => {
     },
     {
       accessorKey: "grave",
-      header: t("Grave ID"),
+      header: t("grave.id"),
     },
   ];
 
@@ -247,7 +247,7 @@ const GraveRequestTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit Grave Type")}</DialogTitle>
+        <DialogTitle variant="h3">{t("grave-type.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -260,12 +260,12 @@ const GraveRequestTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("Delete")}>
+        <Tooltip title={t("actions.delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>

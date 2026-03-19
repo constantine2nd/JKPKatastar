@@ -53,8 +53,8 @@ const UsersTableScreenCrud = () => {
     { label: t(VISITOR), value: VISITOR },
   ];
   const active = [
-    { label: t("yes"), value: true },
-    { label: t("no"), value: false },
+    { label: t("common.yes"), value: true },
+    { label: t("common.no"), value: false },
   ];
 
   const columns: MRT_ColumnDef<User>[] = [
@@ -94,14 +94,14 @@ const UsersTableScreenCrud = () => {
     },
     {
       accessorKey: "role",
-      header: t("role"),
+      header: t("roles.role"),
       editVariant: "select",
       editSelectOptions: roles,
       Cell: ({ row }) => t(row.original.role),
     },
     {
       accessorKey: "isActive",
-      header: t("Active"),
+      header: t("status.active"),
       editVariant: "select",
       editSelectOptions: active,
       muiEditTextFieldProps: {
@@ -111,7 +111,7 @@ const UsersTableScreenCrud = () => {
     },
     {
       accessorKey: "isVerified",
-      header: t("Verified"),
+      header: t("status.verified"),
       editVariant: "select",
       editSelectOptions: active,
       muiEditTextFieldProps: {
@@ -121,7 +121,7 @@ const UsersTableScreenCrud = () => {
     },
     {
       accessorKey: "avatarUrl",
-      header: t("Avatar"),
+      header: t("common.avatar"),
       enableEditing: true,
     },
     {
@@ -131,7 +131,7 @@ const UsersTableScreenCrud = () => {
     },
     {
       accessorKey: "password",
-      header: t("password"),
+      header: t("form.password"),
       enableEditing: true,
     },
   ];
@@ -263,7 +263,7 @@ const UsersTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("Edit User")}</DialogTitle>
+        <DialogTitle variant="h3">{t("user.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
@@ -276,12 +276,12 @@ const UsersTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title={t("Edit")}>
+        <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("Delete")}>
+        <Tooltip title={t("actions.delete")}>
           <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
             <DeleteIcon />
           </IconButton>
