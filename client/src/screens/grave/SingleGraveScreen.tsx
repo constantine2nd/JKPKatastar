@@ -58,7 +58,9 @@ import DeceasedTableScreenCrud from "../deceased/DeceasedTableScreenCrud";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";
+  if (!contractTo) return classString;
   let contractDate = new Date(contractTo);
+  if (isNaN(contractDate.getTime())) return classString;
   let contractDatePlus = new Date(contractTo);
   contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
   let today = new Date();

@@ -1,5 +1,7 @@
 const dateFormatter = (date) => {
+  if (!date) return "-";
   const myDate = new Date(date);
+  if (isNaN(myDate.getTime())) return "-";
   let day = myDate.getDate();
   let month = myDate.getMonth() + 1;
   let year = myDate.getFullYear();
@@ -14,7 +16,9 @@ const dateFormatter = (date) => {
 };
 
 const dateCalendarFormatter = (date) => {
+  if (!date) return "";
   const myDate = new Date(date);
+  if (isNaN(myDate.getTime())) return "";
   let day = myDate.getDate();
   let month = myDate.getMonth() + 1;
   let year = myDate.getFullYear();

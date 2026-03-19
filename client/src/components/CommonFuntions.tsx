@@ -28,7 +28,7 @@ const expiredContract = (contractTo: string) => {
   let contractDatePlus = new Date(contractTo);
   contractDatePlus.setMonth(contractDatePlus.getMonth() - 3);
   let today = new Date();
-  if (contractTo === "Invalid Date") {
+  if (!contractTo || isNaN(contractDate.getTime())) {
     result = (
       <Chip icon={<PriorityHighIcon />} label={t("grave.add-contract-date")} />
     );
