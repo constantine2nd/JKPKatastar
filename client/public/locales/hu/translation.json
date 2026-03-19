@@ -92,17 +92,17 @@
     "search": "Keresés",
     "birth-year": "Születési év",
     "cemetery-selection": "Temető kiválasztása",
-    "death-date-from": "Halálozás dátuma - től",
-    "death-date-to": "Halálozás dátuma - ig",
-    "birth-date-from": "Születési dátum - től",
-    "birth-date-to": "Születési dátum - ig",
-    "death-year-from": "Halálozás éve - től",
-    "death-year-to": "Halálozás éve - ig"
+    "death-date-from": "Halálozás dátumától",
+    "death-date-to": "Halálozás dátumáig",
+    "birth-date-from": "Születési dátumtól",
+    "birth-date-to": "Születési dátumig",
+    "death-year-from": "Halálozás évétől",
+    "death-year-to": "Halálozás évéig"
   },
   "form": {
     "name": "Név",
     "surname": "Vezetéknév",
-    "email": "E-mail",
+    "email": "Email",
     "password": "Jelszó",
     "repeat-password": "Jelszó megerősítése",
     "address": "Cím",
@@ -129,7 +129,7 @@
   },
   "status": {
     "active": "Aktív",
-    "status": "állapot",
+    "status": "Állapot",
     "requested": "Kérelmezett",
     "accepted": "Elfogadva",
     "denied": "Elutasítva",
@@ -148,7 +148,7 @@
     "back": "Vissza",
     "edit": "Szerkesztés",
     "delete": "Törlés",
-    "submit": "Küldés",
+    "submit": "Elküld",
     "logout": "Kijelentkezés",
     "zoom": "Nagyítás",
     "delete-confirmation": "Biztosan törli a sort?"
