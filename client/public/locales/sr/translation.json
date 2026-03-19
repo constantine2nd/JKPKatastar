@@ -33,20 +33,20 @@
     "field-of": "Polje grobnog mesta:",
     "row-of": "Red grobnog mesta:",
     "capacity-of": "Kapacitet grobnog mesta:",
-    "latitude-of": "LATITUDE grobnog mesta:",
-    "longitude-of": "LONGITUDE grobnog mesta:",
+    "latitude-of": "Geografska širina grobnog mesta:",
+    "longitude-of": "Geografska dužina grobnog mesta:",
     "field-mandatory": "Polje grobnog mesta je obavezno polje",
     "row-mandatory": "Red grobnog mesta je obavezno polje",
     "capacity-mandatory": "Kapacitet grobnog mesta je obavezno polje",
-    "latitude-mandatory": "LATITUDE grobnog mesta je obavezno polje",
-    "longitude-mandatory": "LONGITUDE grobnog mesta je obavezno polje",
+    "latitude-mandatory": "Geografska širina grobnog mesta je obavezno polje",
+    "longitude-mandatory": "Geografska dužina grobnog mesta je obavezno polje",
     "contract-expiration-mandatory": "Datum isteka ugovora je obavezno polje",
     "enter-number": "Unesite broj grobnog mesta",
     "enter-field": "Unesite polje grobnog mesta",
     "enter-row": "Unesite red grobnog mesta",
     "enter-capacity": "Unesite kapacitet grobnog mesta",
-    "enter-latitude": "Unesite LATITUDE grobnog mesta",
-    "enter-longitude": "Unesite LONGITUDE grobnog mesta",
+    "enter-latitude": "Unesite geografsku širinu grobnog mesta",
+    "enter-longitude": "Unesite geografsku dužinu grobnog mesta",
     "enter-contract-expiration": "Unesite datum isteka ugovora"
   },
   "grave-type": {
@@ -117,9 +117,9 @@
     "lat": "Geografska širina",
     "lon": "Geografska dužina",
     "zoom": "Zum",
-    "lat-required": "LAT je obavezan",
-    "lon-required": "LON je obavezan",
-    "zoom-required": "Zoom je obavezan"
+    "lat-required": "Geografska širina je obavezna",
+    "lon-required": "Geografska dužina je obavezna",
+    "zoom-required": "Zum je obavezan"
   },
   "dates": {
     "birth": "Datum rođenja",
@@ -129,7 +129,7 @@
   },
   "status": {
     "active": "Aktivan",
-    "status": "status",
+    "status": "Status",
     "requested": "Rezervisano",
     "accepted": "Prihvaćeno",
     "denied": "Odbijeno",
