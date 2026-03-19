@@ -1,5 +1,6 @@
 import GraveType from "../models/graveTypeModel.js";
 import mongoose from "mongoose";
+import { addLog } from "../utils/log.js";
 
 const getAllGraveTypes = async (req, res, next) => {
   try {
@@ -26,6 +27,7 @@ const addGraveType = async (req, res, next) => {
     });
     console.log(newGraveType);
     if (newGraveType) {
+      addLog(req.userId, "CREATE_GRAVE_TYPE", newGraveType);
       res.status(201).json({
         _id: newGraveType._id,
         name: newGraveType.name,
@@ -52,6 +54,7 @@ const updateGraveType = async (req, res, next) => {
       new: true,
     });
     if (updatedGraveType) {
+      addLog(req.userId, "UPDATE_GRAVE_TYPE", { id: updatedGraveType._id });
       res.status(200).json({
         _id: updatedGraveType._id,
         name: updatedGraveType.name,
@@ -92,6 +95,7 @@ const deleteGraveType = async (req, res, next) => {
     console.log(res);
     if (result.deletedCount === 1) {
       console.log(`deleted row with id ${id}`);
+      addLog(req.userId, "DELETE_GRAVE_TYPE", { id });
       res.send({ id: id });
     } else {
       res.status(400).send({

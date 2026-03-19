@@ -1,6 +1,7 @@
 import Cemetery from "../models/cemeteryModel.js";
 import Grave from "../models/graveModel.js";
 import mongoose from "mongoose";
+import { addLog } from "../utils/log.js";
 
 const getAllCemeteries = async (req, res, next) => {
   try {
@@ -28,6 +29,7 @@ const addCemetery = async (req, res, next) => {
     });
     console.log(newCemetery);
     if (newCemetery) {
+      addLog(req.userId, "CREATE_CEMETERY", newCemetery);
       res.status(201).json({
         ...newCemetery._doc,
       });
@@ -51,6 +53,7 @@ const updateCemetery = async (req, res, next) => {
     });
 
     if (updatedCemetery) {
+      addLog(req.userId, "UPDATE_CEMETERY", { id: updatedCemetery._id });
       res.status(200).json({
         ...updatedCemetery._doc,
       });
@@ -86,6 +89,7 @@ const deleteCemetery = async (req, res, next) => {
     console.log(result);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
+      addLog(req.userId, "DELETE_CEMETERY", { id });
       res.send({ id: id });
     } else {
       res.status(400).send({

@@ -7,7 +7,7 @@ const getGraveRequests = async (req, res, next) => {
   try {
     const allRows = await GraveRequest.find().sort({ createdAt: "desc" });
     if (allRows) {
-      addLog("Mika", "getGraveRequests", allRows);
+      addLog(req.userId, "GET_GRAVE_REQUESTS", { count: allRows.length });
       res.send(allRows);
     } else {
       res.status(400).send({
@@ -44,6 +44,7 @@ const addGraveRequest = async (req, res, next) => {
       });
       console.log(newRow);
       if (newRow) {
+        addLog(req.userId || "visitor", "CREATE_GRAVE_REQUEST", newRow);
         res.status(201).json({
           _id: newRow._id,
           grave: newRow.grave,
@@ -86,6 +87,7 @@ const updateGraveRequest = async (req, res, next) => {
     console.log(updatedRow);
 
     if (updatedRow) {
+      addLog(req.userId, "UPDATE_GRAVE_REQUEST", { id: updatedRow._id, status: updatedRow.status });
       res.status(200).json({
         _id: updatedRow._id,
         name: updatedRow.name,
@@ -112,6 +114,7 @@ const deleteGraveRequest = async (req, res, next) => {
     console.log(res);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
+      addLog(req.userId, "DELETE_GRAVE_REQUEST", { id });
       res.send({ id: id });
     } else {
       res.status(400).send({

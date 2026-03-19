@@ -5,6 +5,7 @@ import GraveType from "../models/graveTypeModel.js";
 import GraveRequest from "../models/graveRequestModel.js";
 //import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
+import { addLog } from "../utils/log.js";
 
 const createDateFromString = (dateString) => {
   const [day, month, year] = dateString.split("/");
@@ -74,6 +75,7 @@ const saveGrave = async (req, res, next) => {
     const createdGrave = await grave.save();
 
     console.log(createdGrave);
+    addLog(req.userId, "CREATE_GRAVE", createdGrave);
     res.json({ ...createdGrave._doc, numberOfDeceaseds: 0 });
   } catch (error) {
     return res.json({ message: "Cound not store data" });
@@ -291,6 +293,7 @@ const deleteSingleGrave = async (req, res, next) => {
     console.log(result);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
+      addLog(req.userId, "DELETE_GRAVE", { id: graveId });
       res.send({ id: graveId });
     } else {
       res.json({ message: "Nothing to delete" });
@@ -334,6 +337,7 @@ const updateGrave = async (req, res) => {
   const deceased = await Deceased.find({ grave: _id });
 
   if (updatedRow) {
+    addLog(req.userId, "UPDATE_GRAVE", { id: updatedRow._id });
     res.status(200).json({
       _id: updatedRow._id,
       number: updatedRow.number,

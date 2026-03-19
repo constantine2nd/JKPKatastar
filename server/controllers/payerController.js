@@ -1,5 +1,6 @@
 import Payer from "../models/payerModel.js";
 import { Types } from "mongoose";
+import { addLog } from "../utils/log.js";
 
 const getPayers = async (req, res, next) => {
   const graveId = req.params.id;
@@ -42,6 +43,7 @@ const savePayer = async (req, res, next) => {
     const createdPayer = await payer.save();
     console.log(updateSucced);
     console.log(createdPayer);
+    addLog(req.userId, "CREATE_PAYER", createdPayer);
     res.json(createdPayer);
   } catch (error) {
     return res.json({ message: "Cound not store data" });
@@ -58,6 +60,7 @@ const deleteSinglePayer = async (req, res, next) => {
     console.log(res);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
+      addLog(req.userId, "DELETE_PAYER", { id: payerId });
       res.send({ id: payerId });
     } else {
       res.json({ message: "Nothing to delete" });
@@ -94,6 +97,7 @@ const updatePayer = async (req, res) => {
   console.log(updatedPayer);
 
   if (updatedPayer) {
+    addLog(req.userId, "UPDATE_PAYER", { id: updatedPayer._id });
     res.status(200).json({
       _id: updatedPayer._id,
       name: updatedPayer.name,

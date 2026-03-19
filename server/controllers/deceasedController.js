@@ -1,5 +1,6 @@
 import Deceased from "../models/deceasedModel.js";
 import mongoose from "mongoose";
+import { addLog } from "../utils/log.js";
 
 const saveDeceased = async (req, res, next) => {
   const sentDeacesed = req.body;
@@ -21,6 +22,7 @@ const saveDeceased = async (req, res, next) => {
     const createdDeacesed = await deacesed.save();
     console.log("TRy-CATCH");
     console.log(createdDeacesed);
+    addLog(req.userId, "CREATE_DECEASED", createdDeacesed);
     res.json(createdDeacesed);
   } catch (error) {
     console.log(error);
@@ -130,6 +132,7 @@ const deleteSingleDeceased = async (req, res, next) => {
     console.log(res);
     if (result.deletedCount === 1) {
       console.log("deleted count 1");
+      addLog(req.userId, "DELETE_DECEASED", { id: deceasedId });
       res.send({ id: deceasedId });
     } else {
       res.json({ message: "Nothing to delete" });
@@ -159,6 +162,7 @@ const updateDeceased = async (req, res) => {
   console.log(updatedDeceased);
 
   if (updatedDeceased) {
+    addLog(req.userId, "UPDATE_DECEASED", { id: updatedDeceased._id });
     res.status(200).json({
       _id: updatedDeceased._id,
       name: updatedDeceased.name,
