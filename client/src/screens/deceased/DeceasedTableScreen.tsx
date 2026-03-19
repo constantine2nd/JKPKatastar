@@ -96,15 +96,15 @@ const DeceasedTableScreen: React.FC = () => {
     },
     {
       accessorKey: "grave.field",
-      header: t("field"),
+      header: t("grave.field"),
     },
     {
       accessorKey: "grave.row",
-      header: t("row"),
+      header: t("grave.row"),
     },
     {
       accessorKey: "grave.number",
-      header: t("number"),
+      header: t("grave.number"),
     },
     {
       accessorKey: "grave.cemetery.name",
@@ -112,7 +112,7 @@ const DeceasedTableScreen: React.FC = () => {
     },
     {
       accessorKey: "grave.graveType.name",
-      header: t("grave type"),
+      header: t("grave-type.title"),
     },
     {
       accessorKey: "grave._id",
@@ -130,7 +130,7 @@ const DeceasedTableScreen: React.FC = () => {
             });
           }}
         >
-          {t("details")}
+          {t("common.details")}
         </ButtonMUI>
       ),
     },
@@ -184,7 +184,7 @@ const DeceasedTableScreen: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <div>{t("graves-table-screen")}</div>
+        <div>{t("grave.table-screen")}</div>
         <br />
         {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
           <ButtonMUI
