@@ -75,7 +75,7 @@ const GravesTableScreen: React.FC = () => {
       header: t("cemetery.title"),
     },
     {
-      accessorFn: (row) => `${row.numberOfDeceaseds}/${row.graveType.capacity}`, //accessorFn used to join multiple data into a single cell
+      accessorFn: (row) => `${row.numberOfDeceaseds ?? 0}/${row.graveType?.capacity ?? 0}`, //accessorFn used to join multiple data into a single cell
       id: "occupation",
       header: t("grave.occupation"),
       Cell: ({ renderedCellValue, row }) =>

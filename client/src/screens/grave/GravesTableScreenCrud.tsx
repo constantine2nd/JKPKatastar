@@ -181,7 +181,7 @@ const GravesTableScreenCrud = () => {
     {
       accessorFn: (row) => {
         console.log(row);
-        return `${row.numberOfDeceaseds}/${row.graveType?.capacity}`;
+        return `${row.numberOfDeceaseds ?? 0}/${row.graveType?.capacity ?? 0}`;
       }, //accessorFn used to join multiple data into a single cell
       id: "occupation",
       header: t("grave.occupation"),

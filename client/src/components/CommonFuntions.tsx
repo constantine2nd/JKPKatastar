@@ -87,7 +87,11 @@ const statusOfGrave = (status: string) => {
 };
 
 const capacityExt = (renderedValue: string) => {
-  return capacity(renderedValue.split("/")[1], renderedValue.split("/")[0]);
+  const [deceased, cap] = renderedValue.split("/");
+  if (!deceased || !cap || deceased === "undefined" || cap === "undefined") {
+    return <Chip label="-" />;
+  }
+  return capacity(cap, deceased);
 };
 
 function matchError(value: string, error: string) {
