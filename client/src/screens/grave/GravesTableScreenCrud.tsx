@@ -191,7 +191,7 @@ const GravesTableScreenCrud = () => {
     },
     {
       accessorKey: "status",
-      header: t("status"),
+      header: t("status.status"),
       editVariant: "select",
       editSelectOptions: statuses,
       Cell: ({ row }) => statusOfGrave(row.original.status),

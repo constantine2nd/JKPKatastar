@@ -92,7 +92,7 @@ const GravesTableScreen: React.FC = () => {
     },
     {
       accessorKey: "status",
-      header: t("status"),
+      header: t("status.status"),
       editVariant: "select",
       editSelectOptions: statuses,
       Cell: ({ row }) => statusOfGrave(row.original.status),

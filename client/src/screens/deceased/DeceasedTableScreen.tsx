@@ -108,7 +108,7 @@ const DeceasedTableScreen: React.FC = () => {
     },
     {
       accessorKey: "grave.cemetery.name",
-      header: t("cemetery"),
+      header: t("cemetery.title"),
     },
     {
       accessorKey: "grave.graveType.name",

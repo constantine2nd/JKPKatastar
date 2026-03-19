@@ -126,7 +126,7 @@ const GraveRequestTableScreenCrud = () => {
     },
     {
       accessorKey: "status",
-      header: t("status"),
+      header: t("status.status"),
       editVariant: "select",
       editSelectOptions: statuses,
       Cell: ({ row }) => statusOfGraveRequest(row.original.status),

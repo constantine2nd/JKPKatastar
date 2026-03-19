@@ -50,7 +50,7 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "cemetery",
-      header: t("cemetery"),
+      header: t("cemetery.title"),
     },
     {
       //accessorKey: "dateBirth",
