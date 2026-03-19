@@ -18,7 +18,7 @@ const payerSchema = mongoose.Schema({
     type: String,
   },
   jmbg: {
-    type: Number,
+    type: String,
   },
   active: {
     type: Boolean,
