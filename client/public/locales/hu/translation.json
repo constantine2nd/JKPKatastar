@@ -174,6 +174,8 @@
     "err-invalid-credentials": "Helytelen e-mail vagy jelszó",
     "err-username-mandatory": "A felhasználónév kötelező",
     "err-password-mandatory": "A jelszó kötelező",
-    "err-user-not-verified": "A felhasználó nincs ellenőrizve"
+    "err-user-not-verified": "A felhasználó nincs ellenőrizve",
+    "err-cannot-add-user": "Nem sikerült létrehozni a felhasználót",
+    "err-cannot-reset-password": "Nem sikerült visszaállítani a jelszót"
   }
 }

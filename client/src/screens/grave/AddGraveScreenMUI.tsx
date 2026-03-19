@@ -39,10 +39,10 @@ import Select from "@mui/material/Select";
 import { MenuItem } from "@mui/material";
 
 const watchServerErrors: string[] = [
-  "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
-  "SERVER_ERR_USER_IS_NOT_VERIFIED",
-  "SERVER_ERR_PASSWORD_IS_MANDATORY",
-  "SERVER_ERR_USERNAME_IS_MANDATORY",
+  "err-invalid-credentials",
+  "err-user-not-verified",
+  "err-password-mandatory",
+  "err-username-mandatory",
 ];
 
 const AddGraveScreenMUI: React.FC = () => {

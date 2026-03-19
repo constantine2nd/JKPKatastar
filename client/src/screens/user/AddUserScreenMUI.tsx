@@ -22,9 +22,9 @@ import { object, string } from "yup";
 import { ServerErrorComponent } from "../../components/ServerErrorComponent";
 
 const watchServerErrors: string[] = [
-  "SERVER_ERR_USER_ALREADY_EXISTS",
-  "SERVER_ERR_CONFIRM_PASSWORD",
-  "SERVER_ERR_CANNOT_ADD_USER",
+  "err-user-exists",
+  "err-confirm-password",
+  "err-cannot-add-user",
 ];
 
 export default function SignUp() {

@@ -15,7 +15,7 @@ const registerUser = async (req, res, next) => {
 
     if (userExists) {
       res.status(400).send({
-        message: "SERVER_ERR_USER_ALREADY_EXISTS",
+        message: "err-user-exists",
       });
     }
 
@@ -23,7 +23,7 @@ const registerUser = async (req, res, next) => {
       // All good
     } else {
       res.status(400).send({
-        message: "SERVER_ERR_CONFIRM_PASSWORD",
+        message: "err-confirm-password",
       });
     }
 
@@ -44,7 +44,7 @@ const registerUser = async (req, res, next) => {
       });
     } else {
       res.status(400).send({
-        message: "SERVER_ERR_CANNOT_ADD_USER",
+        message: "err-cannot-add-user",
       });
     }
   } catch (err) {
@@ -61,7 +61,7 @@ const addUser = async (req, res, next) => {
 
     if (userExists) {
       res.status(400).send({
-        message: "SERVER_ERR_USER_ALREADY_EXISTS",
+        message: "err-user-exists",
       });
     }
 
@@ -174,14 +174,14 @@ const authUser = async (req, res, next) => {
   try {
     if (!email) {
       res.status(401).send({
-        message: "SERVER_ERR_USERNAME_IS_MANDATORY",
+        message: "err-username-mandatory",
       });
       return;
     }
 
     if (!password) {
       res.status(401).send({
-        message: "SERVER_ERR_PASSWORD_IS_MANDATORY",
+        message: "err-password-mandatory",
       });
       return;
     }
@@ -190,14 +190,14 @@ const authUser = async (req, res, next) => {
 
     if (!user) {
       res.status(401).send({
-        message: "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+        message: "err-invalid-credentials",
       });
       return;
     }
 
     if (user.isVerified === false) {
       res.status(401).send({
-        message: "SERVER_ERR_USER_IS_NOT_VERIFIED",
+        message: "err-user-not-verified",
       });
       return;
     }
@@ -209,7 +209,7 @@ const authUser = async (req, res, next) => {
       });
     } else {
       res.status(401).send({
-        message: "SERVER_ERR_INVALID_EMAIL_OR_PASSWORD",
+        message: "err-invalid-credentials",
       });
     }
   } catch (err) {
@@ -235,7 +235,7 @@ const resetPasswordInitiation = async (req, res, next) => {
       });
     } else {
       res.status(400).send({
-        message: "SERVER_ERR_CANNOT_RESET_PASSWORD",
+        message: "err-cannot-reset-password",
       });
     }
   } catch (err) {
@@ -255,7 +255,7 @@ const resetPassword = async (req, res, next) => {
       // All good
     } else {
       res.status(400).send({
-        message: "SERVER_ERR_CONFIRM_PASSWORD",
+        message: "err-confirm-password",
       });
     }
 
@@ -271,7 +271,7 @@ const resetPassword = async (req, res, next) => {
       });
     } else {
       res.status(400).send({
-        message: "SERVER_ERR_CANNOT_RESET_PASSWORD",
+        message: "err-cannot-reset-password",
       });
     }
   } catch (err) {
@@ -287,7 +287,7 @@ const getAllUsers = async (req, res, next) => {
       res.send(users);
     } else {
       res.status(401);
-      throw new Error("SERVER_ERR_CANNOT_GET_USERS");
+      throw new Error("err-cannot-get-users");
     }
   } catch (err) {
     next(err); // Inside async code you have to pass the error to the next function, else your api will crash

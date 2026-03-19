@@ -21,7 +21,7 @@ import { object, string } from "yup";
 import { useFormik } from "formik";
 import { ServerErrorComponent } from "../../components/ServerErrorComponent";
 
-const watchServerErrors: string[] = ["SERVER_ERR_CANNOT_RESET_PASSWORD"];
+const watchServerErrors: string[] = ["err-cannot-reset-password"];
 
 export default function ResetPasswordInitiation() {
   const { t } = useTranslation();

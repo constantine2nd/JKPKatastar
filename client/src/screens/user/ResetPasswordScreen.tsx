@@ -23,8 +23,8 @@ import { useFormik } from "formik";
 import { ServerErrorComponent } from "../../components/ServerErrorComponent";
 
 const watchServerErrors: string[] = [
-  "SERVER_ERR_CANNOT_RESET_PASSWORD",
-  "SERVER_ERR_CONFIRM_PASSWORD",
+  "err-cannot-reset-password",
+  "err-confirm-password",
 ];
 
 export default function ResetPassword() {
