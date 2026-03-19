@@ -21,7 +21,7 @@ const protect = (req, res, next) => {
       } else {
         console.log("DALJE");
         //  console.log('userName: ', decoded?.userName)
-        req.userName = decoded?.userName;
+        req.userId = decoded?.id;
         next();
       }
     } catch (error) {
