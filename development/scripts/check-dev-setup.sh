@@ -37,7 +37,17 @@ check_docker_running() {
 check_ports() {
     local port=$1
     local service=$2
-    if lsof -i :$port > /dev/null 2>&1; then
+    local in_use=false
+
+    if command -v lsof &> /dev/null; then
+        lsof -i :"$port" > /dev/null 2>&1 && in_use=true
+    elif command -v ss &> /dev/null; then
+        ss -ltn "sport = :$port" 2>/dev/null | grep -q ":$port" && in_use=true
+    elif command -v netstat &> /dev/null; then
+        netstat -ltn 2>/dev/null | grep -q ":$port " && in_use=true
+    fi
+
+    if [ "$in_use" = true ]; then
         echo -e "${YELLOW}⚠️  Port $port is in use ($service)${NC}"
         return 1
     else
@@ -72,6 +82,15 @@ fi
 echo ""
 echo -e "${BLUE}📋 Checking Docker Status...${NC}"
 check_docker_running || DOCKER_ISSUE=true
+
+# On Linux, warn if user is not in the docker group (requires sudo otherwise)
+if [ "$(uname -s)" = "Linux" ] && ! docker info > /dev/null 2>&1; then
+    if ! groups | grep -q docker; then
+        echo -e "${YELLOW}⚠️  User '$(whoami)' is not in the 'docker' group${NC}"
+        echo "   Fix with: sudo usermod -aG docker \$(whoami) && newgrp docker"
+        DOCKER_ISSUE=true
+    fi
+fi
 
 # Check required ports
 echo ""

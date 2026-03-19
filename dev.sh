@@ -1,30 +1,23 @@
 #!/bin/bash
 
 # JKP Katastar - Development Wrapper Script
-# This is a convenience wrapper that redirects to the actual dev script
+# Convenience wrapper that delegates to development/dev.sh
 
-echo "🏛️  JKP Katastar Cemetery Management System"
-echo "=========================================="
-
-# Check if development directory exists
+# Check if development directory and script exist
 if [ ! -d "development" ]; then
-    echo "❌ Development directory not found!"
-    echo "   Make sure you're in the project root directory."
+    echo "❌ Development directory not found! Run this from the project root."
     exit 1
 fi
 
-# Check if dev script exists
 if [ ! -f "development/dev.sh" ]; then
-    echo "❌ Development script not found at development/dev.sh"
+    echo "❌ development/dev.sh not found."
     exit 1
 fi
 
-# Make sure it's executable
-chmod +x development/dev.sh
+# Make executable if needed (only when necessary)
+if [ ! -x "development/dev.sh" ]; then
+    chmod +x development/dev.sh
+fi
 
-# Pass all arguments to the actual dev script
-echo "🔄 Redirecting to development/dev.sh..."
-echo ""
-
-# Change to development directory and run the script
-cd development && ./dev.sh "$@"
+cd development || { echo "❌ Failed to enter development directory."; exit 1; }
+exec ./dev.sh "$@"
