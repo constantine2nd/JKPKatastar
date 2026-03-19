@@ -5,12 +5,14 @@ import { MRT_Localization_SR_CYRL_RS } from "material-react-table/locales/sr-Cyr
 import { MRT_Localization_SR_LATN_RS } from "material-react-table/locales/sr-Latn-RS";
 
 const getLanguage = (i18n) => {
-    if (i18n.language.toUpperCase() === "SR") {
+    if (i18n.language === "sr-Cyrl") {
+      return MRT_Localization_SR_CYRL_RS;
+    } else if (i18n.language.toUpperCase() === "SR") {
       return MRT_Localization_SR_LATN_RS;
     } else if (i18n.language.toUpperCase() === "HU") {
       return MRT_Localization_HU;
     } else {
-      return MRT_Localization_SR_CYRL_RS;
+      return MRT_Localization_SR_LATN_RS;
     }
   };
   export { getLanguage };

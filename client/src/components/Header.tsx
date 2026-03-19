@@ -275,6 +275,9 @@ const Header = () => {
                 <NavDropdown.Item onClick={() => selectLangugeHandler("sr")}>
                   SR
                 </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => selectLangugeHandler("sr-Cyrl")}>
+                  СР
+                </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => selectLangugeHandler("hu")}>
                   HU
                 </NavDropdown.Item>

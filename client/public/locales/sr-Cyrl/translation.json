@@ -1,0 +1,181 @@
+{
+  "client": {
+    "your-website": "Ваш интернет портал",
+    "landing-page-screen": "Екран одредишне странице",
+    "err-field-required": "Поље је обавезно"
+  },
+  "cemetery": {
+    "title": "Гробље",
+    "create-new": "Креирај ново гробље",
+    "edit": "Уреди гробље",
+    "selection": "Избор гробља"
+  },
+  "grave": {
+    "title": "Гробно место",
+    "add": "Додај гробно место",
+    "add-route": "додај-гроб",
+    "create-new": "Креирај ново гробно место",
+    "table-screen": "Табеларни приказ",
+    "type": "Тип гробног места",
+    "number": "Редни број",
+    "row": "Ред",
+    "field": "Поље",
+    "capacity": "Капацитет",
+    "occupation": "Заузетост",
+    "contract-expiration-date": "Датум истека уговора",
+    "add-contract-date": "Унесите датум истека уговора",
+    "id": "ИД гробног места",
+    "grave-field": "Поље гроба",
+    "grave-number": "Број гроба",
+    "grave-row": "Ред гроба",
+    "enter": "Унесите гробно место:",
+    "number-of": "Број гробног места:",
+    "field-of": "Поље гробног места:",
+    "row-of": "Ред гробног места:",
+    "capacity-of": "Капацитет гробног места:",
+    "latitude-of": "Географска ширина гробног места:",
+    "longitude-of": "Географска дужина гробног места:",
+    "field-mandatory": "Поље гробног места је обавезно поље",
+    "row-mandatory": "Ред гробног места је обавезно поље",
+    "capacity-mandatory": "Капацитет гробног места је обавезно поље",
+    "latitude-mandatory": "Географска ширина гробног места је обавезно поље",
+    "longitude-mandatory": "Географска дужина гробног места је обавезно поље",
+    "contract-expiration-mandatory": "Датум истека уговора је обавезно поље",
+    "enter-number": "Унесите број гробног места",
+    "enter-field": "Унесите поље гробног места",
+    "enter-row": "Унесите ред гробног места",
+    "enter-capacity": "Унесите капацитет гробног места",
+    "enter-latitude": "Унесите географску ширину гробног места",
+    "enter-longitude": "Унесите географску дужину гробног места",
+    "enter-contract-expiration": "Унесите датум истека уговора"
+  },
+  "grave-type": {
+    "title": "Типови гробних места",
+    "create-new": "Направите нову врсту гроба",
+    "edit": "Уреди врсту гроба"
+  },
+  "grave-request": {
+    "title": "Захтев за гробно место",
+    "create-new": "Креирај нови захтев за гробно место"
+  },
+  "deceased": {
+    "title": "Покојник",
+    "create-new": "Креирај новог покојника",
+    "edit": "Уреди покојника"
+  },
+  "payer": {
+    "create-new": "Креирај новог платца",
+    "edit": "Уреди платца",
+    "active": "Платилац активан:"
+  },
+  "user": {
+    "create-new": "Направите новог корисника",
+    "edit": "Уреди корисника",
+    "management": "Корисници",
+    "delete-confirmation": "Да ли сте сигурни да желите да обришете овог корисника?"
+  },
+  "menu": {
+    "view-deceased": "Преглед покојника",
+    "search-deceased": "Претрага покојника",
+    "view-grave": "Преглед гробних места",
+    "grave-request": "Захтев за гробно место",
+    "cemeteries": "Гробља",
+    "user-management": "Корисници",
+    "grave-types": "Типови гробних места"
+  },
+  "tabs": {
+    "grave-data": "Подаци о гробном месту",
+    "deceased-list": "Листа покојника",
+    "payer-list": "Листа платилаца"
+  },
+  "search-deceased": {
+    "search": "Претрага",
+    "birth-year": "Година рођења",
+    "cemetery-selection": "Избор гробља",
+    "death-date-from": "Датум смрти од",
+    "death-date-to": "Датум смрти до",
+    "birth-date-from": "Датум рођења од",
+    "birth-date-to": "Датум рођења до",
+    "death-year-from": "Година смрти од",
+    "death-year-to": "Година смрти до"
+  },
+  "form": {
+    "name": "Име",
+    "surname": "Презиме",
+    "email": "Имejл",
+    "password": "Лозинка",
+    "repeat-password": "Поновите лозинку",
+    "address": "Адреса",
+    "phone": "Телефон",
+    "jmbg": "ЈМБГ",
+    "name-required": "Име је обавезно",
+    "surname-required": "Презиме је обавезно",
+    "email-required": "Имejл је обавезан",
+    "phone-required": "Број телефона је обавезан"
+  },
+  "location": {
+    "lat": "Географска ширина",
+    "lon": "Географска дужина",
+    "zoom": "Зум",
+    "lat-required": "Географска ширина је обавезна",
+    "lon-required": "Географска дужина је обавезна",
+    "zoom-required": "Зум је обавезан"
+  },
+  "dates": {
+    "birth": "Датум рођења",
+    "death": "Датум смрти",
+    "created-at": "Поднет",
+    "token": "Токен"
+  },
+  "status": {
+    "active": "Активан",
+    "status": "Статус",
+    "requested": "Резервисано",
+    "accepted": "Прихваћено",
+    "denied": "Одбијено",
+    "free": "СЛОБОДНО",
+    "occupied": "ЗАУЗЕТО",
+    "verified": "Верификован"
+  },
+  "roles": {
+    "role": "Улога",
+    "administrator": "Администратор",
+    "officer": "Службеник",
+    "visitor": "Посетилац"
+  },
+  "actions": {
+    "send": "Пошаљи",
+    "back": "Назад",
+    "edit": "Уреди",
+    "delete": "Избриши",
+    "submit": "Потврди",
+    "logout": "Одјави се",
+    "zoom": "Зум",
+    "delete-confirmation": "Да ли сте сигурни да желите да обришете ред?"
+  },
+  "common": {
+    "details": "Детаљи",
+    "description": "Опис",
+    "id": "ИД",
+    "yes": "ДА",
+    "no": "НЕ",
+    "avatar": "Аватар"
+  },
+  "auth": {
+    "remember-me": "Запамти",
+    "sign-in": "Улогујте се",
+    "sign-up": "Региструјте се",
+    "forgot-password": "Заборављена лозинка?",
+    "no-account": "Немате налог? Региструјте се"
+  },
+  "server": {
+    "err-user-exists": "Корисник већ постоји",
+    "err-confirm-password": "Лозинка није потврђена",
+    "err-invalid-credentials": "Погрешна лозинка или имejл",
+    "err-username-mandatory": "Корисничко иme је обавезно",
+    "err-password-mandatory": "Лозинка је обавезна",
+    "err-user-not-verified": "Корисник није верификован",
+    "err-cannot-add-user": "Није могуће креирати корисника",
+    "err-cannot-reset-password": "Није могуће ресетовати лозинку"
+  }
+}
