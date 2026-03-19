@@ -36,6 +36,11 @@ const graveSchema = mongoose.Schema({
   },
 });
 
+graveSchema.index({ cemetery: 1 });
+graveSchema.index({ graveType: 1 });
+graveSchema.index({ status: 1 });
+graveSchema.index({ cemetery: 1, status: 1 });
+
 const Grave = mongoose.model("Grave", graveSchema);
 
 export default Grave;

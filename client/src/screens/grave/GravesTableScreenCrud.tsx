@@ -27,9 +27,10 @@ import { t } from "i18next";
 import {
   useCreateRow,
   useDeleteRow,
-  useGetRows,
   useUpdateRow,
 } from "../../hooks/useCrudHooks";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { GraveData as CrudTableType } from "../../interfaces/GraveIntefaces";
 import { dateFormatter } from "../../utils/dateFormatter";
 import {
@@ -51,9 +52,8 @@ import { Cemetery } from "../../interfaces/CemeteryInterfaces";
 import { FREE, OCCUPIED } from "../../utils/constant";
 
 // Defines the name of the react query
-const queryFunction = "graves-all";
+const queryFunction = "graves-paginated";
 // Defines CRUD paths
-const getPath = "/api/graves/all";
 const createPath = "/api/graves/addgraverequest";
 const updatePath = "/api/graves/updategrave";
 const deletePath = "/api/graves/single";
@@ -64,6 +64,8 @@ const GravesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
+  const queryClient = useQueryClient();
   const graveTypes: GraveType[] | null = useSelector(selectAllGraveTypes);
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
   const { t, i18n } = useTranslation();
@@ -198,28 +200,45 @@ const GravesTableScreenCrud = () => {
     },
   ];
 
-  // call READ hook
+  // call READ hook (server-side paginated)
   const {
-    data: fetchedData = [],
+    data: pagedResult,
     isError: isLoadingDataError,
     error: loadingDataError,
     isFetching: isFetchingData,
     isLoading: isLoadingData,
-  } = useGetRows(queryFunction, getPath);
+  } = useQuery({
+    queryKey: [queryFunction, pagination.pageIndex, pagination.pageSize],
+    queryFn: async () => {
+      const start = pagination.pageIndex * pagination.pageSize;
+      const response = await axios.get(
+        `/api/graves/paginate?start=${start}&size=${pagination.pageSize}`
+      );
+      return response.data;
+    },
+    refetchOnWindowFocus: false,
+  });
+  const fetchedData = pagedResult?.data ?? [];
+  const totalRowCount = pagedResult?.totalItems ?? 0;
   // call UPDATE hook
   const {
     mutateAsync: updateRow,
     isPending: isUpdatingRow,
     isError: isUpdatingDataError,
     error: updatingDataError,
-  } = useUpdateRow(queryFunction, updatePath);
+  } = useUpdateRow(queryFunction, updatePath, () =>
+    queryClient.invalidateQueries({ queryKey: [queryFunction] })
+  );
   // call DELETE hook
   const {
     mutateAsync: deleteRow,
     isPending: isDeletingRow,
     isError: isUDeletingDataError,
     error: deletingDataError,
-  } = useDeleteRow(queryFunction, deletePath);
+  } = useDeleteRow(queryFunction, deletePath, () =>
+    queryClient.invalidateQueries({ queryKey: [queryFunction] })
+  );
+
 
   function errorOccuried() {
     return isLoadingDataError || isUpdatingDataError || isUDeletingDataError;
@@ -272,6 +291,9 @@ const GravesTableScreenCrud = () => {
     enableColumnResizing: true,
     layoutMode: "semantic",
     initialState: { columnVisibility: { _id: false } }, //hide _id column by default
+    manualPagination: true,
+    rowCount: totalRowCount,
+    onPaginationChange: setPagination,
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
@@ -345,6 +367,7 @@ const GravesTableScreenCrud = () => {
       </Button>
     ),
     state: {
+      pagination,
       isLoading: isLoadingData,
       isSaving: isUpdatingRow || isDeletingRow,
       showAlertBanner: errorOccuried(),

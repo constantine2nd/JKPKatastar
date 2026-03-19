@@ -158,6 +158,70 @@ const getGraves = async (req, res, next) => {
   }
 };
 
+const getGravesPaginated = async (req, res, next) => {
+  try {
+    const start = parseInt(req.query.start) || 0;
+    const size = parseInt(req.query.size) || 20;
+
+    const [data, totalItems] = await Promise.all([
+      Grave.aggregate([
+        {
+          $lookup: {
+            from: "deceaseds",
+            let: { graveId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$grave", "$$graveId"] } } },
+              { $count: "count" },
+            ],
+            as: "deceasedCount",
+          },
+        },
+        {
+          $lookup: {
+            from: "gravetypes",
+            localField: "graveType",
+            foreignField: "_id",
+            as: "graveType",
+          },
+        },
+        { $unwind: "$graveType" },
+        {
+          $lookup: {
+            from: "cemeteries",
+            localField: "cemetery",
+            foreignField: "_id",
+            as: "cemetery",
+          },
+        },
+        { $unwind: "$cemetery" },
+        {
+          $project: {
+            _id: 1,
+            number: 1,
+            row: 1,
+            field: 1,
+            capacity: 1,
+            contractTo: 1,
+            LAT: 1,
+            LON: 1,
+            numberOfDeceaseds: { $ifNull: [{ $arrayElemAt: ["$deceasedCount.count", 0] }, 0] },
+            graveType: 1,
+            status: 1,
+            cemetery: 1,
+          },
+        },
+        { $skip: start },
+        { $limit: size },
+      ]),
+      Grave.countDocuments(),
+    ]);
+
+    res.json({ data, totalItems });
+  } catch (error) {
+    return res.json({ message: "Could not get data" });
+  }
+};
+
 const getGravesForCemetery = async (req, res, next) => {
   console.log("getGravesForCemetery");
   console.log(req.params.id);
@@ -362,6 +426,7 @@ const updateGrave = async (req, res) => {
 export {
   saveGrave,
   getGraves,
+  getGravesPaginated,
   getSingleGrave,
   deleteSingleGrave,
   getGravesForCemetery,

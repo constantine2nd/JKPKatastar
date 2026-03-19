@@ -19,6 +19,11 @@ const deceasedSchema = mongoose.Schema({
   },
 });
 
+deceasedSchema.index({ grave: 1 });
+deceasedSchema.index({ name: 1 });
+deceasedSchema.index({ surname: 1 });
+deceasedSchema.index({ dateDeath: -1 });
+
 const Deceased = mongoose.model("Deceased", deceasedSchema);
 
 export default Deceased;

@@ -2,6 +2,7 @@ import express from "express";
 import {
   saveGrave,
   getGraves,
+  getGravesPaginated,
   getSingleGrave,
   deleteSingleGrave,
   getGravesForCemetery,
@@ -12,6 +13,7 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+router.route("/paginate").get(getGravesPaginated);
 router.route("/all").get(getGraves);
 router.route("/all/:id").get(getGravesForCemetery);
 router.route("/single/:id").get(getSingleGrave);

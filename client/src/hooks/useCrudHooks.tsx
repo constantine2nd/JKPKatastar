@@ -66,7 +66,7 @@ export const useGetRows = (queryKey: string, path: string) => {
 };
 
 // UPDATE hook (put a row in api)
-export const useUpdateRow = (queryKey: string, path: string) => {
+export const useUpdateRow = (queryKey: string, path: string, onSettled?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (row: any) => {
@@ -84,11 +84,10 @@ export const useUpdateRow = (queryKey: string, path: string) => {
       }
     },
     //client side optimistic update
-    onMutate: (newRowInfo: any) => {
+    onMutate: onSettled ? undefined : (newRowInfo: any) => {
       queryClient.setQueryData([queryKey], (prevRows: any) =>
         prevRows?.map((row: any) => {
           if (row._id === newRowInfo._id) {
-            // Update the changed row
             for (const [key, value] of Object.entries(newRowInfo)) {
               _.set(row, key, value);
             }
@@ -97,12 +96,12 @@ export const useUpdateRow = (queryKey: string, path: string) => {
         })
       );
     },
-    // onSettled: () => queryClient.refetchQueries({ queryKey: [queryKey] }), //refetch users after mutation, disabled for demo
+    onSettled: onSettled,
   });
 };
 
 // DELETE hook (delete a row in api)
-export const useDeleteRow = (queryKey: string, path: string) => {
+export const useDeleteRow = (queryKey: string, path: string, onSettled?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
@@ -114,12 +113,11 @@ export const useDeleteRow = (queryKey: string, path: string) => {
         return composeErrorMessageIntoPromise(error);
       }
     },
-    // client side optimistic update
-    onMutate: (id: string) => {
+    onMutate: onSettled ? undefined : (id: string) => {
       queryClient.setQueryData([queryKey], (prevRows: any) =>
         prevRows?.filter((row: any) => row._id !== id)
       );
     },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users-all'] }), //refetch users after mutation, disabled for demo
+    onSettled: onSettled,
   });
 };
