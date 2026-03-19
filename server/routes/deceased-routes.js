@@ -16,8 +16,8 @@ router.route("/").get(getDeceased);
 router.route("/paginate").get(getDeceasedPaginate);
 router.route("/search").get(getDeceasedSearch);
 router.route("/all/:id").get(getDeceasedForGrave);
-router.route("/adddeceased/:id").post(saveDeceased);
-router.route("/updatedeceased").put(updateDeceased);
-router.route("/:id").delete(deleteSingleDeceased);
+router.route("/adddeceased/:id").post(protect, saveDeceased);
+router.route("/updatedeceased").put(protect, updateDeceased);
+router.route("/:id").delete(protect, deleteSingleDeceased);
 
 export default router;
