@@ -60,7 +60,7 @@ const UsersTableScreenCrud = () => {
   const columns: MRT_ColumnDef<User>[] = [
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,

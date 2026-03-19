@@ -42,11 +42,11 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
     },
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
     },
     {
       accessorKey: "surname",
-      header: t("surname"),
+      header: t("form.surname"),
     },
     {
       accessorKey: "cemetery",

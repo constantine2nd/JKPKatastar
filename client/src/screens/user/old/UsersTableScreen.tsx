@@ -31,7 +31,7 @@ const UsersTableScreen: React.FC = () => {
     },
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
     },
     {
       accessorKey: "email",

@@ -75,7 +75,7 @@ const GraveRequestTableScreenCrud = () => {
     },
     {
       accessorKey: "surname",
-      header: t("surname"),
+      header: t("form.surname"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,

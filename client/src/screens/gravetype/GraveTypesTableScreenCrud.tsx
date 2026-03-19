@@ -48,7 +48,7 @@ const GraveTypesTableScreenCrud = () => {
   const columns: MRT_ColumnDef<GraveType>[] = [
     {
       accessorKey: "name",
-      header: t("name"),
+      header: t("form.name"),
       muiEditTextFieldProps: {
         type: "text",
         required: true,
