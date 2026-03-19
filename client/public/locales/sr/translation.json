@@ -161,6 +161,12 @@
     "no": "NE",
     "avatar": "Avatar"
   },
+  "home": {
+    "num-of-graves": "Broj grobnih mesta",
+    "num-of-free": "Broj slobodnih grobnih mesta",
+    "num-of-occupied": "Broj zauzetih grobnih mesta",
+    "total": "Ukupno"
+  },
   "auth": {
     "remember-me": "Zapamti",
     "sign-in": "Ulogujte se",

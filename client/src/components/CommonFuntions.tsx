@@ -78,10 +78,10 @@ const statusOfGrave = (status: string) => {
   let result = null;
   if (status === FREE) {
     // Only FREE
-    result = <Chip label={t(FREE)} color="success" />;
+    result = <Chip label={t("status.free")} color="success" />;
   } else {
     // OCCUPIED or without any value
-    result = <Chip label={t(OCCUPIED)} color="warning" />;
+    result = <Chip label={t("status.occupied")} color="warning" />;
   }
   return result;
 };

@@ -31,6 +31,7 @@ import {
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { getSelectedCemetery } from "../utils/cemeterySelector";
+import { useTranslation } from "react-i18next";
 
 const mapStyles = {
   width: "70%",
@@ -60,6 +61,7 @@ const iconBaseFull =
   "http://maps.google.com/mapfiles/kml/paddle/red-circle-lv.png";
 
 const HomeScreen = (props) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const graves = useSelector(selectAllGraves);
   const graveTypes = useSelector(selectAllGraveTypes);
@@ -184,10 +186,10 @@ const HomeScreen = (props) => {
         <Table sx={{ width: "50%", margin: "10px" }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Grave type</TableCell>
-              <TableCell align="right">Num of graves</TableCell>
-              <TableCell align="right">Num of free graves</TableCell>
-              <TableCell align="right">Num of occupied graves</TableCell>
+              <TableCell>{t("grave-type.title")}</TableCell>
+              <TableCell align="right">{t("home.num-of-graves")}</TableCell>
+              <TableCell align="right">{t("home.num-of-free")}</TableCell>
+              <TableCell align="right">{t("home.num-of-occupied")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -215,7 +217,7 @@ const HomeScreen = (props) => {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                Ukupno:
+                {t("home.total")}
               </TableCell>
               <TableCell align="right">{graves.length}</TableCell>
               <TableCell align="right">

@@ -74,8 +74,8 @@ const GravesTableScreenCrud = () => {
     dispatch(fetchCemeteries());
   }, []);
   const statuses = [
-    { label: t(FREE), value: FREE },
-    { label: t(OCCUPIED), value: OCCUPIED },
+    { label: t("status.free"), value: FREE },
+    { label: t("status.occupied"), value: OCCUPIED },
   ];
 
   const myGraveTypes = graveTypes.map((item) => {

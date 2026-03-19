@@ -161,6 +161,12 @@
     "no": "NEM",
     "avatar": "Profilkép"
   },
+  "home": {
+    "num-of-graves": "Sírhelyek száma",
+    "num-of-free": "Szabad sírhelyek száma",
+    "num-of-occupied": "Foglalt sírhelyek száma",
+    "total": "Összesen"
+  },
   "auth": {
     "remember-me": "Emlékezzen rám",
     "sign-in": "Bejelentkezés",

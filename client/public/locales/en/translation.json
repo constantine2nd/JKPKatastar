@@ -161,6 +161,12 @@
     "no": "NO",
     "avatar": "Avatar"
   },
+  "home": {
+    "num-of-graves": "Num of graves",
+    "num-of-free": "Num of free graves",
+    "num-of-occupied": "Num of occupied graves",
+    "total": "Total"
+  },
   "auth": {
     "remember-me": "Remember me",
     "sign-in": "Sign in",
