@@ -60,6 +60,7 @@ const Header = () => {
       link: "grave-types-crud",
       roles: [OFFICER, ADMINISTRATOR],
     },
+    { item: t("menu.manual"), link: "manual", roles: [] },
   ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

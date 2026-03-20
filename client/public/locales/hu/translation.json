@@ -81,7 +81,8 @@
     "grave-request": "Sírhely kérelem",
     "cemeteries": "Temetők",
     "user-management": "Felhasználókezelés",
-    "grave-types": "Sírhely típusok"
+    "grave-types": "Sírhely típusok",
+    "manual": "Kézikönyv"
   },
   "tabs": {
     "grave-data": "Sírhely adatok",

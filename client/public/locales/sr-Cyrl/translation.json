@@ -81,7 +81,8 @@
     "grave-request": "Захтев за гробно место",
     "cemeteries": "Гробља",
     "user-management": "Корисници",
-    "grave-types": "Типови гробних места"
+    "grave-types": "Типови гробних места",
+    "manual": "Упутство"
   },
   "tabs": {
     "grave-data": "Подаци о гробном месту",

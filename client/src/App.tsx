@@ -19,6 +19,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { OFFICER, ADMINISTRATOR } from "./utils/constant.js";
 import CemeteriesTableScreenCrud from "./screens/CemeteriesTableScreenCrud";
 import DeceasedSearchScreen from "./screens/deceased/DeceasedSearchScreen";
 import GravesTableScreenCrudWithProviders from "./screens/grave/GravesTableScreenCrud";
@@ -36,6 +37,7 @@ import LoginScreenMUI from "./screens/user/LoginScreenMUI";
 import ResetPasswordInitiation from "./screens/user/ResetPasswordInitiationScreen";
 import ResetPassword from "./screens/user/ResetPasswordScreen";
 import AddGraveScreenMUI from "./screens/grave/AddGraveScreenMUI";
+import ManualScreen from "./screens/ManualScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -120,22 +122,20 @@ function App() {
                 <Route path="/test2" element={<Test2Screen />} />
                 <Route path="/test3" element={<Test3Screen />} />
                 <Route path="/add-user" element={<AddUserScreenMUI />} />
+                <Route path="/manual" element={<ManualScreen />} />
 
-                {/* Routes which require a logged in user START OF SECTION */}
+                {/* Officer+ routes */}
                 <Route
                   element={
                     <ProtectedRoute
-                      isAuthenticated={false}
-                      redirectPath={"/login-user"}
+                      roles={[OFFICER, ADMINISTRATOR]}
+                      redirectPath="/login-user"
                     />
                   }
                 >
                   <Route path="/add-grave" element={<AddGraveScreenMUI />} />
-                  <Route path="/users-table" element={<UsersTableScreen />} />
-                  <Route
-                    path="/users-table-crud"
-                    element={<UsersTableScreenCrudWithProviders />}
-                  />
+                  <Route path="/add-deceased" element={<AddDeceasedScreen />} />
+                  <Route path="/add-payer" element={<AddPayerScreen />} />
                   <Route
                     path="/grave-types-table"
                     element={<GraveTypesTableScreen />}
@@ -148,15 +148,27 @@ function App() {
                     path="/cemeteries-table-crud"
                     element={<CemeteriesTableScreenCrud />}
                   />
-
                   <Route
                     path="/grave-requests-crud"
                     element={<GraveRequestTableScreenCrud />}
                   />
-                  <Route path="/add-deceased" element={<AddDeceasedScreen />} />
-                  <Route path="/add-payer" element={<AddPayerScreen />} />
                 </Route>
-                {/* Routes which require a logged in user END OF SECTION*/}
+
+                {/* Administrator-only routes */}
+                <Route
+                  element={
+                    <ProtectedRoute
+                      roles={[ADMINISTRATOR]}
+                      redirectPath="/login-user"
+                    />
+                  }
+                >
+                  <Route path="/users-table" element={<UsersTableScreen />} />
+                  <Route
+                    path="/users-table-crud"
+                    element={<UsersTableScreenCrudWithProviders />}
+                  />
+                </Route>
               </Routes>
             </main>
           </LocalizationProvider>

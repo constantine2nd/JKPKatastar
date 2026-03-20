@@ -4,14 +4,18 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
 
 type TProps = {
-  isAuthenticated?: boolean;
+  roles?: string[];
   redirectPath?: string;
 };
 
 export const ProtectedRoute: FC<TProps> = ({
-  redirectPath = "/user-login",
+  roles,
+  redirectPath = "/login-user",
 }) => {
   const user = useSelector(selectUser);
 
-  return user ? <Outlet /> : <Navigate to={redirectPath} />;
+  if (!user) return <Navigate to={redirectPath} />;
+  if (roles && !roles.includes(user.role)) return <Navigate to="/" />;
+
+  return <Outlet />;
 };

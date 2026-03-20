@@ -8,16 +8,20 @@ import {
   getDeceasedForGrave,
   getDeceasedSearch,
 } from "../controllers/deceasedController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, requireRole } from "../middleware/authMiddleware.js";
+import { OFFICER, ADMINISTRATOR } from "../utils/constant.js";
 
 const router = express.Router();
 
+// Public reads
 router.route("/").get(getDeceased);
 router.route("/paginate").get(getDeceasedPaginate);
 router.route("/search").get(getDeceasedSearch);
 router.route("/all/:id").get(getDeceasedForGrave);
-router.route("/adddeceased/:id").post(protect, saveDeceased);
-router.route("/updatedeceased").put(protect, updateDeceased);
-router.route("/:id").delete(protect, deleteSingleDeceased);
+
+// Officer+ writes
+router.route("/adddeceased/:id").post(protect, requireRole(OFFICER, ADMINISTRATOR), saveDeceased);
+router.route("/updatedeceased").put(protect, requireRole(OFFICER, ADMINISTRATOR), updateDeceased);
+router.route("/:id").delete(protect, requireRole(OFFICER, ADMINISTRATOR), deleteSingleDeceased);
 
 export default router;

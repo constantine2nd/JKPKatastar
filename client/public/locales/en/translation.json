@@ -81,7 +81,8 @@
     "grave-request": "Grave Request",
     "cemeteries": "Cemeteries",
     "user-management": "User Management",
-    "grave-types": "Grave Types"
+    "grave-types": "Grave Types",
+    "manual": "Manual"
   },
   "tabs": {
     "grave-data": "Grave Data",

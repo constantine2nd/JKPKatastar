@@ -81,7 +81,8 @@
     "grave-request": "Zahtev za grobno mesto",
     "cemeteries": "Groblja",
     "user-management": "Korisnici",
-    "grave-types": "Tipovi grobnih mesta"
+    "grave-types": "Tipovi grobnih mesta",
+    "manual": "Uputstvo"
   },
   "tabs": {
     "grave-data": "Podaci o grobnom mestu",

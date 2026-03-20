@@ -1,41 +1,39 @@
 import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 
-const protect = (req, res, next) => {
-  let token;
-  console.log("Protect");
-
+const protect = async (req, res, next) => {
   if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
+    !req.headers.authorization ||
+    !req.headers.authorization.startsWith("Bearer")
   ) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.status(401).send({ message: "Not logged in. No authorization token." });
+  }
 
-      console.log("Decoded TOKEN", decoded);
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      if (!decoded) {
-        console.log(err);
-        console.log("ERROR");
-        res.status(401).send({ message: "You are not loggged. Authorization token cannot be verified." });
-      } else {
-        console.log("DALJE");
-        //  console.log('userName: ', decoded?.userName)
-        req.userId = decoded?.id;
-        next();
-      }
-    } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
-        console.log("Authorization token Expired");
-        res.status(401).send({ message: "You are not loggged. Token Expired." });
-      }
-      res.status(401);
-      throw new Error("Not authorized, token failed");
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(401).send({ message: "User not found." });
     }
-  } else {
-    console.log("There is no authorization token.");
-    res.status(401).send({ message: "You are not loggged. There is no authorization token." });
+
+    req.userId = user._id;
+    req.userRole = user.role;
+    next();
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).send({ message: "Token expired." });
+    }
+    return res.status(401).send({ message: "Not authorized, token failed." });
   }
 };
 
-export { protect };
+const requireRole = (...roles) => (req, res, next) => {
+  if (!roles.includes(req.userRole)) {
+    return res.status(403).send({ message: "Forbidden: insufficient permissions." });
+  }
+  next();
+};
+
+export { protect, requireRole };
