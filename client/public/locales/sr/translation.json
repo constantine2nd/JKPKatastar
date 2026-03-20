@@ -83,7 +83,10 @@
     "user-management": "Korisnici",
     "grave-types": "Tipovi grobnih mesta",
     "manual": "Uputstvo",
-    "import": "Uvoz podataka"
+    "import": "Uvoz podataka",
+    "group-visitor": "Posetilac",
+    "group-officer": "Službenik",
+    "group-admin": "Administrator"
   },
   "import": {
     "title": "Čarobnjak za uvoz",

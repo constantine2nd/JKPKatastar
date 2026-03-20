@@ -83,7 +83,10 @@
     "user-management": "Felhasználókezelés",
     "grave-types": "Sírhely típusok",
     "manual": "Kézikönyv",
-    "import": "Adatimport"
+    "import": "Adatimport",
+    "group-visitor": "Látogató",
+    "group-officer": "Tisztviselő",
+    "group-admin": "Adminisztrátor"
   },
   "import": {
     "title": "Importálási varázsló",
