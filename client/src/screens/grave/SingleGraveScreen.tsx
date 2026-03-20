@@ -178,7 +178,7 @@ const SingleGraveScreen: React.FC = () => {
                 </Col>
                 <Col>
                   <h3>
-                    {t("grave.capacity")}: {grave.graveType.capacity}
+                    {t("grave.capacity")}: {grave.graveType?.capacity}
                   </h3>
                 </Col>
               </Row>
@@ -231,7 +231,7 @@ const SingleGraveScreen: React.FC = () => {
         {grave && value === 1 && (
           <DeceasedTableScreenCrud
             graveId={grave._id}
-            graveCapcity={Number(grave.graveType.capacity)}
+            graveCapcity={Number(grave.graveType?.capacity)}
           />
         )}
         {grave && value === 2 && <PayersTableScreenCrud graveId={grave._id} />}
