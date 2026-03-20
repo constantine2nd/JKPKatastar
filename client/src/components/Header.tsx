@@ -61,6 +61,7 @@ const Header = () => {
       roles: [OFFICER, ADMINISTRATOR],
     },
     { item: t("menu.manual"), link: "manual", roles: [] },
+    { item: t("menu.import"), link: "import", roles: [ADMINISTRATOR] },
   ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

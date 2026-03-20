@@ -82,7 +82,32 @@
     "cemeteries": "Groblja",
     "user-management": "Korisnici",
     "grave-types": "Tipovi grobnih mesta",
-    "manual": "Uputstvo"
+    "manual": "Uputstvo",
+    "import": "Uvoz podataka"
+  },
+  "import": {
+    "title": "Čarobnjak za uvoz",
+    "step-collection": "Izbor kolekcije",
+    "step-upload": "Učitavanje fajla",
+    "step-result": "Rezultat",
+    "collection-label": "Kolekcija",
+    "collection-cemeteries": "Groblja",
+    "collection-gravetypes": "Tipovi grobnih mesta",
+    "collection-graves": "Grobna mesta",
+    "collection-deceaseds": "Pokojnici",
+    "collection-payers": "Platioci",
+    "collection-users": "Korisnici",
+    "drop-hint": "Izaberite JSON fajl izvezen iz MongoDB Compass",
+    "preview-title": "Pregled (prvih 10 zapisa)",
+    "total-records": "Ukupan broj zapisa u fajlu",
+    "btn-next": "Dalje",
+    "btn-back": "Nazad",
+    "btn-import": "Uvezi",
+    "btn-new": "Novi uvoz",
+    "importing": "Uvoz u toku...",
+    "success": "Uspešno uvezeno {{inserted}} od {{total}} zapisa.",
+    "partial": "Uvezeno {{inserted}} od {{total}} zapisa. {{errors}} duplikata ili grešaka preskočeno.",
+    "error": "Uvoz nije uspeo."
   },
   "tabs": {
     "grave-data": "Podaci o grobnom mestu",

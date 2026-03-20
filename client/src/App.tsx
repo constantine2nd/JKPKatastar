@@ -38,6 +38,7 @@ import ResetPasswordInitiation from "./screens/user/ResetPasswordInitiationScree
 import ResetPassword from "./screens/user/ResetPasswordScreen";
 import AddGraveScreenMUI from "./screens/grave/AddGraveScreenMUI";
 import ManualScreen from "./screens/ManualScreen";
+import ImportWizardScreen from "./screens/ImportWizardScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -168,6 +169,7 @@ function App() {
                     path="/users-table-crud"
                     element={<UsersTableScreenCrudWithProviders />}
                   />
+                  <Route path="/import" element={<ImportWizardScreen />} />
                 </Route>
               </Routes>
             </main>

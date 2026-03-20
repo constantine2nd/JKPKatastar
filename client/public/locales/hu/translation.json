@@ -82,7 +82,32 @@
     "cemeteries": "Temetők",
     "user-management": "Felhasználókezelés",
     "grave-types": "Sírhely típusok",
-    "manual": "Kézikönyv"
+    "manual": "Kézikönyv",
+    "import": "Adatimport"
+  },
+  "import": {
+    "title": "Importálási varázsló",
+    "step-collection": "Gyűjtemény kiválasztása",
+    "step-upload": "Fájl feltöltése",
+    "step-result": "Eredmény",
+    "collection-label": "Gyűjtemény",
+    "collection-cemeteries": "Temetők",
+    "collection-gravetypes": "Sírhely típusok",
+    "collection-graves": "Sírhelyek",
+    "collection-deceaseds": "Elhunytak",
+    "collection-payers": "Fizetők",
+    "collection-users": "Felhasználók",
+    "drop-hint": "Válasszon egy MongoDB Compass-ból exportált JSON fájlt",
+    "preview-title": "Előnézet (első 10 rekord)",
+    "total-records": "Rekordok száma a fájlban",
+    "btn-next": "Következő",
+    "btn-back": "Vissza",
+    "btn-import": "Importálás",
+    "btn-new": "Új import",
+    "importing": "Importálás folyamatban...",
+    "success": "Sikeresen importálva {{inserted}} / {{total}} rekord.",
+    "partial": "Importálva {{inserted}} / {{total}} rekord. {{errors}} duplikátum vagy hiba kihagyva.",
+    "error": "Az importálás sikertelen."
   },
   "tabs": {
     "grave-data": "Sírhely adatok",

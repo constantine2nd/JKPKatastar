@@ -82,7 +82,32 @@
     "cemeteries": "Гробља",
     "user-management": "Корисници",
     "grave-types": "Типови гробних места",
-    "manual": "Упутство"
+    "manual": "Упутство",
+    "import": "Увоз података"
+  },
+  "import": {
+    "title": "Чаробњак за увоз",
+    "step-collection": "Избор колекције",
+    "step-upload": "Учитавање фајла",
+    "step-result": "Резултат",
+    "collection-label": "Колекција",
+    "collection-cemeteries": "Гробља",
+    "collection-gravetypes": "Типови гробних места",
+    "collection-graves": "Гробна места",
+    "collection-deceaseds": "Покојници",
+    "collection-payers": "Платиоци",
+    "collection-users": "Корисници",
+    "drop-hint": "Изаберите JSON фајл извезен из MongoDB Compass",
+    "preview-title": "Преглед (првих 10 записа)",
+    "total-records": "Укупан број записа у фајлу",
+    "btn-next": "Даље",
+    "btn-back": "Назад",
+    "btn-import": "Увези",
+    "btn-new": "Нови увоз",
+    "importing": "Увоз у току...",
+    "success": "Успешно увезено {{inserted}} од {{total}} записа.",
+    "partial": "Увезено {{inserted}} од {{total}} записа. {{errors}} дупликата или грешака прескочено.",
+    "error": "Увоз није успео."
   },
   "tabs": {
     "grave-data": "Подаци о гробном месту",

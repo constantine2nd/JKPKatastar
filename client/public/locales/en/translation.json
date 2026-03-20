@@ -82,7 +82,32 @@
     "cemeteries": "Cemeteries",
     "user-management": "User Management",
     "grave-types": "Grave Types",
-    "manual": "Manual"
+    "manual": "Manual",
+    "import": "Import"
+  },
+  "import": {
+    "title": "Import Wizard",
+    "step-collection": "Select collection",
+    "step-upload": "Upload file",
+    "step-result": "Result",
+    "collection-label": "Collection",
+    "collection-cemeteries": "Cemeteries",
+    "collection-gravetypes": "Grave Types",
+    "collection-graves": "Graves",
+    "collection-deceaseds": "Deceased",
+    "collection-payers": "Payers",
+    "collection-users": "Users",
+    "drop-hint": "Select a JSON file exported from MongoDB Compass",
+    "preview-title": "Preview (first 10 records)",
+    "total-records": "Total records in file",
+    "btn-next": "Next",
+    "btn-back": "Back",
+    "btn-import": "Import",
+    "btn-new": "New import",
+    "importing": "Importing...",
+    "success": "Successfully imported {{inserted}} of {{total}} records.",
+    "partial": "Imported {{inserted}} of {{total}} records. {{errors}} duplicates or errors skipped.",
+    "error": "Import failed."
   },
   "tabs": {
     "grave-data": "Grave Data",
