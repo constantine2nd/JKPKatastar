@@ -39,6 +39,7 @@ import ResetPassword from "./screens/user/ResetPasswordScreen";
 import AddGraveScreenMUI from "./screens/grave/AddGraveScreenMUI";
 import ManualScreen from "./screens/ManualScreen";
 import ImportWizardScreen from "./screens/ImportWizardScreen";
+import ExportWizardScreen from "./screens/ExportWizardScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -178,6 +179,7 @@ function App() {
                   }
                 >
                   <Route path="/import" element={<ImportWizardScreen />} />
+                  <Route path="/export" element={<ExportWizardScreen />} />
                 </Route>
               </Routes>
             </main>

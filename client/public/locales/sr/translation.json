@@ -84,6 +84,7 @@
     "grave-types": "Tipovi grobnih mesta",
     "manual": "Uputstvo",
     "import": "Uvoz podataka",
+    "export": "Izvoz podataka",
     "group-visitor": "Posetilac",
     "group-officer": "Službenik",
     "group-admin": "Administrator",
@@ -112,6 +113,13 @@
     "success": "Uspešno uvezeno {{inserted}} od {{total}} zapisa.",
     "partial": "Uvezeno {{inserted}} od {{total}} zapisa. {{errors}} duplikata ili grešaka preskočeno.",
     "error": "Uvoz nije uspeo."
+  },
+  "export": {
+    "title": "Izvoz podataka",
+    "description": "Izaberite kolekciju i preuzmite sve zapise kao JSON fajl spreman za ponovni uvoz.",
+    "btn-export": "Izvezi",
+    "exporting": "Izvoz u toku...",
+    "error": "Izvoz nije uspeo."
   },
   "tabs": {
     "grave-data": "Podaci o grobnom mestu",

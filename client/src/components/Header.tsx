@@ -80,6 +80,7 @@ const Header = () => {
       minRole: MAINTAINER,
       items: [
         { item: t("menu.import"), link: "import" },
+        { item: t("menu.export"), link: "export" },
       ],
     },
   ];

@@ -84,6 +84,7 @@
     "grave-types": "Grave Types",
     "manual": "Manual",
     "import": "Import",
+    "export": "Export",
     "group-visitor": "Visitor",
     "group-officer": "Officer",
     "group-admin": "Administrator",
@@ -112,6 +113,13 @@
     "success": "Successfully imported {{inserted}} of {{total}} records.",
     "partial": "Imported {{inserted}} of {{total}} records. {{errors}} duplicates or errors skipped.",
     "error": "Import failed."
+  },
+  "export": {
+    "title": "Data Export",
+    "description": "Select a collection and download all records as a JSON file ready for re-import.",
+    "btn-export": "Export",
+    "exporting": "Exporting...",
+    "error": "Export failed."
   },
   "tabs": {
     "grave-data": "Grave Data",

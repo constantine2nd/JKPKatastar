@@ -84,6 +84,7 @@
     "grave-types": "Sírhely típusok",
     "manual": "Kézikönyv",
     "import": "Adatimport",
+    "export": "Adatexport",
     "group-visitor": "Látogató",
     "group-officer": "Tisztviselő",
     "group-admin": "Adminisztrátor",
@@ -112,6 +113,13 @@
     "success": "Sikeresen importálva {{inserted}} / {{total}} rekord.",
     "partial": "Importálva {{inserted}} / {{total}} rekord. {{errors}} duplikátum vagy hiba kihagyva.",
     "error": "Az importálás sikertelen."
+  },
+  "export": {
+    "title": "Adatexport",
+    "description": "Válasszon gyűjteményt, és töltse le az összes rekordot JSON fájlként, amely újraimportálásra kész.",
+    "btn-export": "Exportálás",
+    "exporting": "Exportálás folyamatban...",
+    "error": "Az exportálás sikertelen."
   },
   "tabs": {
     "grave-data": "Sírhely adatok",
