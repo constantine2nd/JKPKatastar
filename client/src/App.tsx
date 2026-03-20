@@ -95,10 +95,6 @@ function App() {
                   element={<GravesTableScreenCrudWithProviders />}
                 />
                 <Route
-                  path="/deceased-table"
-                  element={<DeceasedTableScreen />}
-                />
-                <Route
                   path="/grave-requests-stepper"
                   element={<GraveRequestStepperScreen />}
                 />
@@ -134,6 +130,7 @@ function App() {
                     />
                   }
                 >
+                  <Route path="/deceased-table" element={<DeceasedTableScreen />} />
                   <Route path="/add-grave" element={<AddGraveScreenMUI />} />
                   <Route path="/add-deceased" element={<AddDeceasedScreen />} />
                   <Route path="/add-payer" element={<AddPayerScreen />} />

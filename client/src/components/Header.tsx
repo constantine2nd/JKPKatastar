@@ -51,7 +51,6 @@ const Header = () => {
 
   // Flat public pages — visible to everyone
   const publicPages: PageItem[] = [
-    { item: t("menu.view-deceased"), link: "deceased-table" },
     { item: t("menu.search-deceased"), link: "search-deceased" },
     { item: t("menu.view-grave"), link: "graves-table-crud" },
     // Grave Request: flat button, any logged-in user
@@ -64,6 +63,7 @@ const Header = () => {
       label: t("menu.group-officer"),
       minRole: OFFICER,
       items: [
+        { item: t("menu.view-deceased"), link: "deceased-table" },
         { item: t("menu.cemeteries"), link: "cemeteries-table-crud" },
         { item: t("menu.grave-types"), link: "grave-types-crud" },
       ],
