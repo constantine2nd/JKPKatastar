@@ -1,0 +1,29 @@
+[
+  {
+    "_id": {
+      "$oid": "69bc80f4eb19a69d4c9e212e"
+    },
+    "name": "GM2+1",
+    "capacity": 3,
+    "description": "grobno mesto GM2+1",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc80f4eb19a69d4c9e212f"
+    },
+    "name": "GM9",
+    "capacity": 9,
+    "description": "grobno mesto GM9",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc80f4eb19a69d4c9e2130"
+    },
+    "name": "grobnica",
+    "capacity": 2,
+    "description": "grobnica",
+    "__v": 0
+  }
+]

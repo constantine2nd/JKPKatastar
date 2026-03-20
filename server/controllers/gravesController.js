@@ -165,6 +165,11 @@ const getGravesPaginated = async (req, res, next) => {
 
     const [data, totalItems] = await Promise.all([
       Grave.aggregate([
+        // Paginate FIRST — only 'size' documents go through the joins below
+        { $sort: { _id: 1 } },
+        { $skip: start },
+        { $limit: size },
+        // Deceased count — uses index on deceaseds.grave
         {
           $lookup: {
             from: "deceaseds",
@@ -176,20 +181,28 @@ const getGravesPaginated = async (req, res, next) => {
             as: "deceasedCount",
           },
         },
+        // GraveType — fetch only needed fields
         {
           $lookup: {
             from: "gravetypes",
-            localField: "graveType",
-            foreignField: "_id",
+            let: { graveTypeId: "$graveType" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_id", "$$graveTypeId"] } } },
+              { $project: { name: 1, capacity: 1 } },
+            ],
             as: "graveType",
           },
         },
         { $unwind: { path: "$graveType", preserveNullAndEmptyArrays: true } },
+        // Cemetery — fetch only needed fields
         {
           $lookup: {
             from: "cemeteries",
-            localField: "cemetery",
-            foreignField: "_id",
+            let: { cemeteryId: "$cemetery" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_id", "$$cemeteryId"] } } },
+              { $project: { name: 1 } },
+            ],
             as: "cemetery",
           },
         },
@@ -210,15 +223,13 @@ const getGravesPaginated = async (req, res, next) => {
             cemetery: 1,
           },
         },
-        { $skip: start },
-        { $limit: size },
       ]),
       Grave.countDocuments(),
     ]);
 
     res.json({ data, totalItems });
   } catch (error) {
-    return res.json({ message: "Could not get data" });
+    next(error);
   }
 };
 

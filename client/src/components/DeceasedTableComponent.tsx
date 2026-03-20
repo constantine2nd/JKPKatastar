@@ -2,58 +2,43 @@ import { Chip } from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
-  // createRow,
   type MRT_ColumnDef,
 } from "material-react-table";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGetRows } from "../hooks/useCrudHooks";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { Deceased } from "../interfaces/GraveIntefaces";
 import { dateCalendarFormatter, dateFormatter } from "../utils/dateFormatter";
 import { getLanguage } from "../utils/languageSelector";
 
-// Defines the name of the react query
-const queryFunction = "deceased-all";
-
 interface MyComponentProps {
   path: string;
   graveCapcity: number;
+  manualPagination?: boolean;
 }
 
 const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
-  console.log("PATH: ", props.path);
   const getPath = props.path;
+  const isPaginated = props.manualPagination ?? false;
 
   const { t, i18n } = useTranslation();
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
 
-  const dateOfBirth = (date: string) => {
-    return <Chip label={dateFormatter(date)} color="success" />;
-  };
+  // Reset to first page when the search path changes
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  }, [getPath]);
 
-  const dateDeath = (date: string) => {
-    return <Chip label={dateFormatter(date)} color="error" />;
-  };
+  const dateOfBirth = (date: string) => <Chip label={dateFormatter(date)} color="success" />;
+  const dateDeath = (date: string) => <Chip label={dateFormatter(date)} color="error" />;
 
   const columns: MRT_ColumnDef<Deceased>[] = [
+    { accessorKey: "_id", header: "Id", enableEditing: false },
+    { accessorKey: "name", header: t("form.name") },
+    { accessorKey: "surname", header: t("form.surname") },
+    { accessorKey: "cemetery", header: t("cemetery.title") },
     {
-      accessorKey: "_id",
-      header: "Id",
-      enableEditing: false,
-    },
-    {
-      accessorKey: "name",
-      header: t("form.name"),
-    },
-    {
-      accessorKey: "surname",
-      header: t("form.surname"),
-    },
-    {
-      accessorKey: "cemetery",
-      header: t("cemetery.title"),
-    },
-    {
-      //accessorKey: "dateBirth",
       accessorFn: (row) => dateCalendarFormatter(row.dateBirth),
       id: "dateBirth",
       header: t("dates.birth"),
@@ -75,53 +60,51 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
     },
   ];
 
-  // call READ hook
-  const {
-    data: fetchedData = [],
-    isError: isLoadingDataError,
-    error: loadingDataError,
-    isFetching: isFetchingData,
-    isLoading: isLoadingData,
-    refetch,
-  } = useGetRows(queryFunction, getPath);
+  const { data: rawData, isError, error, isFetching, isLoading } = useQuery({
+    queryKey: isPaginated
+      ? ["deceased-search", getPath, pagination.pageIndex, pagination.pageSize]
+      : ["deceased-all", getPath],
+    queryFn: async () => {
+      const url = isPaginated
+        ? `${getPath}&start=${pagination.pageIndex * pagination.pageSize}&size=${pagination.pageSize}`
+        : getPath;
+      const response = await axios.get(url);
+      return response.data;
+    },
+    enabled: !!getPath,
+    refetchOnWindowFocus: false,
+  });
 
-  useEffect(() => {
-    refetch(); // Pozivamo refetch svaki put kada se promeni path
-  }, [props.path, refetch]);
+  const fetchedData: Deceased[] = isPaginated
+    ? (rawData as any)?.data ?? []
+    : (rawData as any) ?? [];
 
-  function errorOccuried() {
-    return isLoadingDataError;
-  }
-
-  function errorMessage() {
-    return loadingDataError?.message;
-  }
+  const totalRowCount: number | undefined = isPaginated
+    ? (rawData as any)?.totalItems ?? 0
+    : undefined;
 
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
     enableColumnResizing: true,
     layoutMode: "grid",
-    initialState: { columnVisibility: { _id: false } }, //hide _id column by default
+    manualPagination: isPaginated,
+    rowCount: totalRowCount,
+    onPaginationChange: isPaginated ? setPagination : undefined,
+    initialState: { columnVisibility: { _id: false } },
     localization: getLanguage(i18n),
-    createDisplayMode: "modal", //default ('row', and 'custom' are also available)
-    editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
+    createDisplayMode: "modal",
+    editDisplayMode: "modal",
     getRowId: (row) => row._id,
-    muiToolbarAlertBannerProps: errorOccuried()
-      ? {
-          color: "error",
-          children: errorMessage(),
-        }
+    muiToolbarAlertBannerProps: isError
+      ? { color: "error", children: (error as any)?.message }
       : undefined,
-    muiTableContainerProps: {
-      sx: {
-        minHeight: "100px",
-      },
-    },
+    muiTableContainerProps: { sx: { minHeight: "100px" } },
     state: {
-      isLoading: isLoadingData,
-      showAlertBanner: errorOccuried(),
-      showProgressBars: isFetchingData,
+      isLoading,
+      showAlertBanner: isError,
+      showProgressBars: isFetching,
+      ...(isPaginated ? { pagination } : {}),
     },
   });
 

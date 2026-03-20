@@ -54,7 +54,6 @@ const DeceasedSearchScreen = () => {
 
   useEffect(() => {
     if (usersStatus === "idle") {
-      console.log("UPAO");
       dispatch(fetchCemeteries());
     }
   }, [usersStatus, dispatch]);
@@ -87,7 +86,6 @@ const DeceasedSearchScreen = () => {
     const queryParams = new URLSearchParams({
       ...obj,
     }).toString();
-    console.log(queryParams);
     setPath(`/api/deceased/search?${queryParams}`);
     setShowTable(true);
   };
@@ -242,7 +240,7 @@ const DeceasedSearchScreen = () => {
           </Button>
         </Box>
       </Container>
-      {showTable && <DeceasedTableComponent path={path} graveCapcity={6} />}
+      {showTable && <DeceasedTableComponent path={path} graveCapcity={6} manualPagination={true} />}
     </>
   );
 };

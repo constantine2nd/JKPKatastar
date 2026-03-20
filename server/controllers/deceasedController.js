@@ -193,139 +193,89 @@ const getDeceasedForGrave = async (req, res, next) => {
 };
 
 const getDeceasedSearch = async (req, res, next) => {
-  console.log(req.query);
-  const {
-    cemeteryIds,
-    name,
-    surname,
-    deathDateFrom,
-    deathDateTo,
-    birthDateFrom,
-    birthDateTo,
-  } = req.query;
-  /*  let deathDateFromObject = new Date(deathDateFrom);
-  let mongoDateFromDate =
-    deathDateFrom === "" ? "" : deathDateFromObject.toISOString();
-  let deathDateToObject = new Date(deathDateTo);
-  let mongoDateToDate =
-    deathDateTo === "" ? "" : deathDateToObject.toISOString(); */
+  const { cemeteryIds, name, surname, deathDateFrom, deathDateTo, birthDateFrom, birthDateTo } = req.query;
+  const start = parseInt(req.query.start) || 0;
+  const size = parseInt(req.query.size) || 20;
 
-  console.log(cemeteryIds);
-  const filterArray = [];
+  const cemeteryIdsArray = cemeteryIds
+    ? cemeteryIds.split(",").map((id) => new mongoose.Types.ObjectId(id))
+    : [];
 
-  if (name) {
-    filterArray.push({ name: { $regex: name, $options: "i" } });
-  }
-  if (surname) {
-    filterArray.push({ surname: { $regex: surname, $options: "i" } });
-  }
+  const pipeline = [];
 
-  /* if (birthYear) {
-    let startDateBirth = new Date(Number(birthYear), 0, 1);
-    let endDateBirth = new Date(Number(birthYear) + 1, 0, 1);
-    filterArray.push({
-      dateBirth: {
-        $gte: startDateBirth, // Veće ili jednako početnom datumu
-        $lt: endDateBirth, // Manje od kraja godine
-      },
-    });
-  } */
-  if (birthDateFrom) {
-    //let startDateDeath = new Date(Number(deathYearFrom), 0, 1);
-    filterArray.push({
-      dateBirth: {
-        $gte: new Date(birthDateFrom), // Veće ili jednako početnom datumu
-      },
-    });
+  // 1. Match on indexed deceased fields first — reduces documents before joins
+  const deceasedMatch = {};
+  if (name) deceasedMatch.name = { $regex: name, $options: "i" };
+  if (surname) deceasedMatch.surname = { $regex: surname, $options: "i" };
+  if (birthDateFrom || birthDateTo) {
+    deceasedMatch.dateBirth = {};
+    if (birthDateFrom) deceasedMatch.dateBirth.$gte = new Date(birthDateFrom);
+    if (birthDateTo) deceasedMatch.dateBirth.$lt = new Date(birthDateTo);
   }
-  if (birthDateTo) {
-    //let endDateDeath = new Date(Number(deathYearTo) + 1, 0, 1);
-    filterArray.push({
-      dateBirth: {
-        $lt: new Date(birthDateTo), // Veće ili jednako početnom datumu
-      },
-    });
+  if (deathDateFrom || deathDateTo) {
+    deceasedMatch.dateDeath = {};
+    if (deathDateFrom) deceasedMatch.dateDeath.$gte = new Date(deathDateFrom);
+    if (deathDateTo) deceasedMatch.dateDeath.$lt = new Date(deathDateTo);
+  }
+  if (Object.keys(deceasedMatch).length > 0) {
+    pipeline.push({ $match: deceasedMatch });
   }
 
-  if (deathDateFrom) {
-    //let startDateDeath = new Date(Number(deathYearFrom), 0, 1);
-    filterArray.push({
-      dateDeath: {
-        $gte: new Date(deathDateFrom), // Veće ili jednako početnom datumu
-      },
-    });
-  }
-  if (deathDateTo) {
-    //let endDateDeath = new Date(Number(deathYearTo) + 1, 0, 1);
-    filterArray.push({
-      dateDeath: {
-        $lt: new Date(deathDateTo), // Veće ili jednako početnom datumu
-      },
-    });
-  }
-  console.log(filterArray);
-
-  const aggregateArray = [];
-
-  if (filterArray.length !== 0) {
-    aggregateArray.push({
-      $match: {
-        $and: filterArray,
-      },
-    });
-  }
-  aggregateArray.push({
+  // 2. Lookup graves — apply cemetery filter inside the join
+  pipeline.push({
     $lookup: {
-      from: "graves", // Naziv kolekcije iz koje pridružujemo podatke
-      localField: "grave", // Lokalno polje u Deceased kolekciji
-      foreignField: "_id", // Polje u Grave kolekciji
-      as: "graveInfo", // Naziv polja u rezultatima koji sadrže informacije o grobu
-    },
-  });
-  aggregateArray.push({
-    $lookup: {
-      from: "cemeteries", // Naziv kolekcije iz koje pridružujemo podatke
-      localField: "graveInfo.cemetery", // Lokalno polje u rezultatima prethodne faze
-      foreignField: "_id", // Polje u Cemetery kolekciji
-      as: "cemeteryInfo", // Naziv polja u rezultatima koji sadrže informacije o groblju
+      from: "graves",
+      localField: "grave",
+      foreignField: "_id",
+      pipeline: [
+        ...(cemeteryIdsArray.length ? [{ $match: { cemetery: { $in: cemeteryIdsArray } } }] : []),
+        { $project: { cemetery: 1 } },
+      ],
+      as: "graveInfo",
     },
   });
 
-  const filterForCemetery = {};
-  if (cemeteryIds) {
-    let cemeteryIdsArray = cemeteryIds
-      .split(",")
-      .map((id) => new mongoose.Types.ObjectId(id));
-    filterForCemetery["graveInfo.cemetery"] = { $in: [...cemeteryIdsArray] };
+  // 3. Drop records where no matching grave was found (cemetery filter did not match)
+  if (cemeteryIdsArray.length > 0) {
+    pipeline.push({ $match: { "graveInfo.0": { $exists: true } } });
   }
 
-  console.log(filterForCemetery);
-
-  aggregateArray.push({
-    $match: filterForCemetery, // Filtriranje po row-u groba
+  // 4. Facet: count total matching records and fetch one page
+  pipeline.push({
+    $facet: {
+      totalItems: [{ $count: "count" }],
+      data: [
+        { $skip: start },
+        { $limit: size },
+        {
+          $lookup: {
+            from: "cemeteries",
+            localField: "graveInfo.cemetery",
+            foreignField: "_id",
+            as: "cemeteryInfo",
+          },
+        },
+        {
+          $project: {
+            name: 1,
+            surname: 1,
+            dateBirth: 1,
+            dateDeath: 1,
+            cemetery: { $arrayElemAt: ["$cemeteryInfo.name", 0] },
+          },
+        },
+      ],
+    },
   });
 
   try {
-    const deceased = await Deceased.aggregate(aggregateArray);
-    console.log("NUMBER OF DECEASED: ", deceased.length);
-    if (deceased) {
-      let deceasedToSend = deceased.map((item) => {
-        return {
-          _id: item._id,
-          name: item.name,
-          surname: item.surname,
-          dateBirth: item.dateBirth,
-          dateDeath: item.dateDeath,
-          cemetery: item.cemeteryInfo[0]?.name,
-        };
-      });
-      res.send(deceasedToSend);
-    } else {
-      res.status(401);
-      throw new Error("Invalid email or password");
-    }
+    const [result] = await Deceased.aggregate(pipeline);
+    res.send({
+      data: result.data,
+      totalItems: result.totalItems[0]?.count ?? 0,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
 

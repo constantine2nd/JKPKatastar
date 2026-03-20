@@ -1,0 +1,83 @@
+[
+  {
+    "_id": {
+      "$oid": "69bc7fc9c2290223480c543b"
+    },
+    "name": "GM3",
+    "capacity": 3,
+    "description": "trojno grobno mesto GM3",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc7fc9c2290223480c543c"
+    },
+    "name": "GM4",
+    "capacity": 4,
+    "description": "grobno mesto GM4",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc7fc9c2290223480c543d"
+    },
+    "name": "GM5",
+    "capacity": 5,
+    "description": "grobno mesto GM5",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc7fc9c2290223480c543e"
+    },
+    "name": "GM6",
+    "capacity": 6,
+    "description": "grobno mesto GM6",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc7fc9c2290223480c543f"
+    },
+    "name": "GM7",
+    "capacity": 7,
+    "description": "grobno mesto GM7",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc7fc9c2290223480c5440"
+    },
+    "name": "GM11",
+    "capacity": 11,
+    "description": "grobno mesto GM11",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc80f4eb19a69d4c9e212e"
+    },
+    "name": "GM2+1",
+    "capacity": 3,
+    "description": "grobno mesto GM2+1",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc80f4eb19a69d4c9e212f"
+    },
+    "name": "GM9",
+    "capacity": 9,
+    "description": "grobno mesto GM9",
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69bc80f4eb19a69d4c9e2130"
+    },
+    "name": "grobnica",
+    "capacity": 2,
+    "description": "grobnica",
+    "__v": 0
+  }
+]
