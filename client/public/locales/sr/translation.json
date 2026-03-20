@@ -64,8 +64,8 @@
     "edit": "Uredi pokojnika"
   },
   "payer": {
-    "create-new": "Kreiraj novog platca",
-    "edit": "Uredi platca",
+    "create-new": "Kreiraj novog platioca",
+    "edit": "Uredi platioca",
     "active": "Platioc aktivan:"
   },
   "user": {

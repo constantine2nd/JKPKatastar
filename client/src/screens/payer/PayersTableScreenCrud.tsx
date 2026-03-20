@@ -53,7 +53,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     columnSizing, setColumnSizing,
     sorting, setSorting,
     density, setDensity,
-  } = useTableState("payers-table-crud");
+  } = useTableState("payers-table-crud", { _id: false, jmbg: false });
 
   const { t, i18n } = useTranslation();
 
@@ -251,6 +251,8 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
+    enableColumnResizing: false,
+    layoutMode: "semantic",
     localization: getLanguage(i18n),
     onColumnVisibilityChange: setColumnVisibility,
     onColumnSizingChange: setColumnSizing,
@@ -269,6 +271,7 @@ const PayersTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     muiTableContainerProps: {
       sx: {
         minHeight: "100px",
+        overflowX: "auto",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),

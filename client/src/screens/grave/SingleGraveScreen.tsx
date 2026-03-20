@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionActions from "@mui/material/AccordionActions";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -85,7 +80,7 @@ const SingleGraveScreen: React.FC = () => {
   };
 
   const [searchParams] = useSearchParams();
-  const graveId = searchParams.get("common.id");
+  const graveId = searchParams.get("id");
 
   const { t, i18n } = useTranslation();
 
@@ -241,120 +236,6 @@ const SingleGraveScreen: React.FC = () => {
         )}
         {grave && value === 2 && <PayersTableScreenCrud graveId={grave._id} />}
       </Box>
-      <Accordion defaultExpanded>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          Podaci o grobnom mestu
-        </AccordionSummary>
-        <AccordionDetails>
-          {grave && (
-            <Card style={{ width: "60%", marginTop: "20px" }}>
-              <Card.Body>
-                <Card.Title>Podaci o grobnom mestu</Card.Title>
-                <Row>
-                  <Col>
-                    <h3>
-                      {t("grave.number")}: {grave.number}
-                    </h3>
-                  </Col>
-                  <Col>
-                    <h3>
-                      {t("grave.field")}: {grave.field}
-                    </h3>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <h3>
-                      {t("grave.row")}: {grave.row}
-                    </h3>
-                  </Col>
-                  <Col>
-                    <h3>
-                      {t("grave.capacity")}: {grave.graveType.capacity}
-                    </h3>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <h3>
-                      {t("location.lat")}: {grave.LAT}
-                    </h3>
-                  </Col>
-                  <Col>
-                    <h3>
-                      {t("location.lon")}: {grave.LON}
-                    </h3>
-                  </Col>
-                </Row>
-                <Row>
-                  <div className="map-container" id="map-cont">
-                    <OpenMapComponent
-                      LAT={Number(grave?.LAT)}
-                      LON={Number(grave?.LON)}
-                    />
-                  </div>
-                </Row>
-                <Row>
-                  <Col>
-                    <BootstrapButton
-                      variant="success"
-                      onClick={() => {
-                        generatePDF();
-                      }}
-                    >
-                      Download pdf
-                    </BootstrapButton>
-                  </Col>
-                  <Col>
-                    <h3>
-                      {t("grave.contract-expiration-date")}:{" "}
-                      <span className={getParagraphStyling(grave.contractTo)}>
-                        {dateFormatter(grave.contractTo)}
-                      </span>
-                    </h3>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          )}
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2-content"
-          id="panel2-header"
-        >
-          Lista pokojnika
-        </AccordionSummary>
-        <AccordionDetails>
-          {grave && grave.deceased.length == 0 && (
-            <h4>Na ovom grobnom mestu nema pokojnika</h4>
-          )}
-          {grave && (
-            <DeceasedTableScreenCrud
-              graveId={grave._id}
-              graveCapcity={Number(grave.graveType.capacity)}
-            />
-          )}
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3-content"
-          id="panel3-header"
-        >
-          Lista platioca
-        </AccordionSummary>
-        <AccordionDetails>
-          {grave && <PayersTableScreenCrud graveId={grave._id} />}
-        </AccordionDetails>
-      </Accordion>
     </>
   );
 };

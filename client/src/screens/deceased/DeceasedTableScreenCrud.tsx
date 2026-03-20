@@ -60,7 +60,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     columnSizing, setColumnSizing,
     sorting, setSorting,
     density, setDensity,
-  } = useTableState("deceased-table-crud");
+  } = useTableState("deceased-table-crud", { _id: false });
 
   const { t, i18n } = useTranslation();
 
@@ -113,23 +113,20 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       },
     },
     {
-      //accessorKey: "dateDeath",
-      accessorFn: (row) => dateCalendarFormatter(row.dateDeath),
-      id: "dateDeath",
-      header: t("dates.death"),
+      accessorFn: (row) => dateCalendarFormatter(row.dateBirth),
+      id: "dateBirth",
+      header: t("dates.birth"),
       enableColumnFilter: false,
       muiEditTextFieldProps: {
         type: "date",
-        required: true,
+        required: false,
         error: !!validationErrors?.dateBirth,
         helperText: validationErrors?.dateBirth,
-        //remove any previous validation errors when user focuses on the input
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
             dateBirth: undefined,
           }),
-        //optionally add validation checking for onBlur or onChange
       },
       filterFn: "between",
       filterVariant: "date",
@@ -249,8 +246,8 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   const table = useMaterialReactTable({
     columns,
     data: fetchedData,
-    enableColumnResizing: true,
-    layoutMode: "grid",
+    enableColumnResizing: false,
+    layoutMode: "semantic",
     localization: getLanguage(i18n),
     onColumnVisibilityChange: setColumnVisibility,
     onColumnSizingChange: setColumnSizing,
@@ -269,6 +266,7 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     muiTableContainerProps: {
       sx: {
         minHeight: "100px",
+        overflowX: "auto",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
