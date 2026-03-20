@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import _ from "lodash";
 import { composeErrorMessageIntoPromise } from "../components/CommonFuntions";
+import store from "../store";
+import { logoutUser } from "../features/userSlice";
 
 axios.interceptors.request.use(
   (config) => {
@@ -15,6 +17,17 @@ axios.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      store.dispatch(logoutUser());
+      window.location.href = "/login-user";
+    }
     return Promise.reject(error);
   }
 );
