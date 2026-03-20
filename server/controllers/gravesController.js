@@ -184,7 +184,7 @@ const getGravesPaginated = async (req, res, next) => {
             as: "graveType",
           },
         },
-        { $unwind: "$graveType" },
+        { $unwind: { path: "$graveType", preserveNullAndEmptyArrays: true } },
         {
           $lookup: {
             from: "cemeteries",
@@ -193,7 +193,7 @@ const getGravesPaginated = async (req, res, next) => {
             as: "cemetery",
           },
         },
-        { $unwind: "$cemetery" },
+        { $unwind: { path: "$cemetery", preserveNullAndEmptyArrays: true } },
         {
           $project: {
             _id: 1,

@@ -161,6 +161,18 @@ const SingleGraveScreen: React.FC = () => {
               <Row>
                 <Col>
                   <h3>
+                    {t("cemetery.title")}: {grave.cemetery?.name}
+                  </h3>
+                </Col>
+                <Col>
+                  <h3>
+                    {t("grave.type")}: {grave.graveType?.name}
+                  </h3>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h3>
                     {t("grave.number")}: {grave.number}
                   </h3>
                 </Col>

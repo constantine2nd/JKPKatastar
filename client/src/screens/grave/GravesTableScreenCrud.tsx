@@ -103,13 +103,13 @@ const GravesTableScreenCrud = () => {
 
   const columns: MRT_ColumnDef<CrudTableType>[] = [
     {
-      accessorKey: "cemetery.name",
+      accessorKey: "cemetery._id",
       header: t("cemetery.title"),
       editVariant: "select",
       editSelectOptions: myCemeteries,
       enableEditing: true,
-      /* Cell: ({ row }) =>
-        cemeteries.find((item) => item._id === row.original.cemetery._id)?.name, */
+      Cell: ({ row }) =>
+        cemeteries.find((item) => item._id === row.original.cemetery?._id)?.name,
     },
     {
       accessorKey: "number",
@@ -169,7 +169,7 @@ const GravesTableScreenCrud = () => {
       editSelectOptions: myGraveTypes,
       enableEditing: true,
       Cell: ({ row }) =>
-        graveTypes.find((item) => item._id === row.original.graveType._id)
+        graveTypes.find((item) => item._id === row.original.graveType?._id)
           ?.name,
     },
     {
