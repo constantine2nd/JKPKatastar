@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { Marker } from "react-leaflet/Marker";
 import { TileLayer } from "react-leaflet/TileLayer";
@@ -7,9 +7,6 @@ import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const OpenMapComponent = ({ LAT, LON }) => {
-  useEffect(() => {
-    console.log("Loading map in use effect");
-  }, []);
   const customIcon = new Icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/256/149/149060.png",
     iconSize: [36, 36],
@@ -22,7 +19,7 @@ const OpenMapComponent = ({ LAT, LON }) => {
       />
       <Marker position={[LAT, LON]} icon={customIcon}>
         <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
+          {LAT}, {LON}
         </Popup>
       </Marker>
     </MapContainer>

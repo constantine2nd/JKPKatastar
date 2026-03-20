@@ -12,6 +12,10 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
+# Build args for env vars that must be available at build time (CRA bakes these in)
+ARG REACT_APP_GOOGLE_KEY
+ENV REACT_APP_GOOGLE_KEY=$REACT_APP_GOOGLE_KEY
+
 # Build the app with increased memory limit and optimizations (1.5GB for 2GB VPS)
 ENV NODE_OPTIONS="--max-old-space-size=1536"
 ENV GENERATE_SOURCEMAP=false

@@ -35,9 +35,8 @@ import { useTranslation } from "react-i18next";
 
 const mapStyles = {
   width: "70%",
-  height: "70%",
+  height: "600px",
   position: "relative",
-  top: "50px",
 };
 
 const getSizeOfMarker = (zoom) => {
@@ -168,15 +167,23 @@ const HomeScreen = (props) => {
     <>
       <div
         style={{
-          height: "50vw",
           width: "100%",
-          position: "absolute",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
-        <h3>Naziv: {selectedCemetery?.name}</h3>
+        <h3>
+          Naziv: {selectedCemetery?.name}
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ ml: 2 }}
+            onClick={() => navigate("/landing")}
+          >
+            {t("cemetery.selection")}
+          </Button>
+        </h3>
         {/* <TableContainer
           component={Paper}
           style={{
@@ -422,5 +429,5 @@ const HomeScreen = (props) => {
   );
 };
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyACV2yMJcx_aByY3PwY1b59WvppbM9_ovc",
+  apiKey: process.env.REACT_APP_GOOGLE_KEY,
 })(HomeScreen);

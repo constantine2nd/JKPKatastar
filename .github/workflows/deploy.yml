@@ -82,6 +82,7 @@ jobs:
           REACT_APP_API_URL=/api
           REACT_APP_MAP_CENTER_LAT=45.2671
           REACT_APP_MAP_CENTER_LON=19.8335
+          REACT_APP_GOOGLE_KEY=REPLACE_REACT_APP_GOOGLE_KEY
           CHOKIDAR_USEPOLLING=false
           GENERATE_SOURCEMAP=false
           ENV_EOF
@@ -94,6 +95,7 @@ jobs:
           sed -i "s/REPLACE_EMAIL_PORT/$EMAIL_PORT/g" .env
           sed -i "s/REPLACE_EMAIL_USER/$EMAIL_USER/g" .env
           sed -i "s/REPLACE_EMAIL_SECRET/$EMAIL_SECRET/g" .env
+          sed -i "s/REPLACE_REACT_APP_GOOGLE_KEY/$REACT_APP_GOOGLE_KEY/g" .env
 
           # Create data directories
           mkdir -p $DEPLOY_DIR/data/mongodb
@@ -220,6 +222,7 @@ jobs:
              MAINTAINER_NAME='${{ secrets.MAINTAINER_NAME }}' \
              MAINTAINER_EMAIL='${{ secrets.MAINTAINER_EMAIL }}' \
              MAINTAINER_PASSWORD='${{ secrets.MAINTAINER_PASSWORD }}' \
+             REACT_APP_GOOGLE_KEY='${{ secrets.REACT_APP_GOOGLE_KEY }}' \
              /tmp/deploy.sh"
 
       - name: Verify deployment

@@ -71,6 +71,8 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        REACT_APP_GOOGLE_KEY: ${REACT_APP_GOOGLE_KEY}
     restart: always
     environment:
       # API URL should be relative for nginx proxy

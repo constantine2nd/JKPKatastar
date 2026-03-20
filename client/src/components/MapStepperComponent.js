@@ -53,15 +53,11 @@ const MapStepperComponent = (props) => {
   //const mapRef = useRef(null);
   useEffect(() => {
     if (mapRef.current) {
-      // Dohvatite trenutni zoom nivo
       const newZoom = mapRef.current.map.getZoom();
-      console.log(newZoom);
       setCurrentZoom(newZoom);
 
-      // Dodajte slušač za promene zoom nivoa
       mapRef.current.map.addListener("zoom_changed", () => {
         const updatedZoom = mapRef.current.map.getZoom();
-        console.log(updatedZoom);
         setCurrentZoom(updatedZoom);
       });
     }
@@ -153,5 +149,5 @@ const MapStepperComponent = (props) => {
 };
 
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyACV2yMJcx_aByY3PwY1b59WvppbM9_ovc",
+  apiKey: process.env.REACT_APP_GOOGLE_KEY,
 })(MapStepperComponent);
