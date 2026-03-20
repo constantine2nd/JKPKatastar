@@ -217,6 +217,11 @@
     "forgot-password": "Zaboravljena lozinka?",
     "no-account": "Nemate nalog? Registrujte se"
   },
+  "about": {
+    "title": "O aplikaciji",
+    "version": "Verzija",
+    "description": "Sistem za upravljanje grobljem za javno-komunalna preduzeća."
+  },
   "server": {
     "err-user-exists": "Korisnik več postoji",
     "err-confirm-password": "Lozinka nije potvrđena",

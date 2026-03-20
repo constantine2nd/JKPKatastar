@@ -217,6 +217,11 @@
     "forgot-password": "Elfelejtett jelszó?",
     "no-account": "Nincs fiókja? Regisztráljon"
   },
+  "about": {
+    "title": "Az alkalmazásról",
+    "version": "Verzió",
+    "description": "Temetőkezelő rendszer közüzemi vállalatok számára."
+  },
   "server": {
     "err-user-exists": "A felhasználó már létezik",
     "err-confirm-password": "A jelszó nincs megerősítve",

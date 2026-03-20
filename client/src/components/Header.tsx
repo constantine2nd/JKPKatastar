@@ -32,7 +32,9 @@ import AdbIcon from "@mui/icons-material/Adb";
 import Logout from "@mui/icons-material/Logout";
 import Login from "@mui/icons-material/Login";
 import PersonAdd from "@mui/icons-material/PersonAdd";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { ADMINISTRATOR, OFFICER, MAINTAINER } from "../utils/constant.js";
+import AboutDialog from "./AboutDialog";
 
 interface PageItem {
   item: string;
@@ -94,6 +96,8 @@ const Header = () => {
   };
 
   const visibleGroups = groups.filter((g) => hasMinRole(g.minRole));
+
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   // Anchor state for each dropdown: keyed by group label
   const [groupAnchors, setGroupAnchors] = useState<Record<string, HTMLElement | null>>({});
@@ -317,7 +321,13 @@ const Header = () => {
                     {t("actions.logout")}
                   </MenuItem>
                 )}
+                <Divider />
+                <MenuItem onClick={() => { setAnchorElUser(null); setAboutOpen(true); }}>
+                  <ListItemIcon><InfoOutlinedIcon fontSize="small" /></ListItemIcon>
+                  {t("about.title")}
+                </MenuItem>
               </Menu>
+              <AboutDialog open={aboutOpen} onClose={() => setAboutOpen(false)} />
             </Box>
 
             {/* Dark/light toggle */}

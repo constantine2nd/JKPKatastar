@@ -217,6 +217,11 @@
     "forgot-password": "Forgot password?",
     "no-account": "Don't have an account? Sign Up"
   },
+  "about": {
+    "title": "About",
+    "version": "Version",
+    "description": "Cemetery management system for public utility companies."
+  },
   "server": {
     "err-user-exists": "User already exists",
     "err-confirm-password": "Password is not confirmed",
