@@ -86,7 +86,8 @@
     "import": "Увоз података",
     "group-visitor": "Посетилац",
     "group-officer": "Службеник",
-    "group-admin": "Администратор"
+    "group-admin": "Администратор",
+    "group-maintainer": "Одржавалац"
   },
   "import": {
     "title": "Чаробњак за увоз",
@@ -170,7 +171,8 @@
     "role": "Улога",
     "administrator": "Администратор",
     "officer": "Службеник",
-    "visitor": "Посетилац"
+    "visitor": "Посетилац",
+    "maintainer": "Одржавалац"
   },
   "actions": {
     "send": "Пошаљи",

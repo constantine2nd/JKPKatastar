@@ -86,7 +86,8 @@
     "import": "Import",
     "group-visitor": "Visitor",
     "group-officer": "Officer",
-    "group-admin": "Administrator"
+    "group-admin": "Administrator",
+    "group-maintainer": "Maintainer"
   },
   "import": {
     "title": "Import Wizard",
@@ -170,7 +171,8 @@
     "role": "Role",
     "administrator": "Administrator",
     "officer": "Officer",
-    "visitor": "Visitor"
+    "visitor": "Visitor",
+    "maintainer": "Maintainer"
   },
   "actions": {
     "send": "Send",

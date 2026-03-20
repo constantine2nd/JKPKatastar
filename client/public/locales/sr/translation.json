@@ -86,7 +86,8 @@
     "import": "Uvoz podataka",
     "group-visitor": "Posetilac",
     "group-officer": "Službenik",
-    "group-admin": "Administrator"
+    "group-admin": "Administrator",
+    "group-maintainer": "Održavalac"
   },
   "import": {
     "title": "Čarobnjak za uvoz",
@@ -170,7 +171,8 @@
     "role": "Uloga",
     "administrator": "Administrator",
     "officer": "Službenik",
-    "visitor": "Posetilac"
+    "visitor": "Posetilac",
+    "maintainer": "Održavalac"
   },
   "actions": {
     "send": "Pošalji",

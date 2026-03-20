@@ -32,7 +32,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import Logout from "@mui/icons-material/Logout";
 import Login from "@mui/icons-material/Login";
 import PersonAdd from "@mui/icons-material/PersonAdd";
-import { ADMINISTRATOR, OFFICER } from "../utils/constant.js";
+import { ADMINISTRATOR, OFFICER, MAINTAINER } from "../utils/constant.js";
 
 interface PageItem {
   item: string;
@@ -73,6 +73,12 @@ const Header = () => {
       minRole: ADMINISTRATOR,
       items: [
         { item: t("menu.user-management"), link: "users-table-crud" },
+      ],
+    },
+    {
+      label: t("menu.group-maintainer"),
+      minRole: MAINTAINER,
+      items: [
         { item: t("menu.import"), link: "import" },
       ],
     },
@@ -80,8 +86,9 @@ const Header = () => {
 
   const hasMinRole = (minRole: string) => {
     if (!user) return false;
-    if (minRole === OFFICER) return user.role === OFFICER || user.role === ADMINISTRATOR;
-    if (minRole === ADMINISTRATOR) return user.role === ADMINISTRATOR;
+    if (minRole === OFFICER) return user.role === OFFICER || user.role === ADMINISTRATOR || user.role === MAINTAINER;
+    if (minRole === ADMINISTRATOR) return user.role === ADMINISTRATOR || user.role === MAINTAINER;
+    if (minRole === MAINTAINER) return user.role === MAINTAINER;
     return false;
   };
 

@@ -19,7 +19,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { OFFICER, ADMINISTRATOR } from "./utils/constant.js";
+import { OFFICER, ADMINISTRATOR, MAINTAINER } from "./utils/constant.js";
 import CemeteriesTableScreenCrud from "./screens/CemeteriesTableScreenCrud";
 import DeceasedSearchScreen from "./screens/deceased/DeceasedSearchScreen";
 import GravesTableScreenCrudWithProviders from "./screens/grave/GravesTableScreenCrud";
@@ -125,7 +125,7 @@ function App() {
                 <Route
                   element={
                     <ProtectedRoute
-                      roles={[OFFICER, ADMINISTRATOR]}
+                      roles={[OFFICER, ADMINISTRATOR, MAINTAINER]}
                       redirectPath="/login-user"
                     />
                   }
@@ -156,7 +156,7 @@ function App() {
                 <Route
                   element={
                     <ProtectedRoute
-                      roles={[ADMINISTRATOR]}
+                      roles={[ADMINISTRATOR, MAINTAINER]}
                       redirectPath="/login-user"
                     />
                   }
@@ -166,6 +166,17 @@ function App() {
                     path="/users-table-crud"
                     element={<UsersTableScreenCrudWithProviders />}
                   />
+                </Route>
+
+                {/* Maintainer-only routes */}
+                <Route
+                  element={
+                    <ProtectedRoute
+                      roles={[MAINTAINER]}
+                      redirectPath="/login-user"
+                    />
+                  }
+                >
                   <Route path="/import" element={<ImportWizardScreen />} />
                 </Route>
               </Routes>

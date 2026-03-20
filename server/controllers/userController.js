@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { MAINTAINER } from "../utils/constant.js";
 import {
   sendVerifyEmail,
   sendResetPasswordEmail,
@@ -91,6 +92,10 @@ const addUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const { name, email, role, isActive, isVerified, avatarUrl } = req.body;
+
+    if (role === MAINTAINER) {
+      return res.status(403).send({ message: "Forbidden: MAINTAINER role cannot be assigned via user management." });
+    }
 
     console.log(isActive);
 

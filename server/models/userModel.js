@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { pseudoRandomToken } from "../utils/pseudoRandomGenerator.js";
-import { VISITOR, OFFICER, ADMINISTRATOR } from "../utils/constant.js";
+import { VISITOR, OFFICER, ADMINISTRATOR, MAINTAINER } from "../utils/constant.js";
 
 const userSchema = mongoose.Schema({
   name: {
@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
   role: {
     type: String,
     required: true,
-    enum: [VISITOR, OFFICER, ADMINISTRATOR],
+    enum: [VISITOR, OFFICER, ADMINISTRATOR, MAINTAINER],
     default: VISITOR,
   },
   avatarUrl: {

@@ -11,7 +11,7 @@ import {
   getAllUsers,
 } from "../controllers/userController.js";
 import { protect, requireRole } from "../middleware/authMiddleware.js";
-import { ADMINISTRATOR } from "../utils/constant.js";
+import { ADMINISTRATOR, MAINTAINER } from "../utils/constant.js";
 
 const router = express.Router();
 
@@ -22,10 +22,10 @@ router.route("/verify-email").put(verifyEmail);
 router.route("/reset-password-initiation").post(resetPasswordInitiation);
 router.route("/reset-password").put(resetPassword);
 
-// Administrator only
-router.route("/adduser").post(protect, requireRole(ADMINISTRATOR), addUser);
-router.route("/updateuser").put(protect, requireRole(ADMINISTRATOR), updateUser);
-router.route("/:id").delete(protect, requireRole(ADMINISTRATOR), deleteUser);
-router.route("/").get(protect, requireRole(ADMINISTRATOR), getAllUsers);
+// Administrator + Maintainer
+router.route("/adduser").post(protect, requireRole(ADMINISTRATOR, MAINTAINER), addUser);
+router.route("/updateuser").put(protect, requireRole(ADMINISTRATOR, MAINTAINER), updateUser);
+router.route("/:id").delete(protect, requireRole(ADMINISTRATOR, MAINTAINER), deleteUser);
+router.route("/").get(protect, requireRole(ADMINISTRATOR, MAINTAINER), getAllUsers);
 
 export default router;

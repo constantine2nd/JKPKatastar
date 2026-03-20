@@ -86,7 +86,8 @@
     "import": "Adatimport",
     "group-visitor": "Látogató",
     "group-officer": "Tisztviselő",
-    "group-admin": "Adminisztrátor"
+    "group-admin": "Adminisztrátor",
+    "group-maintainer": "Karbantartó"
   },
   "import": {
     "title": "Importálási varázsló",
@@ -170,7 +171,8 @@
     "role": "Szerep",
     "administrator": "Adminisztrátor",
     "officer": "Tisztviselő",
-    "visitor": "Látogató"
+    "visitor": "Látogató",
+    "maintainer": "Karbantartó"
   },
   "actions": {
     "send": "Küldés",
