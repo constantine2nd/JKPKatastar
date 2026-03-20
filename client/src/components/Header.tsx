@@ -35,33 +35,36 @@ const Header = () => {
   const { t, i18n } = useTranslation();
 
   const pages = [
+    // Public — visible to everyone including unauthenticated
     { item: t("menu.view-deceased"), link: "deceased-table", roles: [] },
     { item: t("menu.search-deceased"), link: "search-deceased", roles: [] },
-    // { item: "Pregled GM", link: "graves-table", logged: false, role: "" },
     { item: t("menu.view-grave"), link: "graves-table-crud", roles: [] },
+    // Any logged-in user
     {
       item: t("menu.grave-request"),
       link: "grave-requests-crud",
       roles: [VISITOR, OFFICER, ADMINISTRATOR],
     },
+    // Officer+
     {
       item: t("menu.cemeteries"),
       link: "cemeteries-table-crud",
       roles: [OFFICER, ADMINISTRATOR],
     },
     {
-      item: t("menu.user-management"),
-      link: "users-table-crud",
-      roles: [ADMINISTRATOR],
-    },
-    // { item: "Grave Types MGM", link: "grave-types-table" },
-    {
       item: t("menu.grave-types"),
       link: "grave-types-crud",
       roles: [OFFICER, ADMINISTRATOR],
     },
-    { item: t("menu.manual"), link: "manual", roles: [] },
+    // Administrator only
+    {
+      item: t("menu.user-management"),
+      link: "users-table-crud",
+      roles: [ADMINISTRATOR],
+    },
     { item: t("menu.import"), link: "import", roles: [ADMINISTRATOR] },
+    // Always visible
+    { item: t("menu.manual"), link: "manual", roles: [] },
   ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
