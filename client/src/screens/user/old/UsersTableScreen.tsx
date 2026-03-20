@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-// MUI Table
-import { darken } from "@mui/material";
-import Loader from "../../../components/Loader";
-import Message from "../../../components/Message";
 
-import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
+import Message from "../../../components/Message";
+import { getLanguage } from "../../../utils/languageSelector";
+import { useTableState } from "../../../hooks/useTableState";
+import { isActiveUser } from "../../../components/CommonFuntions";
+
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+} from "material-react-table";
 
 import {
   selectAllUsers,
@@ -16,14 +21,28 @@ import {
 } from "../../../features/allUsersSlice";
 
 import { User } from "../../../interfaces/UserInterfaces";
-import { getLanguage } from "../../../utils/languageSelector";
-import { isActiveUser } from "../../../components/CommonFuntions";
 
 const UsersTableScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
   const users: User[] = useSelector(selectAllUsers);
-  console.log(users);
-  //should be memoized or stable
+  const usersStatus = useSelector(getAllUsersStatus);
+  const error = useSelector(getAllUsersError);
+  const dispatch = useDispatch<any>();
+
+  const {
+    columnVisibility, setColumnVisibility,
+    columnSizing, setColumnSizing,
+    sorting, setSorting,
+    density, setDensity,
+    pagination, setPagination,
+  } = useTableState("users-table", { _id: false });
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(getAllUsers());
+    }
+  }, [usersStatus, dispatch]);
+
   const columns: MRT_ColumnDef<User>[] = [
     {
       accessorKey: "_id",
@@ -47,19 +66,34 @@ const UsersTableScreen: React.FC = () => {
       Cell: ({ row }) => isActiveUser(row.original.isActive),
     },
   ];
-  const usersStatus = useSelector(getAllUsersStatus);
-  const error = useSelector(getAllUsersError);
-  const dispatch = useDispatch<any>();
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      console.log("UPAO");
-      dispatch(getAllUsers());
-    }
-  }, [usersStatus, dispatch]);
 
-  if (usersStatus === "loading") {
-    return <Loader />;
-  }
+  const table = useMaterialReactTable({
+    columns,
+    data: users,
+    enableColumnResizing: true,
+    enableStickyHeader: true,
+    layoutMode: "semantic",
+    localization: getLanguage(i18n),
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing,
+    onSortingChange: setSorting,
+    onDensityChange: setDensity,
+    onPaginationChange: setPagination,
+    muiTableContainerProps: {
+      sx: {
+        height: "calc(100vh - 184px)",
+        overflowY: "auto",
+      },
+    },
+    state: {
+      columnVisibility,
+      columnSizing,
+      sorting,
+      density,
+      pagination,
+      isLoading: usersStatus === "loading",
+    },
+  });
 
   if (usersStatus === "failed") {
     return (
@@ -69,38 +103,7 @@ const UsersTableScreen: React.FC = () => {
     );
   }
 
-  return (
-    <>
-      <h1>Users table screen</h1>
-      <MaterialReactTable
-        columns={columns}
-        data={users}
-        enableRowNumbers
-        //  rowNumberMode="original"
-        localization={getLanguage(i18n)}
-        muiTablePaperProps={{
-          elevation: 0,
-          sx: {
-            borderRadius: "0",
-            border: "1px dashed #e0e0e0",
-          },
-        }}
-        muiTableBodyProps={{
-          sx: (theme) => ({
-            "& tr:nth-of-type(odd) > td": {
-              backgroundColor: darken(theme.palette.background.default, 0.1),
-            },
-          }),
-        }}
-        muiTableHeadCellProps={{
-          sx: (theme) => ({
-            backgroundColor: darken(theme.palette.background.default, 0.3),
-          }),
-        }}
-      />
-      ;
-    </>
-  );
+  return <MaterialReactTable table={table} />;
 };
 
 export default UsersTableScreen;

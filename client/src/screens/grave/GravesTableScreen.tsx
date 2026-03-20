@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import ButtonMUI from "@mui/material/Button";
 import { Modal } from "react-bootstrap";
 
-import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import {
   deleteSingleGrave,
@@ -17,28 +16,24 @@ import {
 } from "../../features/gravesSlice";
 import { selectUser } from "../../features/userSlice";
 import { GraveData } from "../../interfaces/GraveIntefaces.js";
-import "./GraveTableScreen.css";
-
-// MUI Table
-import { createTheme, ThemeProvider, useTheme } from "@mui/material";
-import { darken } from "@mui/material/styles";
-
-// MUI Chip
-import { srRS } from "@mui/material/locale";
-import { DeleteAndMaybeRemoveButton } from "../../components/DetailAndMaybeRemoveButton";
 import { getLanguage } from "../../utils/languageSelector.js";
+import { useTableState } from "../../hooks/useTableState";
 
-import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+} from "material-react-table";
 import {
   capacityExt,
   expiredContract,
   statusOfGrave,
 } from "../../components/CommonFuntions";
+import { DeleteAndMaybeRemoveButton } from "../../components/DetailAndMaybeRemoveButton";
 import { ADMINISTRATOR, OFFICER } from "../../utils/constant.js";
 
 const GravesTableScreen: React.FC = () => {
-  //const [graves, setGraves] = useState<GraveData[]>([]);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const graves: GraveData[] = useSelector(selectAllGraves);
   const gravesStatus = useSelector(getGravesStatus);
   const error = useSelector(getGravesError);
@@ -47,6 +42,37 @@ const GravesTableScreen: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedGraveId, setSelectedGraveId] = useState<string>();
   const { t, i18n } = useTranslation();
+
+  const {
+    columnVisibility, setColumnVisibility,
+    columnSizing, setColumnSizing,
+    sorting, setSorting,
+    density, setDensity,
+    pagination, setPagination,
+  } = useTableState("graves-table");
+
+  useEffect(() => {
+    if (gravesStatus === "idle") {
+      dispatch(fetchAllGraves());
+    }
+  }, [gravesStatus, dispatch]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedGraveId("");
+  };
+
+  const handleShowModal = (id: string) => {
+    setSelectedGraveId(id);
+    setShowModal(true);
+  };
+
+  const handleDeleteGrave = () => {
+    if (selectedGraveId) {
+      dispatch(deleteSingleGrave(selectedGraveId));
+      setShowModal(false);
+    }
+  };
 
   const statuses = [
     { label: t("status.free"), value: "FREE" },
@@ -75,11 +101,10 @@ const GravesTableScreen: React.FC = () => {
       header: t("cemetery.title"),
     },
     {
-      accessorFn: (row) => `${row.numberOfDeceaseds ?? 0}/${row.graveType?.capacity ?? 0}`, //accessorFn used to join multiple data into a single cell
+      accessorFn: (row) => `${row.numberOfDeceaseds ?? 0}/${row.graveType?.capacity ?? 0}`,
       id: "occupation",
       header: t("grave.occupation"),
-      Cell: ({ renderedCellValue, row }) =>
-        capacityExt(row.getValue("occupation")),
+      Cell: ({ row }) => capacityExt(row.getValue("occupation")),
     },
     {
       accessorFn: (row) => new Date(row.contractTo),
@@ -93,52 +118,54 @@ const GravesTableScreen: React.FC = () => {
     {
       accessorKey: "status",
       header: t("status.status"),
-      editVariant: "select",
-      editSelectOptions: statuses,
       Cell: ({ row }) => statusOfGrave(row.original.status),
     },
     {
       accessorKey: "_id",
-      header: t(""),
-      columnDefType: "display", //turns off data column features like sorting, filtering, etc.
+      header: "",
+      enableSorting: false,
+      enableColumnFilter: false,
       Cell: ({ row }) =>
-        DeleteAndMaybeRemoveButton(
-          row.original._id,
-          "/single-grave",
-          handleShowModal,
-        ),
+        DeleteAndMaybeRemoveButton(row.original._id, "/single-grave", handleShowModal),
     },
   ];
 
-  const theme = useTheme(); //replace with your theme/createTheme
-
-  useEffect(() => {
-    if (gravesStatus === "idle") {
-      console.log("UPAO");
-      dispatch(fetchAllGraves());
-    }
-  }, [gravesStatus, dispatch]);
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedGraveId("");
-  };
-
-  const handleShowModal = (id: string) => {
-    setSelectedGraveId(id);
-    setShowModal(true);
-  };
-
-  const handleDeleteGrave = () => {
-    if (selectedGraveId) {
-      dispatch(deleteSingleGrave(selectedGraveId));
-      setShowModal(false);
-    }
-  };
-
-  if (gravesStatus === "loading") {
-    return <Loader />;
-  }
+  const table = useMaterialReactTable({
+    columns,
+    data: graves,
+    enableColumnResizing: true,
+    enableStickyHeader: true,
+    layoutMode: "semantic",
+    localization: getLanguage(i18n),
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing,
+    onSortingChange: setSorting,
+    onDensityChange: setDensity,
+    onPaginationChange: setPagination,
+    renderTopToolbarCustomActions: () =>
+      (user?.role === OFFICER || user?.role === ADMINISTRATOR) ? (
+        <ButtonMUI
+          variant="contained"
+          onClick={() => navigate({ pathname: "/add-grave" })}
+        >
+          {t("grave.add")}
+        </ButtonMUI>
+      ) : null,
+    muiTableContainerProps: {
+      sx: {
+        height: "calc(100vh - 184px)",
+        overflowY: "auto",
+      },
+    },
+    state: {
+      columnVisibility,
+      columnSizing,
+      sorting,
+      density,
+      pagination,
+      isLoading: gravesStatus === "loading",
+    },
+  });
 
   if (gravesStatus === "failed") {
     return (
@@ -150,67 +177,7 @@ const GravesTableScreen: React.FC = () => {
 
   return (
     <>
-      <div
-        style={{
-          height: "50vw",
-          width: "100%",
-          position: "absolute",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <div>{t("grave.table-screen")}</div>
-        <br />
-        {(user?.role === OFFICER || user?.role === ADMINISTRATOR) && (
-          <ButtonMUI
-            variant="contained"
-            sx={{ m: 2 }}
-            onClick={() => {
-              navigate({
-                pathname: "/add-grave",
-              });
-            }}
-          >
-            {t("grave.add")}
-          </ButtonMUI>
-        )}
-        <br />
-
-        <ThemeProvider theme={createTheme(theme, srRS)}>
-          <MaterialReactTable
-            columns={columns}
-            data={graves}
-            enableRowNumbers
-            //  rowNumberMode="original"
-            localization={getLanguage(i18n)}
-            muiTablePaperProps={{
-              elevation: 0,
-              sx: {
-                borderRadius: "0",
-                border: "1px dashed #e0e0e0",
-              },
-            }}
-            muiTableBodyProps={{
-              sx: (theme) => ({
-                "& tr:nth-of-type(odd) > td": {
-                  backgroundColor: darken(
-                    theme.palette.background.default,
-                    0.05,
-                  ),
-                },
-              }),
-            }}
-            muiTableHeadCellProps={{
-              sx: (theme) => ({
-                backgroundColor: darken(theme.palette.background.default, 0.3),
-              }),
-            }}
-          />
-          ;
-        </ThemeProvider>
-        <br />
-      </div>
+      <MaterialReactTable table={table} />
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Brisanje grobnog mesta</Modal.Title>

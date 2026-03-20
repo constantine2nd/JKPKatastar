@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTableState } from "../../hooks/useTableState";
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -42,6 +43,12 @@ const GraveTypesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+  const {
+    columnVisibility, setColumnVisibility,
+    columnSizing, setColumnSizing,
+    sorting, setSorting,
+    density, setDensity,
+  } = useTableState("grave-types-table-crud");
 
   const { t, i18n } = useTranslation();
 
@@ -165,6 +172,10 @@ const GraveTypesTableScreenCrud = () => {
     enableColumnResizing: true,
     layoutMode: "grid",
     localization: getLanguage(i18n),
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing,
+    onSortingChange: setSorting,
+    onDensityChange: setDensity,
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
@@ -243,6 +254,10 @@ const GraveTypesTableScreenCrud = () => {
       </Button>
     ),
     state: {
+      columnVisibility,
+      columnSizing,
+      sorting,
+      density,
       isLoading: isLoadingData,
       isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
       showAlertBanner: errorOccuried(),

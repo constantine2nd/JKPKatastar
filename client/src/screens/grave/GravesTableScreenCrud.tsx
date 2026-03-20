@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTableState } from "../../hooks/useTableState";
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -64,7 +65,13 @@ const GravesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
+  const {
+    pagination, setPagination,
+    columnVisibility, setColumnVisibility,
+    columnSizing, setColumnSizing,
+    sorting, setSorting,
+    density, setDensity,
+  } = useTableState("graves-table-crud");
   const queryClient = useQueryClient();
   const graveTypes: GraveType[] | null = useSelector(selectAllGraveTypes);
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
@@ -289,11 +296,15 @@ const GravesTableScreenCrud = () => {
     columns,
     data: fetchedData,
     enableColumnResizing: true,
+    enableStickyHeader: true,
     layoutMode: "semantic",
-    initialState: { columnVisibility: { _id: false } }, //hide _id column by default
     manualPagination: true,
     rowCount: totalRowCount,
     onPaginationChange: setPagination,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing,
+    onSortingChange: setSorting,
+    onDensityChange: setDensity,
     localization: getLanguage(i18n),
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
@@ -307,7 +318,9 @@ const GravesTableScreenCrud = () => {
       : undefined,
     muiTableContainerProps: {
       sx: {
-        minHeight: "500px",
+        // 64px AppBar + 64px MRT top toolbar + 56px MRT bottom toolbar/pagination
+        height: "calc(100vh - 184px)",
+        overflowY: "auto",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
@@ -368,6 +381,10 @@ const GravesTableScreenCrud = () => {
     ),
     state: {
       pagination,
+      columnVisibility,
+      columnSizing,
+      sorting,
+      density,
       isLoading: isLoadingData,
       isSaving: isUpdatingRow || isDeletingRow,
       showAlertBanner: errorOccuried(),

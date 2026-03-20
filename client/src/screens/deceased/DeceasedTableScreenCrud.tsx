@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTableState } from "../../hooks/useTableState";
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -54,6 +55,12 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+  const {
+    columnVisibility, setColumnVisibility,
+    columnSizing, setColumnSizing,
+    sorting, setSorting,
+    density, setDensity,
+  } = useTableState("deceased-table-crud");
 
   const { t, i18n } = useTranslation();
 
@@ -244,8 +251,11 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
     data: fetchedData,
     enableColumnResizing: true,
     layoutMode: "grid",
-    initialState: { columnVisibility: { _id: false } }, //hide _id column by default
     localization: getLanguage(i18n),
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing,
+    onSortingChange: setSorting,
+    onDensityChange: setDensity,
     createDisplayMode: "modal", //default ('row', and 'custom' are also available)
     editDisplayMode: "modal", //default ('row', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
@@ -354,6 +364,10 @@ const DeceasedTableScreenCrud: React.FC<MyComponentProps> = (props) => {
       </Button>
     ),
     state: {
+      columnVisibility,
+      columnSizing,
+      sorting,
+      density,
       isLoading: isLoadingData,
       isSaving: isCreatingRow || isUpdatingRow || isDeletingRow,
       showAlertBanner: errorOccuried(),
