@@ -1,9 +1,26 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { marked, Renderer } from "marked";
 import { selectUser } from "../features/userSlice";
 import { OFFICER, ADMINISTRATOR, MAINTAINER } from "../utils/constant.js";
-import { marked } from "marked";
-import { Box, CircularProgress, Typography } from "@mui/material";
+
+// GitHub-compatible heading slug: lowercase, remove non-letter/digit/space/hyphen,
+// replace each space with a hyphen (preserving double spaces → double hyphens).
+function githubSlug(raw: string): string {
+  return raw
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .trim()
+    .replace(/ /g, "-");
+}
+
+const renderer = new Renderer();
+(renderer as any).heading = ({ text, depth, raw }: { text: string; depth: number; raw: string }) => {
+  const id = githubSlug(raw);
+  return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+};
+marked.use({ renderer });
 
 function manualFileForRole(role?: string): string {
   if (role === MAINTAINER) return "/manuals/uputstvo-odrzavalac.md";
