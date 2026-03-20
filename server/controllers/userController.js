@@ -93,8 +93,8 @@ const updateUser = async (req, res, next) => {
   try {
     const { name, email, role, isActive, isVerified, avatarUrl } = req.body;
 
-    if (role === MAINTAINER) {
-      return res.status(403).send({ message: "Forbidden: MAINTAINER role cannot be assigned via user management." });
+    if (role === MAINTAINER && req.userRole !== MAINTAINER) {
+      return res.status(403).send({ message: "Forbidden: only a MAINTAINER can assign the MAINTAINER role." });
     }
 
     console.log(isActive);

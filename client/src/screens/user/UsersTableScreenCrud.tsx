@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/userSlice";
 import { useTableState } from "../../hooks/useTableState";
 import {
   MRT_EditActionButtons,
@@ -30,7 +32,7 @@ import {
   useGetRows,
   useUpdateRow,
 } from "../../hooks/useCrudHooks";
-import { ADMINISTRATOR, OFFICER, VISITOR } from "../../utils/constant.js";
+import { ADMINISTRATOR, OFFICER, VISITOR, MAINTAINER } from "../../utils/constant.js";
 import { isActiveUser } from "../../components/CommonFuntions";
 
 // Defines the name of the react query
@@ -53,11 +55,15 @@ const UsersTableScreenCrud = () => {
   } = useTableState("users-table-crud", { _id: false, password: false });
 
   const { t, i18n } = useTranslation();
+  const currentUser = useSelector(selectUser);
 
   const roles = [
     { label: t(ADMINISTRATOR), value: ADMINISTRATOR },
     { label: t(OFFICER), value: OFFICER },
     { label: t(VISITOR), value: VISITOR },
+    ...(currentUser?.role === MAINTAINER
+      ? [{ label: t("roles.maintainer"), value: MAINTAINER }]
+      : []),
   ];
   const active = [
     { label: t("common.yes"), value: true },

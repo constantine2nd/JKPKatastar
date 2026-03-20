@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
-import { OFFICER, ADMINISTRATOR } from "../utils/constant.js";
+import { OFFICER, ADMINISTRATOR, MAINTAINER } from "../utils/constant.js";
 import { marked } from "marked";
 import { Box, CircularProgress, Typography } from "@mui/material";
 
 function manualFileForRole(role?: string): string {
+  if (role === MAINTAINER) return "/manuals/uputstvo-odrzavalac.md";
   if (role === ADMINISTRATOR) return "/manuals/uputstvo-administrator.md";
   if (role === OFFICER) return "/manuals/uputstvo-sluzbenik.md";
   return "/manuals/uputstvo-posetilac.md";
