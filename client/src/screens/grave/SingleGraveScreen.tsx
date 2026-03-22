@@ -42,7 +42,6 @@ import {
 import { selectUser } from "../../features/userSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import MapComponent from "../../components/MapComponent";
 import OpenMapComponent from "../../components/OpenMapComponent";
 import PayersTableScreenCrud from "../payer/PayersTableScreenCrud";
 

@@ -73,6 +73,7 @@ services:
       dockerfile: Dockerfile
       args:
         REACT_APP_GOOGLE_KEY: ${REACT_APP_GOOGLE_KEY}
+        REACT_APP_GOOGLE_MAP_ID: ${REACT_APP_GOOGLE_MAP_ID}
     restart: always
     environment:
       # API URL should be relative for nginx proxy

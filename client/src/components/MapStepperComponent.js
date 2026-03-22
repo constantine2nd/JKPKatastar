@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { Autocomplete } from "@mui/material";
@@ -10,14 +9,12 @@ import {
   getAllGraveTypes,
   selectAllGraveTypes,
 } from "../features/graveTypesSlice";
-
-import { Map, GoogleApiWrapper, Marker, InfoWindow } from "google-maps-react";
+import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 const mapStyles = {
   width: "70%",
   height: "70%",
-  top: "350px",
-  left: "220px",
+  minHeight: "500px",
 };
 
 const iconBaseFree =
@@ -45,23 +42,10 @@ const MapStepperComponent = (props) => {
   const [graveTypeIds, setGraveTypeIds] = useState([]);
   const graveTypes = useSelector(selectAllGraveTypes);
   const dispatch = useDispatch();
-  const mapRef = useRef(null);
 
   useEffect(() => {
     dispatch(getAllGraveTypes());
   }, [dispatch]);
-  //const mapRef = useRef(null);
-  useEffect(() => {
-    if (mapRef.current) {
-      const newZoom = mapRef.current.map.getZoom();
-      setCurrentZoom(newZoom);
-
-      mapRef.current.map.addListener("zoom_changed", () => {
-        const updatedZoom = mapRef.current.map.getZoom();
-        setCurrentZoom(updatedZoom);
-      });
-    }
-  }, []);
 
   const handleChangeGraveType = (event, value) => {
     let slelectedGraveTypeIds = value.map((graveType) => graveType._id);
@@ -102,52 +86,43 @@ const MapStepperComponent = (props) => {
           )}
         />
       </FormControl>
-      <Map
-        containerStyle={mapStyles}
-        ref={mapRef}
-        zoom={props.selectedCemetery.zoom}
-        google={props.google}
-        initialCenter={{
-          lat: props.selectedCemetery.LAT,
-          lng: props.selectedCemetery.LON,
-        }}
-        mapType="satellite"
-      >
-        {props.graves
-          .filter((grave) => {
-            return (
-              graveTypeIds.length === 0 ||
-              graveTypeIds.some((id) => id === grave.graveType)
-            );
-          })
-          .map((grave) => {
-            const iconUrl =
-              grave.status !== "OCCUPIED" ? iconBaseFree : iconBaseFull;
-            return (
-              <Marker
-                key={grave._id}
-                position={{ lat: grave.LAT, lng: grave.LON }}
-                icon={{
-                  url: iconUrl,
-                  scaledSize: new props.google.maps.Size(
-                    getSizeOfMarker(currentZoom),
-                    getSizeOfMarker(currentZoom),
-                  ),
-                  rotation: 45,
-                }}
-                onClick={() => props.onClickHandler(grave)}
-              >
-                <InfoWindow>
-                  <h4>{"info"}</h4>
-                </InfoWindow>
-              </Marker>
-            );
-          })}
-      </Map>
+      <APIProvider apiKey={process.env.REACT_APP_GOOGLE_KEY}>
+        <Map
+          style={mapStyles}
+          defaultZoom={props.selectedCemetery.zoom}
+          defaultCenter={{
+            lat: props.selectedCemetery.LAT,
+            lng: props.selectedCemetery.LON,
+          }}
+          mapTypeId="satellite"
+          mapId={process.env.REACT_APP_GOOGLE_MAP_ID}
+          onCameraChanged={(ev) => setCurrentZoom(ev.detail.zoom)}
+        >
+          {props.graves
+            .filter((grave) => {
+              return (
+                graveTypeIds.length === 0 ||
+                graveTypeIds.some((id) => id === grave.graveType)
+              );
+            })
+            .map((grave) => {
+              const size = getSizeOfMarker(currentZoom);
+              const iconUrl =
+                grave.status !== "OCCUPIED" ? iconBaseFree : iconBaseFull;
+              return (
+                <AdvancedMarker
+                  key={grave._id}
+                  position={{ lat: grave.LAT, lng: grave.LON }}
+                  onClick={() => props.onClickHandler(grave)}
+                >
+                  <img src={iconUrl} width={size} height={size} alt="" />
+                </AdvancedMarker>
+              );
+            })}
+        </Map>
+      </APIProvider>
     </>
   );
 };
 
-export default GoogleApiWrapper({
-  apiKey: process.env.REACT_APP_GOOGLE_KEY,
-})(MapStepperComponent);
+export default MapStepperComponent;

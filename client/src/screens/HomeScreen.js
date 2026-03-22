@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
@@ -8,7 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import { Modal, Form, Row, Col } from "react-bootstrap";
-import { Map, GoogleApiWrapper, Marker, Polygon } from "google-maps-react";
+import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -36,7 +36,6 @@ import { useTranslation } from "react-i18next";
 const mapStyles = {
   width: "70%",
   height: "600px",
-  position: "relative",
 };
 
 const getSizeOfMarker = (zoom) => {
@@ -59,7 +58,7 @@ const iconBaseFree =
 const iconBaseFull =
   "http://maps.google.com/mapfiles/kml/paddle/red-circle-lv.png";
 
-const HomeScreen = (props) => {
+const HomeScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const graves = useSelector(selectAllGraves);
@@ -72,10 +71,8 @@ const HomeScreen = (props) => {
   const [selectedGrave, setSelectedGrave] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const mapRef = useRef(null);
   let navigate = useNavigate();
   const location = useLocation();
-  console.log(location.state);
   // const selectedCemetery = location.state?.cemetery;
   const [selectedCemetery, setCemeteryId] = React.useState(
     getSelectedCemetery()
@@ -86,7 +83,6 @@ const HomeScreen = (props) => {
       navigate("/landing");
     } else {
       if (gravesStatus === "idle") {
-        console.log("UPAO");
         dispatch(fetchGravesForCemetary(selectedCemetery?._id));
         dispatch(getAllGraveTypes());
       }
@@ -98,21 +94,6 @@ const HomeScreen = (props) => {
     }
   }, []); */
 
-  useEffect(() => {
-    if (mapRef.current) {
-      // Dohvatite trenutni zoom nivo
-      const newZoom = mapRef.current.map.getZoom();
-      console.log(newZoom);
-      setCurrentZoom(newZoom);
-
-      // Dodajte slušač za promene zoom nivoa
-      mapRef.current.map.addListener("zoom_changed", () => {
-        const updatedZoom = mapRef.current.map.getZoom();
-        console.log(updatedZoom);
-        setCurrentZoom(updatedZoom);
-      });
-    }
-  }, []);
 
   const onClickHandler = (grave) => {
     setSelectedGrave(grave);
@@ -136,8 +117,6 @@ const HomeScreen = (props) => {
   }
 
   function getStatData(graveType, graves) {
-    console.log(graves);
-    console.log(graveType);
     let fileteredGraves = graves.filter(
       (grave) => grave.graveType === graveType._id
     );
@@ -294,45 +273,41 @@ const HomeScreen = (props) => {
           />
         </FormControl>
         <br />
-        <Map
-          containerStyle={mapStyles}
-          ref={mapRef}
-          zoom={selectedCemetery?.zoom}
-          google={props.google}
-          initialCenter={{
-            lat: selectedCemetery?.LAT,
-            lng: selectedCemetery?.LON,
-          }}
-          mapType="satellite"
-        >
-          {graves
-            .filter((grave) => {
-              return (
-                graveTypeIds.length === 0 ||
-                graveTypeIds.some((id) => id === grave.graveType)
-              );
-            })
-            .map((grave) => {
-              console.log(grave.status);
-              const iconUrl =
-                grave.status === "FREE" ? iconBaseFree : iconBaseFull;
-              return (
-                <Marker
-                  key={grave._id}
-                  position={{ lat: grave.LAT, lng: grave.LON }}
-                  icon={{
-                    url: iconUrl,
-                    scaledSize: new props.google.maps.Size(
-                      getSizeOfMarker(currentZoom),
-                      getSizeOfMarker(currentZoom)
-                    ),
-                    rotation: 45,
-                  }}
-                  onClick={() => onClickHandler(grave)}
-                />
-              );
-            })}
-        </Map>
+        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_KEY}>
+          <Map
+            style={mapStyles}
+            defaultZoom={selectedCemetery?.zoom || 19}
+            defaultCenter={{
+              lat: selectedCemetery?.LAT,
+              lng: selectedCemetery?.LON,
+            }}
+            mapTypeId="satellite"
+            mapId={process.env.REACT_APP_GOOGLE_MAP_ID}
+            onCameraChanged={(ev) => setCurrentZoom(ev.detail.zoom)}
+          >
+            {graves
+              .filter((grave) => {
+                return (
+                  graveTypeIds.length === 0 ||
+                  graveTypeIds.some((id) => id === grave.graveType)
+                );
+              })
+              .map((grave) => {
+                const size = getSizeOfMarker(currentZoom);
+                const iconUrl =
+                  grave.status === "FREE" ? iconBaseFree : iconBaseFull;
+                return (
+                  <AdvancedMarker
+                    key={grave._id}
+                    position={{ lat: grave.LAT, lng: grave.LON }}
+                    onClick={() => onClickHandler(grave)}
+                  >
+                    <img src={iconUrl} width={size} height={size} alt="" />
+                  </AdvancedMarker>
+                );
+              })}
+          </Map>
+        </APIProvider>
         {selectedGrave && (
           <Modal show={showModal} onHide={onCloseHandler} size="lg">
             <Modal.Header closeButton>
@@ -428,6 +403,4 @@ const HomeScreen = (props) => {
     </>
   );
 };
-export default GoogleApiWrapper({
-  apiKey: process.env.REACT_APP_GOOGLE_KEY,
-})(HomeScreen);
+export default HomeScreen;
