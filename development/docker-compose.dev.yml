@@ -94,6 +94,8 @@ services:
       REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/api}
       REACT_APP_MAP_CENTER_LAT: ${REACT_APP_MAP_CENTER_LAT:-45.2671}
       REACT_APP_MAP_CENTER_LON: ${REACT_APP_MAP_CENTER_LON:-19.8335}
+      REACT_APP_GOOGLE_KEY: ${REACT_APP_GOOGLE_KEY}
+      REACT_APP_GOOGLE_MAP_ID: ${REACT_APP_GOOGLE_MAP_ID}
     volumes:
       - ../client/src:/app/src
       - ../client/public:/app/public

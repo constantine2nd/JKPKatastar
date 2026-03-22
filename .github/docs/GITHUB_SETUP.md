@@ -70,7 +70,7 @@ sudo ufw status
 
 Go to your GitHub repository: **Settings → Secrets and variables → Actions**
 
-### 2.1 Required Secrets (5)
+### 2.1 Required Secrets
 
 Click **"New repository secret"** for each:
 
@@ -81,16 +81,20 @@ Click **"New repository secret"** for each:
 | `VPS_SSH_KEY` | `-----BEGIN RSA PRIVATE KEY-----...` | Private SSH key content (from step 1.1) |
 | `MONGO_PASSWORD` | `MySecur3P@ssw0rd!` | Strong MongoDB password |
 | `JWT_SECRET` | `randomBase64String123...` | JWT signing secret (generate strong key) |
+| `REACT_APP_GOOGLE_KEY` | `AIzaSy...` | Google Maps JavaScript API key |
+| `REACT_APP_GOOGLE_MAP_ID` | `1b895b45f7cba34c...` | Google Maps Map ID (required for AdvancedMarker) |
 
-### 2.2 Optional Email Secrets (5)
+See [Google Maps Cloud Setup](../../development/docs/LOCAL_DEVELOPMENT.md#google-maps-cloud-setup) for how to obtain these.
+
+### 2.2 Optional Email Secrets
 
 For email notifications:
 
 | Secret Name | Example Value | Description |
 |-------------|---------------|-------------|
-| `EMAIL_SERVICE` | `gmail` | Email service provider |
+| `EMAIL_SERVICE` | `Gmail` | Email service provider |
 | `EMAIL_HOST` | `smtp.gmail.com` | SMTP host |
-| `EMAIL_PORT` | `587` | SMTP port |
+| `EMAIL_PORT` | `465` | SMTP port |
 | `EMAIL_USER` | `your-email@gmail.com` | Your email address |
 | `EMAIL_SECRET` | `your-app-password` | App password or email password |
 
@@ -118,6 +122,8 @@ The deployment automatically configures these variables using your secrets:
 | `CLIENT_HOST_URI` | `http://${VPS_HOST}:3000` | From VPS_HOST |
 | `REACT_APP_API_URL` | `http://${VPS_HOST}:5000/api` | From VPS_HOST |
 | `JWT_SECRET` | From GitHub Secret | From JWT_SECRET |
+| `REACT_APP_GOOGLE_KEY` | From GitHub Secret | From REACT_APP_GOOGLE_KEY |
+| `REACT_APP_GOOGLE_MAP_ID` | From GitHub Secret | From REACT_APP_GOOGLE_MAP_ID |
 
 ## 🚀 Step 4: Deploy Your Application
 

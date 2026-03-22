@@ -54,7 +54,7 @@ docker compose up -d
 ### Issue 2: Frontend Not Accessible (Port 3000)
 
 **Symptoms:**
-- "Connection refused" when accessing http://194.146.58.124:3000
+- "Connection refused" when accessing http://YOUR_VPS_IP:3000
 - Frontend container running but not responding
 
 **Solutions:**
@@ -201,7 +201,6 @@ ls -la /opt/jkp-katastar/JKPKatastar/.env
 # Verify .env file content
 cat /opt/jkp-katastar/JKPKatastar/.env
 
-```bash
 # Check if containers are using the variables
 docker compose exec backend printenv | grep MONGO
 docker compose exec backend printenv | grep JWT
@@ -295,7 +294,6 @@ watch -n 2 'docker compose ps'
 
 # Follow all logs
 docker compose logs -f
-```
 
 # Monitor system resources
 htop
@@ -305,20 +303,20 @@ watch -n 2 'netstat -tlnp | grep -E "3000|5000|27017"'
 ```
 
 ### Service URLs for Testing
-- **Frontend:** http://194.146.58.124:3000
-- **Backend API:** http://194.146.58.124:5000/api
-- **Health Check:** http://194.146.58.124:5000/api/health
+- **Frontend:** http://YOUR_VPS_IP:3000
+- **Backend API:** http://YOUR_VPS_IP:5000/api
+- **Health Check:** http://YOUR_VPS_IP:5000/api/health
 
 ### Useful curl Commands
 ```bash
 # Test frontend
-curl -I http://194.146.58.124:3000
+curl -I http://YOUR_VPS_IP:3000
 
 # Test backend health
-curl -s http://194.146.58.124:5000/api/health | jq
+curl -s http://YOUR_VPS_IP:5000/api/health | jq
 
 # Test with timeout
-curl --connect-timeout 10 --max-time 30 http://194.146.58.124:3000
+curl --connect-timeout 10 --max-time 30 http://YOUR_VPS_IP:3000
 ```
 
 ## Getting Help
@@ -333,7 +331,6 @@ docker compose version
 
 # Service status
 docker compose ps
-```
 
 # Recent logs
 docker compose logs --tail=100

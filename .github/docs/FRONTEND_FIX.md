@@ -70,7 +70,7 @@ Cannot find module 'ajv/dist/compile/codegen'
 
 ### Development (Local)
 ```bash
-./dev.sh                    # Uses docker-compose.dev.yml
+./development/dev.sh                    # Uses docker-compose.dev.yml
 # Frontend: React dev server on :3000
 # Hot reload enabled
 ```
@@ -88,9 +88,9 @@ After redeployment:
 
 1. **Frontend builds successfully** (no more ajv errors)
 2. **Nginx serves static React build** (faster, more stable)
-3. **External access works** on `http://194.146.58.124:3000`
+3. **External access works** on `http://YOUR_VPS_IP:3000`
 4. **Health checks pass** (internal port 80)
-5. **Development still works** with `./dev.sh`
+5. **Development still works** with `./development/dev.sh`
 
 ## 🔧 How to Apply the Fix
 
@@ -105,7 +105,7 @@ git push origin main
 ### Option 2: Manual Deployment
 ```bash
 # Set environment variables
-export VPS_HOST=194.146.58.124
+export VPS_HOST=YOUR_VPS_IP
 export MONGO_PASSWORD=your_password
 export JWT_SECRET=your_jwt_secret
 
@@ -116,7 +116,7 @@ export JWT_SECRET=your_jwt_secret
 ### Option 3: Quick Fix on VPS
 ```bash
 # SSH into VPS
-ssh root@194.146.58.124
+ssh root@YOUR_VPS_IP
 
 # Navigate to deployment
 cd /opt/jkp-katastar/JKPKatastar
@@ -146,7 +146,7 @@ docker compose ps
 
 3. **Test external access**:
    ```bash
-   curl http://194.146.58.124:3000
+   curl http://YOUR_VPS_IP:3000
    ```
 
 4. **Run health check**:
@@ -168,7 +168,7 @@ docker compose ps
 
 ## 🔮 Prevention
 
-- **Development**: Always use `./dev.sh` (uses dev configuration)
+- **Development**: Always use `./development/dev.sh` (uses dev configuration)
 - **Production**: Always use production deployment scripts
 - **Testing**: Use `./test-vps-ready.sh` before deployment
 - **Monitoring**: Use `./health-check.sh` after deployment

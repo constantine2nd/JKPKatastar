@@ -26,6 +26,7 @@ git --version             # Should show Git version
 
 2. **Start everything:**
    ```bash
+   cd development
    ./dev.sh
    ```
 
@@ -61,16 +62,20 @@ That's it! All services (React, Node.js, MongoDB) are running with hot reload.
 
 ```
 JKPKatastar/
-├── client/                 # Frontend React app
+├── .env                   # All environment variables (single source of truth, gitignored)
+├── client/                # Frontend React app
 │   ├── src/               # Edit these files for frontend changes
 │   ├── public/            # Static assets
 │   └── package.json       # Frontend dependencies
-├── server/                # Backend Node.js app  
+├── server/                # Backend Node.js app
 │   ├── routes/            # API endpoints
 │   ├── models/            # Database models
 │   ├── server.js          # Main server file
 │   └── package.json       # Backend dependencies
-└── dev.sh                 # Development startup script
+└── development/           # Dev tooling
+    ├── dev.sh             # Development startup script
+    ├── docker-compose.dev.yml
+    └── docs/
 ```
 
 ## Making Changes
@@ -119,7 +124,7 @@ docker system prune -a
 
 ### Permission Issues (Linux)
 ```bash
-chmod +x dev.sh development/dev.sh
+chmod +x development/dev.sh
 ```
 
 ### Docker Group (Linux)
@@ -130,26 +135,88 @@ sudo usermod -aG docker $(whoami) && newgrp docker
 
 ## Environment Variables
 
-Create `.env` file in root directory for custom settings:
+All variables live in a single `.env` file in the **root directory** (gitignored). Create it before first start:
 
 ```bash
-# Database
-MONGO_USERNAME=admin
-MONGO_PASSWORD=your_password
-MONGO_DATABASE=graves_dev
+# Database (local Docker)
+MONGO_URI=mongodb://admin:password123@mongodb:27017/graves_dev?authSource=admin
+MONGO_PASSWORD=password123
 
-# JWT
+# Auth
 JWT_SECRET=your_secret_key
 
-# Email (optional)
-EMAIL_SERVICE=gmail
-EMAIL_USER=your_email@gmail.com  
+# Email
+EMAIL_SERVICE=Gmail
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=465
+EMAIL_USER=your_email@gmail.com
 EMAIL_SECRET=your_app_password
 
-# Development
-NODE_ENV=development
-PORT=5000
+# CORS
+CLIENT_HOST_URI=http://localhost:3000
+
+# Google Maps
+REACT_APP_GOOGLE_KEY=your_google_maps_api_key
+REACT_APP_GOOGLE_MAP_ID=your_google_map_id
 ```
+
+`dev.sh` automatically sources this file before starting Docker Compose, so all variables reach both backend and frontend containers.
+
+## Google Maps Cloud Setup
+
+The map features require a Google Maps API key and a Map ID. Both are free to create but require a Google Cloud account with billing enabled.
+
+### 1. Create a Google Cloud Project
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project or select an existing one
+
+### 2. Enable Billing
+
+Google Maps JavaScript API requires a billing account (free tier covers typical dev usage):
+
+1. Cloud Console → **Billing** → link a billing account to the project
+
+### 3. Enable the Maps JavaScript API
+
+1. Cloud Console → **APIs & Services** → **Library**
+2. Search for **Maps JavaScript API** → click **Enable**
+
+### 4. Create an API Key
+
+1. Cloud Console → **APIs & Services** → **Credentials**
+2. Click **Create Credentials** → **API key**
+3. Copy the key → paste into `.env` as `REACT_APP_GOOGLE_KEY`
+
+**Restrict the key (recommended):**
+- Under **Application restrictions**: add your domain (or set to *None* for local dev)
+- Under **API restrictions**: restrict to *Maps JavaScript API*
+
+### 5. Create a Map ID
+
+Map ID is required for `AdvancedMarker` (the modern marker API):
+
+1. Cloud Console → **Google Maps Platform** → **Map Management**
+2. Click **Create Map ID**
+3. Set type: **JavaScript** / **Raster**
+4. Copy the ID → paste into `.env` as `REACT_APP_GOOGLE_MAP_ID`
+
+### 6. Add GitHub Secrets (for CI/CD)
+
+In the GitHub repository → **Settings** → **Secrets and variables** → **Actions**, add:
+- `REACT_APP_GOOGLE_KEY`
+- `REACT_APP_GOOGLE_MAP_ID`
+
+### Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `InvalidKeyMapError` | API key and Map ID from different projects | Create both in the same GCP project |
+| `InvalidKeyMapError` | Maps JavaScript API not enabled | Enable it in APIs & Services → Library |
+| `InvalidKeyMapError` | No billing account linked | Link billing in Cloud Console → Billing |
+| "Map initialized without valid Map ID" | `REACT_APP_GOOGLE_MAP_ID` is empty | Restart `dev.sh` after editing `.env` |
+
+---
 
 ## Development Workflow
 

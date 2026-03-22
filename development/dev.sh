@@ -6,6 +6,16 @@
 echo "🏛️  JKP Katastar Cemetery Management System"
 echo "=========================================="
 
+# Load env vars from root .env so docker-compose can substitute them
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_ENV="$SCRIPT_DIR/../.env"
+if [ -f "$ROOT_ENV" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$ROOT_ENV"
+    set +a
+fi
+
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
     echo "❌ Docker is not running. Please start Docker first."
@@ -24,9 +34,16 @@ fi
 
 echo "🔧 Using: $COMPOSE_CMD"
 
+cleanup_previous() {
+    echo "🧹 Cleaning up previous run (containers, networks, dangling images)..."
+    $COMPOSE_CMD -f docker-compose.dev.yml down --remove-orphans 2>/dev/null || true
+    docker image prune -f 2>/dev/null || true
+}
+
 # Handle command
 case "${1:-start}" in
     "start"|"")
+        cleanup_previous
         echo "🚀 Starting all services (MongoDB + Backend + Frontend)..."
         $COMPOSE_CMD -f docker-compose.dev.yml up --build --remove-orphans
         ;;
@@ -35,8 +52,8 @@ case "${1:-start}" in
         $COMPOSE_CMD -f docker-compose.dev.yml down --remove-orphans
         ;;
     "restart")
+        cleanup_previous
         echo "🔄 Restarting all services..."
-        $COMPOSE_CMD -f docker-compose.dev.yml down --remove-orphans
         $COMPOSE_CMD -f docker-compose.dev.yml up --build --remove-orphans
         ;;
     "rebuild")
