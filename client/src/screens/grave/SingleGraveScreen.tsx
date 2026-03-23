@@ -49,6 +49,7 @@ import { Grave } from "../../interfaces/GraveIntefaces";
 import { useTranslation } from "react-i18next";
 import html2canvas from "html2canvas";
 import DeceasedTableScreenCrud from "../deceased/DeceasedTableScreenCrud";
+import { OFFICER, ADMINISTRATOR, MAINTAINER } from "../../utils/constant.js";
 
 const getParagraphStyling = (contractTo: string) => {
   let classString = "";
@@ -136,13 +137,15 @@ const SingleGraveScreen: React.FC = () => {
     );
   }
 
+  const canSeePayers = user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER;
+
   return (
     <>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
         <Tabs value={value} onChange={handleChange} centered>
           <Tab label={t("tabs.grave-data")} />
           <Tab label={t("tabs.deceased-list")} />
-          <Tab label={t("tabs.payer-list")} />
+          {canSeePayers && <Tab label={t("tabs.payer-list")} />}
         </Tabs>
       </Box>
       <Box
@@ -245,7 +248,7 @@ const SingleGraveScreen: React.FC = () => {
             graveCapcity={Number(grave.graveType?.capacity)}
           />
         )}
-        {grave && value === 2 && <PayersTableScreenCrud graveId={grave._id} />}
+        {grave && canSeePayers && value === 2 && <PayersTableScreenCrud graveId={grave._id} />}
       </Box>
     </>
   );
