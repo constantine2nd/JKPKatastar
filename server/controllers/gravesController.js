@@ -388,6 +388,7 @@ const updateGrave = async (req, res) => {
     field,
     row,
     status,
+    contractTo,
     "graveType._id": graveTypeId,
     "cemetery._id": cemeteryId,
   } = req.body;
@@ -399,6 +400,7 @@ const updateGrave = async (req, res) => {
     field: field,
     row: row,
     status: status,
+    contractTo: contractTo || null,
     graveType: new mongoose.Types.ObjectId(graveTypeId),
     cemetery: new mongoose.Types.ObjectId(cemeteryId),
   }; // Fields to update

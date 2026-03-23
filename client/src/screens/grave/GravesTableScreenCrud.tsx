@@ -9,6 +9,9 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import "dayjs/locale/sr";
 import {
   Box,
   Button,
@@ -178,14 +181,41 @@ const GravesTableScreenCrud = () => {
       enableEditing: false,
     },
     {
-      accessorFn: (row) => new Date(row.contractTo),
+      accessorFn: (row) => {
+        if (!row.contractTo) return "";
+        const d = new Date(row.contractTo);
+        return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+      },
       id: "contractTo",
       filterFn: "between",
       filterVariant: "date",
       sortingFn: "datetime",
       header: t("grave.contract-expiration-date"),
-      Cell: ({ cell }) => expiredContract(cell.getValue<string>()),
-      enableEditing: false,
+      Cell: ({ row }) => expiredContract(row.original.contractTo),
+      enableEditing: true,
+      Edit: ({ row, column, table }) => {
+        const rawValue = row._valuesCache[column.id] as string;
+        return (
+          <DatePicker
+            label={t("grave.contract-expiration-date")}
+            value={rawValue ? dayjs(rawValue) : null}
+            onChange={(newValue) => {
+              row._valuesCache[column.id] = newValue
+                ? newValue.format("YYYY-MM-DD")
+                : "";
+              table.setEditingRow({ ...row });
+            }}
+            format="DD.MM.YYYY"
+            dayOfWeekFormatter={(dayOfWeek) => dayOfWeek}
+            slotProps={{
+              textField: {
+                variant: "standard",
+                fullWidth: true,
+              },
+            }}
+          />
+        );
+      },
     },
     {
       accessorFn: (row) => {
