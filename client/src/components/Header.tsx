@@ -287,8 +287,18 @@ const Header = () => {
             </Box>
 
             {/* User avatar menu */}
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
+            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center", gap: 1 }}>
+              {user && (
+                <Box sx={{ display: { xs: "none", md: "flex" }, flexDirection: "column", alignItems: "flex-end" }}>
+                  <Typography variant="body2" sx={{ color: "inherit", fontWeight: 600, lineHeight: 1.2 }}>
+                    {user.name}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "inherit", opacity: 0.75, lineHeight: 1.2 }}>
+                    {t(user.role)}
+                  </Typography>
+                </Box>
+              )}
+              <Tooltip title={user ? user.name : t("auth.sign-in")}>
                 <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0 }}>
                   <Avatar alt={user?.name} src={user?.avatarUrl} />
                 </IconButton>
@@ -303,6 +313,14 @@ const Header = () => {
                 open={Boolean(anchorElUser)}
                 onClose={() => setAnchorElUser(null)}
               >
+                {user && (
+                  <Box sx={{ px: 2, py: 1 }}>
+                    <Typography variant="subtitle2" fontWeight={700}>{user.name}</Typography>
+                    <Typography variant="caption" color="text.secondary">{user.email}</Typography>
+                    <Typography variant="caption" color="text.secondary" display="block">{t(user.role)}</Typography>
+                  </Box>
+                )}
+                {user && <Divider />}
                 {!user && (
                   <MenuItem key="Login" href="/login-user" component={Link}>
                     <ListItemIcon><Login fontSize="small" /></ListItemIcon>
