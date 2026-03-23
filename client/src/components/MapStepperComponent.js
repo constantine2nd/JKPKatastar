@@ -13,8 +13,7 @@ import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
 const mapStyles = {
   width: "70%",
-  height: "70%",
-  minHeight: "500px",
+  height: "600px",
 };
 
 const iconBaseFree =
@@ -113,9 +112,19 @@ const MapStepperComponent = (props) => {
                 <AdvancedMarker
                   key={grave._id}
                   position={{ lat: grave.LAT, lng: grave.LON }}
-                  onClick={() => props.onClickHandler(grave)}
+                  onClick={
+                    grave.status !== "OCCUPIED"
+                      ? () => props.onClickHandler(grave)
+                      : undefined
+                  }
                 >
-                  <img src={iconUrl} width={size} height={size} alt="" />
+                  <img
+                    src={iconUrl}
+                    width={size}
+                    height={size}
+                    alt=""
+                    style={{ cursor: grave.status !== "OCCUPIED" ? "pointer" : "not-allowed" }}
+                  />
                 </AdvancedMarker>
               );
             })}

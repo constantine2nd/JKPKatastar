@@ -6,4 +6,5 @@ export interface GraveRequest {
   phone: string;
   status: string;
   createdAt: string;
+  grave: string;
 }

@@ -25,6 +25,9 @@ const addGraveRequest = async (req, res, next) => {
       req.body;
 
     const foundGrave = await Grave.findById(graveId);
+    if (!foundGrave) {
+      return res.status(404).send({ message: "Grave not found" });
+    }
     if (foundGrave.status === "OCCUPIED") {
       res.status(400).send({
         message: "Grave is not free",
@@ -70,7 +73,17 @@ const updateGraveRequest = async (req, res, next) => {
   try {
     const { _id, status, name, surname, email, phone, createdAt } = req.body;
 
-    const filter = { _id: _id }; // Criteria to find a row
+    const existingRequest = await GraveRequest.findById(_id);
+    if (!existingRequest) {
+      return res.status(404).send({ message: "Grave request not found" });
+    }
+
+    // Free the grave when a request is denied
+    if (status === "DENIED" && existingRequest.status !== "DENIED") {
+      await Grave.findByIdAndUpdate(existingRequest.grave, { status: "FREE" });
+    }
+
+    const filter = { _id: _id };
     const update = {
       status: status,
       name: name,
@@ -78,7 +91,7 @@ const updateGraveRequest = async (req, res, next) => {
       email: email,
       phone: phone,
       createdAt: createdAt,
-    }; // Fields to update
+    };
 
     const updatedRow = await GraveRequest.findOneAndUpdate(filter, update, {
       new: true,
@@ -90,6 +103,7 @@ const updateGraveRequest = async (req, res, next) => {
       addLog(req.userId, "UPDATE_GRAVE_REQUEST", { id: updatedRow._id, status: updatedRow.status });
       res.status(200).json({
         _id: updatedRow._id,
+        grave: updatedRow.grave,
         name: updatedRow.name,
         surname: updatedRow.surname,
         email: updatedRow.email,
@@ -110,16 +124,22 @@ const updateGraveRequest = async (req, res, next) => {
 const deleteGraveRequest = async (req, res, next) => {
   const id = req.params.id;
   try {
+    const request = await GraveRequest.findById(id);
+    if (!request) {
+      return res.status(404).send({ message: "Nothing to delete" });
+    }
+
+    // Free the grave if the request was still pending
+    if (request.status === "REQUESTED") {
+      await Grave.findByIdAndUpdate(request.grave, { status: "FREE" });
+    }
+
     const result = await GraveRequest.deleteOne({ _id: id });
-    console.log(res);
     if (result.deletedCount === 1) {
-      console.log("deleted count 1");
       addLog(req.userId, "DELETE_GRAVE_REQUEST", { id });
       res.send({ id: id });
     } else {
-      res.status(400).send({
-        message: "Nothing to delete",
-      });
+      res.status(400).send({ message: "Nothing to delete" });
     }
   } catch (err) {
     next(err);

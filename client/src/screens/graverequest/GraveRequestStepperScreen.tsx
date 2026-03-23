@@ -17,6 +17,8 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import axios from "axios";
 
@@ -74,6 +76,7 @@ const GraveRequestStepperScreen: React.FC = () => {
   const [surname, setSurname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const dispatch = useDispatch<any>();
   const { t, i18n } = useTranslation();
 
@@ -124,7 +127,7 @@ const GraveRequestStepperScreen: React.FC = () => {
       surname: surname,
       email: email,
       phone: phone,
-      status: "REQUSTED",
+      status: "REQUESTED",
       createdAt: new Date(),
     };
     await axios
@@ -133,7 +136,9 @@ const GraveRequestStepperScreen: React.FC = () => {
         setActiveStep(3);
         console.log(response.data);
       })
-      .catch((error) => console.log(window.alert(composeErrorMessage(error))));
+      .catch((error) => {
+        setErrorMessage(composeErrorMessage(error));
+      });
   };
   return (
     <>
@@ -311,6 +316,20 @@ const GraveRequestStepperScreen: React.FC = () => {
           </Box>
         )}
       </Box>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={6000}
+        onClose={() => setErrorMessage(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setErrorMessage(null)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

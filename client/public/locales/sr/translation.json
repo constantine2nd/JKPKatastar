@@ -56,7 +56,8 @@
   },
   "grave-request": {
     "title": "Zahtev za grobno mesto",
-    "create-new": "Kreiraj novi zahtev za grobno mesto"
+    "create-new": "Kreiraj novi zahtev za grobno mesto",
+    "edit": "Uredi zahtev za grobno mesto"
   },
   "deceased": {
     "title": "Pokojnik",

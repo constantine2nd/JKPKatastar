@@ -36,7 +36,7 @@ import { dateFormatter } from "../../utils/dateFormatter";
 import { ACCEPTED, DENIED, REQUESTED } from "../../utils/constant";
 
 // Defines the name of the react query
-const queryFunction = "grave-types-all";
+const queryFunction = "grave-requests-all";
 // Defines CRUD paths
 const getPath = "/api/grave-requests/all";
 const createPath = "/api/grave-requests/addgraverequest";
@@ -92,7 +92,7 @@ const GraveRequestTableScreenCrud = () => {
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            name: undefined,
+            surname: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
@@ -109,7 +109,7 @@ const GraveRequestTableScreenCrud = () => {
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            name: undefined,
+            email: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
@@ -126,7 +126,7 @@ const GraveRequestTableScreenCrud = () => {
         onFocus: () =>
           setValidationErrors({
             ...validationErrors,
-            name: undefined,
+            phone: undefined,
           }),
         //optionally add validation checking for onBlur or onChange
       },
@@ -258,7 +258,7 @@ const GraveRequestTableScreenCrud = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h3">{t("grave-type.edit")}</DialogTitle>
+        <DialogTitle variant="h3">{t("grave-request.edit")}</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >

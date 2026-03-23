@@ -56,7 +56,8 @@
   },
   "grave-request": {
     "title": "Sírhely kérelem",
-    "create-new": "Új sírhely kérelem létrehozása"
+    "create-new": "Új sírhely kérelem létrehozása",
+    "edit": "Sírhely kérelem szerkesztése"
   },
   "deceased": {
     "title": "Elhunyt",

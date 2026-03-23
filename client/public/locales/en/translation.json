@@ -56,7 +56,8 @@
   },
   "grave-request": {
     "title": "Grave Request",
-    "create-new": "Create New Grave Request"
+    "create-new": "Create New Grave Request",
+    "edit": "Edit Grave Request"
   },
   "deceased": {
     "title": "Deceased",
