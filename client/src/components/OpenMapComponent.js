@@ -12,7 +12,7 @@ const OpenMapComponent = ({ LAT, LON }) => {
     iconSize: [36, 36],
   });
   return (
-    <MapContainer center={[LAT, LON]} zoom={18} scrollWheelZoom={true}>
+    <MapContainer key={`${LAT}-${LON}`} center={[LAT, LON]} zoom={18} scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
