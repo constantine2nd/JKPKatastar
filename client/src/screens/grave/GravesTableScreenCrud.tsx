@@ -47,13 +47,14 @@ import {
   getAllGraveTypes,
   selectAllGraveTypes,
 } from "../../features/graveTypesSlice";
+import { selectUser } from "../../features/userSlice";
 import {
   fetchCemeteries,
   selectAllCemeteries,
 } from "../../features/cemeteriesSlice";
 import { GraveType } from "../../interfaces/GraveTypeInterfaces";
 import { Cemetery } from "../../interfaces/CemeteryInterfaces";
-import { FREE, OCCUPIED } from "../../utils/constant";
+import { FREE, OCCUPIED, OFFICER, ADMINISTRATOR } from "../../utils/constant";
 
 // Defines the name of the react query
 const queryFunction = "graves-paginated";
@@ -78,6 +79,7 @@ const GravesTableScreenCrud = () => {
   const queryClient = useQueryClient();
   const graveTypes: GraveType[] | null = useSelector(selectAllGraveTypes);
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
+  const user = useSelector(selectUser);
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch<any>();
 
@@ -398,17 +400,18 @@ const GravesTableScreenCrud = () => {
         </Tooltip>
       </Box>
     ),
-    renderTopToolbarCustomActions: () => (
-      <Button
-        variant="contained"
-        onClick={() => {
-          const url = "/add-grave";
-          window.open(url, "_blank");
-        }}
-      >
-        {t("grave.add")}
-      </Button>
-    ),
+    renderTopToolbarCustomActions: () =>
+      user?.role === OFFICER || user?.role === ADMINISTRATOR ? (
+        <Button
+          variant="contained"
+          onClick={() => {
+            const url = "/add-grave";
+            window.open(url, "_blank");
+          }}
+        >
+          {t("grave.add")}
+        </Button>
+      ) : null,
     state: {
       pagination,
       columnVisibility,
