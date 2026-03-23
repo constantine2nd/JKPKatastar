@@ -143,6 +143,7 @@
     "surname": "Vezetéknév",
     "email": "Email",
     "password": "Jelszó",
+    "password-leave-blank": "Hagyja üresen a változatlanhoz",
     "repeat-password": "Jelszó megerősítése",
     "address": "Cím",
     "phone": "Telefon",

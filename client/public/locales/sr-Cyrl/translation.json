@@ -143,6 +143,7 @@
     "surname": "Презиме",
     "email": "Имejл",
     "password": "Лозинка",
+    "password-leave-blank": "Оставите празно да не мењате",
     "repeat-password": "Поновите лозинку",
     "address": "Адреса",
     "phone": "Телефон",

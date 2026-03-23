@@ -91,7 +91,7 @@ const addUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const { name, email, role, isActive, isVerified, avatarUrl } = req.body;
+    const { name, email, role, isActive, isVerified, avatarUrl, password } = req.body;
 
     if (role === MAINTAINER && req.userRole !== MAINTAINER) {
       return res.status(403).send({ message: "Forbidden: only a MAINTAINER can assign the MAINTAINER role." });
@@ -108,6 +108,11 @@ const updateUser = async (req, res, next) => {
       avatarUrl: avatarUrl,
     }; // Fields to update
 
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      update.password = await bcrypt.hash(password, salt);
+    }
+
     const updatedUser = await User.findOneAndUpdate(filter, update, {
       new: true,
     });
@@ -115,9 +120,8 @@ const updateUser = async (req, res, next) => {
     console.log(updatedUser);
 
     if (updatedUser) {
-      res.status(200).json({
-        ...updatedUser._doc,
-      });
+      const { password: _pw, ...userDoc } = updatedUser._doc;
+      res.status(200).json(userDoc);
     } else {
       res.status(400).send({
         message: "Cannot update the user",
@@ -256,17 +260,17 @@ const resetPassword = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
     const update = { password: hashedPassword }; // Fields to update
 
-    if (repeatedPassword != null && password == repeatedPassword) {
-      // All good
-    } else {
-      res.status(400).send({
+    if (repeatedPassword == null || password !== repeatedPassword) {
+      return res.status(400).send({
         message: "err-confirm-password",
       });
     }
 
-    const resetPasswordUser = await User.findOneAndUpdate(filter, update, {
-      new: true,
-    });
+    const resetPasswordUser = await User.findOneAndUpdate(
+      filter,
+      { ...update, pseudoRandomToken: null },
+      { new: true }
+    );
 
     console.log(resetPasswordUser);
 

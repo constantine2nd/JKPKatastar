@@ -146,6 +146,11 @@ const UsersTableScreenCrud = () => {
       accessorKey: "password",
       header: t("form.password"),
       enableEditing: true,
+      Cell: () => "••••••••",
+      muiEditTextFieldProps: {
+        type: "password",
+        placeholder: t("form.password-leave-blank"),
+      },
     },
   ];
 

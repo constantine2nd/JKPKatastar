@@ -29,7 +29,7 @@ const watchServerErrors: string[] = [
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("dates.token");
+  const query = searchParams.get("token");
 
   const { t } = useTranslation();
   const dispatch = useDispatch<any>();

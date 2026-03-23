@@ -143,6 +143,7 @@
     "surname": "Prezime",
     "email": "Email",
     "password": "Lozinka",
+    "password-leave-blank": "Ostavite prazno da ne menjate",
     "repeat-password": "Ponovite lozinku",
     "address": "Adresa",
     "phone": "Telefon",

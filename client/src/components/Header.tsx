@@ -55,8 +55,13 @@ const Header = () => {
   const publicPages: PageItem[] = [
     { item: t("menu.search-deceased"), link: "search-deceased" },
     { item: t("menu.view-grave"), link: "graves-table-crud" },
-    // Grave Request: flat button, any logged-in user
-    ...(user ? [{ item: t("menu.grave-request"), link: "grave-requests-crud" }] : []),
+    // Grave Request: visitors/guests go to stepper, officers+ go to management table
+    {
+      item: t("menu.grave-request"),
+      link: (user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER)
+        ? "grave-requests-crud"
+        : "grave-requests-stepper",
+    },
   ];
 
   // Role-gated dropdown groups

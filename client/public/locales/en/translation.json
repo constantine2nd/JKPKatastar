@@ -143,6 +143,7 @@
     "surname": "Surname",
     "email": "Email",
     "password": "Password",
+    "password-leave-blank": "Leave blank to keep unchanged",
     "repeat-password": "Repeat Password",
     "address": "Address",
     "phone": "Phone",
