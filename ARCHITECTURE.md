@@ -248,13 +248,13 @@ gzip_types
 ```nginx
 server {
     listen 80;
-    server_name localhost;
+    server_name jkpkatastar.eneplus.rs localhost _;
     root /usr/share/nginx/html;  # Where React build files are located
     index index.html;            # Default file to serve
 }
 ```
 
-**Key Point**: The `root` directive points to where the React production build is copied during Docker image creation.
+**Key Point**: The `server_name` includes the public domain, `localhost`, and `_` (catch-all) so the container accepts requests regardless of how the server is reached. The `root` directive points to where the React production build is copied during Docker image creation.
 
 ### 4. React Router Handling (Critical for SPA)
 ```nginx
@@ -564,38 +564,22 @@ The JKP Katastar system follows a modern **three-tier architecture** with clear 
 
 The system is designed to efficiently manage cemetery operations for JKP Temerin while providing a modern, responsive user experience for administrators, officers, and visitors.
 
-## Current Deployment vs Intended Nginx Usage
+## Production Deployment
 
-Based on the accessible URLs `http://185.237.15.242:3000` (frontend) and `http://185.237.15.242:5000/api/health` (backend), the system is currently running in **direct port exposure mode** rather than using the intended Nginx proxy configuration.
+### Current Production Setup
 
-### Current Setup Analysis
-
-**What's Actually Running**:
-```
-Frontend: http://185.237.15.242:3000 (React Dev Server or Direct Container)
-Backend:  http://185.237.15.242:5000 (Express API Direct Access)
-```
-
-This indicates you're likely using:
-- `docker-compose.yml` (development configuration) OR
-- `docker-compose.prod.yml` with direct port bindings
-
-### Nginx Configuration Status
-
-Your `client/nginx.conf` is configured but **not currently active** as the primary entry point because:
-
-1. **Frontend on Port 3000**: This suggests either:
-   - Development mode (React dev server)
-   - Production container running but not behind Nginx proxy
-
-2. **Backend on Port 5000**: Direct access indicates no reverse proxy layer
-
-### Intended Production Architecture
-
-According to your `nginx.conf`, the **intended production setup** should be:
+The system is deployed on Hetzner VPS and accessible via:
 
 ```
-User Request → http://185.237.15.242 (Port 80)
+Application: http://jkpkatastar.eneplus.rs
+API:         http://jkpkatastar.eneplus.rs/api
+Health:      http://jkpkatastar.eneplus.rs/api/health
+```
+
+All traffic goes through a single entry point — the Nginx container on port 80:
+
+```
+User Request → http://jkpkatastar.eneplus.rs (Port 80)
                      ↓
                  Nginx Container
                      ↓
@@ -605,51 +589,41 @@ Static Files                    API Requests (/api/*)
 (Served by Nginx)               (Proxied to backend:5000)
 ```
 
-### How to Enable Nginx Proxy Mode
+### GitHub Actions Deployment
 
-To use your nginx.conf as intended, you should:
+Pushing to `main` or `master` triggers an automatic deployment via `.github/workflows/deploy.yml`. The workflow:
 
-1. **Modify docker-compose.prod.yml** to expose only port 80:
-```yaml
-frontend:
-  ports:
-    - "80:80"  # Only expose Nginx port
-    
-backend:
-  # Remove port exposure or bind to localhost only
-  ports:
-    - "127.0.0.1:5000:5000"
+1. SSHes into the Hetzner server using `VPS_HOST` (IP) and `VPS_SSH_KEY`
+2. Clones the repo fresh to `/opt/jkp-katastar/JKPKatastar`
+3. Writes `.env` from GitHub Secrets
+4. Runs `docker compose -f docker-compose.prod.yml up --build -d`
+5. Verifies services are responding at `APP_DOMAIN`
+
+### Required GitHub Secrets
+
+| Secret | Purpose |
+|--------|---------|
+| `VPS_HOST` | Server IP for SSH connections |
+| `VPS_USER` | SSH user (e.g. `root`) |
+| `VPS_SSH_KEY` | Private SSH key |
+| `APP_DOMAIN` | Public domain (`jkpkatastar.eneplus.rs`) |
+| `MONGO_PASSWORD` | MongoDB root password |
+| `JWT_SECRET` | JWT signing secret |
+| `EMAIL_SERVICE` | Email provider |
+| `EMAIL_HOST` | SMTP host |
+| `EMAIL_PORT` | SMTP port |
+| `EMAIL_USER` | SMTP username |
+| `EMAIL_SECRET` | SMTP password/app token |
+| `MAINTAINER_NAME` | Seed admin full name |
+| `MAINTAINER_EMAIL` | Seed admin email |
+| `MAINTAINER_PASSWORD` | Seed admin password |
+| `REACT_APP_GOOGLE_KEY` | Google Maps API key |
+| `REACT_APP_GOOGLE_MAP_ID` | Google Maps Map ID |
+
+### DNS Configuration
+
+The domain must have an A record pointing to the server IP:
+
 ```
-
-2. **Access everything through port 80**:
+jkpkatastar.eneplus.rs  →  A  →  <VPS IP>
 ```
-Frontend: http://185.237.15.242 (Nginx serves React build)
-API:      http://185.237.15.242/api/* (Nginx proxies to backend)
-```
-
-### Benefits of Using Nginx Proxy
-
-**Current Setup Issues**:
-- Two separate ports to manage
-- Potential CORS issues between ports 3000 and 5000
-- No static asset optimization
-- Missing security headers
-- No gzip compression
-
-**With Nginx Proxy**:
-- Single entry point on port 80
-- Optimized static file serving
-- Gzip compression active
-- Security headers applied
-- API and frontend unified under same domain
-
-### Migration Steps
-
-To activate your nginx.conf configuration:
-
-1. **Ensure production build**: Frontend should build React app, not run dev server
-2. **Single port exposure**: Only expose port 80 from the frontend container
-3. **Internal networking**: Backend should only be accessible from within Docker network
-4. **Update firewall**: Only allow port 80 (and 443 for HTTPS) externally
-
-The nginx.conf you have is well-configured for production use - it just needs to be the primary entry point rather than having direct port access to both services.

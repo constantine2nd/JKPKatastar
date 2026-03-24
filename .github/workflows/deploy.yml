@@ -78,7 +78,7 @@ jobs:
           EMAIL_PORT=REPLACE_EMAIL_PORT
           EMAIL_USER=REPLACE_EMAIL_USER
           EMAIL_SECRET=REPLACE_EMAIL_SECRET
-          CLIENT_HOST_URI=http://${{ secrets.VPS_HOST }}
+          CLIENT_HOST_URI=http://REPLACE_APP_DOMAIN
           REACT_APP_API_URL=/api
           REACT_APP_MAP_CENTER_LAT=45.2671
           REACT_APP_MAP_CENTER_LON=19.8335
@@ -98,6 +98,7 @@ jobs:
           sed -i "s/REPLACE_EMAIL_SECRET/$EMAIL_SECRET/g" .env
           sed -i "s/REPLACE_REACT_APP_GOOGLE_KEY/$REACT_APP_GOOGLE_KEY/g" .env
           sed -i "s/REPLACE_REACT_APP_GOOGLE_MAP_ID/$REACT_APP_GOOGLE_MAP_ID/g" .env
+          sed -i "s/REPLACE_APP_DOMAIN/$APP_DOMAIN/g" .env
 
           # Create data directories
           mkdir -p $DEPLOY_DIR/data/mongodb
@@ -203,9 +204,9 @@ jobs:
           echo "🎉 Deployment completed!"
           echo ""
           echo "🌐 Access URLs:"
-          echo "   Application: http://${{ secrets.VPS_HOST }}"
-          echo "   Backend API: http://${{ secrets.VPS_HOST }}/api"
-          echo "   Health:      http://${{ secrets.VPS_HOST }}/api/health"
+          echo "   Application: http://$APP_DOMAIN"
+          echo "   Backend API: http://$APP_DOMAIN/api"
+          echo "   Health:      http://$APP_DOMAIN/api/health"
           SCRIPT_EOF
 
           chmod +x deploy.sh
@@ -226,6 +227,7 @@ jobs:
              MAINTAINER_PASSWORD='${{ secrets.MAINTAINER_PASSWORD }}' \
              REACT_APP_GOOGLE_KEY='${{ secrets.REACT_APP_GOOGLE_KEY }}' \
              REACT_APP_GOOGLE_MAP_ID='${{ secrets.REACT_APP_GOOGLE_MAP_ID }}' \
+             APP_DOMAIN='${{ secrets.APP_DOMAIN }}' \
              /tmp/deploy.sh"
 
       - name: Verify deployment
@@ -234,8 +236,8 @@ jobs:
           sleep 60
 
           # Check if services are responding
-          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }} || echo "000")
-          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.VPS_HOST }}/api/health || echo "000")
+          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.APP_DOMAIN }} || echo "000")
+          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.APP_DOMAIN }}/api/health || echo "000")
 
           echo "Frontend Status: HTTP $FRONTEND_STATUS"
           echo "Backend Status: HTTP $BACKEND_STATUS"
@@ -279,9 +281,9 @@ jobs:
           echo ""
           if [ "${{ job.status }}" == "success" ]; then
             echo "🎉 Deployment completed successfully!"
-            echo "🌐 Application: http://${{ secrets.VPS_HOST }}"
-            echo "🔧 Backend API: http://${{ secrets.VPS_HOST }}/api"
-            echo "🩺 Health Check: http://${{ secrets.VPS_HOST }}/api/health"
+            echo "🌐 Application: http://${{ secrets.APP_DOMAIN }}"
+            echo "🔧 Backend API: http://${{ secrets.APP_DOMAIN }}/api"
+            echo "🩺 Health Check: http://${{ secrets.APP_DOMAIN }}/api/health"
           else
             echo "❌ Deployment encountered issues. Check the logs above."
           fi

@@ -118,29 +118,35 @@ NODE_ENV=development
 
 ## 🏗️ Architecture
 
+**Development** (hot reload, direct ports):
 ```
-┌─────────────────┐    HTTP    ┌─────────────────┐    TCP     ┌─────────────────┐
-│   React Client  │ ◄─────────► │  Express API    │ ◄─────────► │    MongoDB      │
-│   Port 3000     │             │   Port 5000     │             │   Port 27017    │
-│   (Frontend)    │             │   (Backend)     │             │   (Database)    │
-└─────────────────┘             └─────────────────┘             └─────────────────┘
+localhost:3000 (React)    localhost:5000 (API)    localhost:27017 (MongoDB)
+```
+
+**Production** (single entry point via Nginx):
+```
+jkpkatastar.eneplus.rs:80
+        │
+   Nginx Container
+   ┌────┴────────────────┐
+   │                     │
+Static files        /api/* → backend:5000 → MongoDB
+(React build)
 ```
 
 ## 🌐 Production Deployment
 
-For production deployment to VPS or cloud servers:
+The app is deployed to Hetzner VPS and served at **http://jkpkatastar.eneplus.rs**.
 
-1. **Quick Deploy**: Push to `main` branch → GitHub Actions auto-deploys
-2. **Manual Deploy**: Use `./deploy-vps.sh` script
-3. **Configure**: Set up GitHub secrets for your VPS
+Architecture: Domain → Nginx container (port 80) → React build + API proxy to backend:5000.
 
-See [deployment documentation](VPS_DEPLOYMENT_STRATEGIES.md) for detailed instructions.
+1. **Auto-deploy**: Push to `main` → GitHub Actions deploys via SSH
+2. **Configure**: Add GitHub Secrets (see `ARCHITECTURE.md` for the full list)
 
 ## 📚 Additional Documentation
 
-- [VPS_DEPLOYMENT_STRATEGIES.md](VPS_DEPLOYMENT_STRATEGIES.md) - Production deployment options
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions
-- [FRONTEND_FIX.md](FRONTEND_FIX.md) - Frontend-specific fixes
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture, Nginx config, deployment secrets
+- [DEPLOYMENT_COMPARISON.md](DEPLOYMENT_COMPARISON.md) - Single-port Nginx vs dual-port setup
 
 ## 🤝 Contributing
 
