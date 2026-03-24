@@ -78,7 +78,7 @@ jobs:
           EMAIL_PORT=REPLACE_EMAIL_PORT
           EMAIL_USER=REPLACE_EMAIL_USER
           EMAIL_SECRET=REPLACE_EMAIL_SECRET
-          CLIENT_HOST_URI=http://REPLACE_APP_DOMAIN
+          CLIENT_HOST_URI=https://REPLACE_APP_DOMAIN
           REACT_APP_API_URL=/api
           REACT_APP_MAP_CENTER_LAT=45.2671
           REACT_APP_MAP_CENTER_LON=19.8335
@@ -204,9 +204,9 @@ jobs:
           echo "🎉 Deployment completed!"
           echo ""
           echo "🌐 Access URLs:"
-          echo "   Application: http://$APP_DOMAIN"
-          echo "   Backend API: http://$APP_DOMAIN/api"
-          echo "   Health:      http://$APP_DOMAIN/api/health"
+          echo "   Application: https://$APP_DOMAIN"
+          echo "   Backend API: https://$APP_DOMAIN/api"
+          echo "   Health:      https://$APP_DOMAIN/api/health"
           SCRIPT_EOF
 
           chmod +x deploy.sh
@@ -236,13 +236,13 @@ jobs:
           sleep 60
 
           # Check if services are responding
-          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.APP_DOMAIN }} || echo "000")
-          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 http://${{ secrets.APP_DOMAIN }}/api/health || echo "000")
+          FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 https://${{ secrets.APP_DOMAIN }} || echo "000")
+          BACKEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 https://${{ secrets.APP_DOMAIN }}/api/health || echo "000")
 
           echo "Frontend Status: HTTP $FRONTEND_STATUS"
           echo "Backend Status: HTTP $BACKEND_STATUS"
 
-          if [ "$FRONTEND_STATUS" = "200" ] || [ "$FRONTEND_STATUS" = "301" ] || [ "$FRONTEND_STATUS" = "302" ]; then
+          if [ "$FRONTEND_STATUS" = "200" ] || [ "$FRONTEND_STATUS" = "301" ] || [ "$FRONTEND_STATUS" = "302" ] || [ "$FRONTEND_STATUS" = "308" ]; then
             echo "✅ Frontend is responding"
             FRONTEND_OK=true
           else
@@ -281,9 +281,9 @@ jobs:
           echo ""
           if [ "${{ job.status }}" == "success" ]; then
             echo "🎉 Deployment completed successfully!"
-            echo "🌐 Application: http://${{ secrets.APP_DOMAIN }}"
-            echo "🔧 Backend API: http://${{ secrets.APP_DOMAIN }}/api"
-            echo "🩺 Health Check: http://${{ secrets.APP_DOMAIN }}/api/health"
+            echo "🌐 Application: https://${{ secrets.APP_DOMAIN }}"
+            echo "🔧 Backend API: https://${{ secrets.APP_DOMAIN }}/api"
+            echo "🩺 Health Check: https://${{ secrets.APP_DOMAIN }}/api/health"
           else
             echo "❌ Deployment encountered issues. Check the logs above."
           fi

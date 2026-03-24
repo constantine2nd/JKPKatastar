@@ -81,8 +81,8 @@ services:
       REACT_APP_MAP_CENTER_LAT: ${REACT_APP_MAP_CENTER_LAT:-45.2671}
       REACT_APP_MAP_CENTER_LON: ${REACT_APP_MAP_CENTER_LON:-19.8335}
     ports:
-      # Single entry point - Nginx serves everything on port 80
-      - "80:80"
+      # Bind to localhost only - host nginx handles 80/443 and proxies here
+      - "127.0.0.1:8080:80"
     depends_on:
       - backend
     networks:
