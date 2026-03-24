@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../../utils/languageSelector";
 import { t } from "i18next";
@@ -81,6 +83,7 @@ const GravesTableScreenCrud = () => {
   const cemeteries: Cemetery[] | null = useSelector(selectAllCemeteries);
   const user = useSelector(selectUser);
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
@@ -388,6 +391,11 @@ const GravesTableScreenCrud = () => {
     ),
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
+        <Tooltip title={t("actions.open")}>
+          <IconButton onClick={() => navigate(`/single-grave?id=${row.original._id}`)}>
+            <OpenInNewIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title={t("actions.edit")}>
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />

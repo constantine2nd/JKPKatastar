@@ -191,6 +191,7 @@
   "actions": {
     "send": "Küldés",
     "back": "Vissza",
+    "open": "Megnyitás",
     "edit": "Szerkesztés",
     "delete": "Törlés",
     "submit": "Elküld",

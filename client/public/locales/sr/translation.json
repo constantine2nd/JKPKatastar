@@ -191,6 +191,7 @@
   "actions": {
     "send": "Pošalji",
     "back": "Nazad",
+    "open": "Otvori",
     "edit": "Uredi",
     "delete": "Izbriši",
     "submit": "Potvrdi",

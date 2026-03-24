@@ -191,6 +191,7 @@
   "actions": {
     "send": "Send",
     "back": "Back",
+    "open": "Open",
     "edit": "Edit",
     "delete": "Delete",
     "submit": "Submit",
