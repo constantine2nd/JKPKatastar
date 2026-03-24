@@ -571,23 +571,83 @@ The system is designed to efficiently manage cemetery operations for JKP Temerin
 The system is deployed on Hetzner VPS and accessible via:
 
 ```
-Application: http://jkpkatastar.eneplus.rs
-API:         http://jkpkatastar.eneplus.rs/api
-Health:      http://jkpkatastar.eneplus.rs/api/health
+Application: https://jkpkatastar.eneplus.rs
+API:         https://jkpkatastar.eneplus.rs/api
+Health:      https://jkpkatastar.eneplus.rs/api/health
 ```
 
-All traffic goes through a single entry point — the Nginx container on port 80:
+### Traffic Architecture
+
+Two nginx layers handle all traffic:
 
 ```
-User Request → http://jkpkatastar.eneplus.rs (Port 80)
+User Request → https://jkpkatastar.eneplus.rs (Port 443)
                      ↓
-                 Nginx Container
+             Host Nginx (SSL termination)
+             /etc/nginx/sites-available/jkpkatastar
+                     ↓
+             Docker nginx (127.0.0.1:8080)
+             client/nginx.conf
                      ↓
     ┌─────────────────┼─────────────────┐
     ↓                                   ↓
 Static Files                    API Requests (/api/*)
-(Served by Nginx)               (Proxied to backend:5000)
+(React build)                   (Proxied to backend:5000)
+
+HTTP (port 80) → host nginx → 301 redirect to HTTPS
 ```
+
+**Host nginx** (installed once on the server, never touched by deployments):
+- Terminates SSL using Let's Encrypt certificate
+- Redirects HTTP → HTTPS
+- Proxies all traffic to `127.0.0.1:8080`
+
+**Docker nginx** (rebuilt on every deployment):
+- Serves the React production build
+- Proxies `/api/*` to the backend container
+- Bound to `127.0.0.1:8080` — not publicly accessible
+
+### One-Time Server Setup (Hetzner)
+
+Run once after the first deployment. Never needs to be repeated.
+
+```bash
+# Install nginx and certbot
+apt update && apt install nginx certbot python3-certbot-nginx -y
+
+# Remove default site
+rm -f /etc/nginx/sites-enabled/default
+
+# Create HTTP-only config first (no SSL yet — cert doesn't exist)
+cat > /etc/nginx/sites-available/jkpkatastar << 'EOF'
+server {
+    listen 80;
+    server_name jkpkatastar.eneplus.rs;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+EOF
+
+ln -s /etc/nginx/sites-available/jkpkatastar /etc/nginx/sites-enabled/
+
+# Start nginx (must be running before certbot)
+nginx -t
+systemctl enable nginx
+systemctl start nginx
+
+# Run certbot — obtains cert, adds SSL block, adds HTTP→HTTPS redirect, sets up auto-renewal
+certbot --nginx -d jkpkatastar.eneplus.rs
+```
+
+> **Important**: Do not include SSL directives in the initial nginx config. Nginx will fail to start if the certificate files don't exist yet. Run certbot after nginx is running — it handles adding SSL automatically.
+
+SSL certificates are valid for 90 days. Certbot installs a systemd timer that auto-renews them — no manual intervention needed.
 
 ### GitHub Actions Deployment
 
@@ -597,7 +657,9 @@ Pushing to `main` or `master` triggers an automatic deployment via `.github/work
 2. Clones the repo fresh to `/opt/jkp-katastar/JKPKatastar`
 3. Writes `.env` from GitHub Secrets
 4. Runs `docker compose -f docker-compose.prod.yml up --build -d`
-5. Verifies services are responding at `APP_DOMAIN`
+5. Verifies services are responding at `https://APP_DOMAIN`
+
+Host nginx and SSL certificates are **not affected** by deployments.
 
 ### Required GitHub Secrets
 
@@ -622,8 +684,18 @@ Pushing to `main` or `master` triggers an automatic deployment via `.github/work
 
 ### DNS Configuration
 
-The domain must have an A record pointing to the server IP:
+The domain is managed via **Vercel DNS** (`ns1.vercel-dns.com`, `ns2.vercel-dns.com`). DNS changes must be made in the Vercel dashboard, not in cPanel.
+
+Add an A record in Vercel → Domains → `eneplus.rs` → DNS Records:
 
 ```
-jkpkatastar.eneplus.rs  →  A  →  <VPS IP>
+Type:  A
+Name:  jkpkatastar
+Value: <VPS IP>
+TTL:   300
+```
+
+Verify propagation:
+```bash
+dig @8.8.8.8 jkpkatastar.eneplus.rs +short
 ```

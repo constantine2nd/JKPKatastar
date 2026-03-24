@@ -123,11 +123,13 @@ NODE_ENV=development
 localhost:3000 (React)    localhost:5000 (API)    localhost:27017 (MongoDB)
 ```
 
-**Production** (single entry point via Nginx):
+**Production** (HTTPS via two nginx layers):
 ```
-jkpkatastar.eneplus.rs:80
+jkpkatastar.eneplus.rs:443 (SSL)
         │
-   Nginx Container
+   Host Nginx (Let's Encrypt)       port 80 → 301 HTTPS redirect
+        │
+   Docker Nginx (127.0.0.1:8080)
    ┌────┴────────────────┐
    │                     │
 Static files        /api/* → backend:5000 → MongoDB
@@ -136,9 +138,9 @@ Static files        /api/* → backend:5000 → MongoDB
 
 ## 🌐 Production Deployment
 
-The app is deployed to Hetzner VPS and served at **http://jkpkatastar.eneplus.rs**.
+The app is deployed to Hetzner VPS and served at **https://jkpkatastar.eneplus.rs**.
 
-Architecture: Domain → Nginx container (port 80) → React build + API proxy to backend:5000.
+Architecture: Domain → Host Nginx (SSL, port 443) → Docker Nginx (port 8080) → React build + API proxy to backend:5000.
 
 1. **Auto-deploy**: Push to `main` → GitHub Actions deploys via SSH
 2. **Configure**: Add GitHub Secrets (see `ARCHITECTURE.md` for the full list)
