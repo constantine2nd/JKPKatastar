@@ -1,7 +1,7 @@
 {
   "client": {
     "your-website": "Your Internet Portal",
-    "landing-page-screen": "Landing Page Screen",
+    "landing-page-screen": "Select Cemetery",
     "err-field-required": "The field is required"
   },
   "cemetery": {

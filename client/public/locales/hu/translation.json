@@ -1,7 +1,7 @@
 {
   "client": {
     "your-website": "Az Ön internetes portálja",
-    "landing-page-screen": "Céloldal képernyő",
+    "landing-page-screen": "Válasszon temetőt",
     "err-field-required": "A mező kitöltése kötelező"
   },
   "cemetery": {
