@@ -10,6 +10,7 @@ import {
   Link,
 } from "@react-pdf/renderer";
 import { Grave } from "../interfaces/GraveIntefaces";
+import { dateFormatter } from "../utils/dateFormatter";
 
 Font.register({
   family: "Roboto",
@@ -17,118 +18,141 @@ Font.register({
 });
 
 const styles = StyleSheet.create({
-  body: {
-    paddingTop: 35,
-    paddingBottom: 45,
-    paddingHorizontal: 35,
-    fontFamily: "Roboto",
-    backgroundColor: "#ffffff",
-    padding: 24,
-  },
   page: {
     fontFamily: "Roboto",
     backgroundColor: "#ffffff",
-    padding: 24,
-  },
-  section1: {
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    backgroundColor: "#c3c4c5",
-    margin: "20px",
-  },
-  section2: {
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-    backgroundColor: "#c3c4c5",
-    alignItems: "center",
-    margin: "20px",
-  },
-  minisection: {
-    margin: "25px",
-    height: "400px",
-    width: "300px",
+    padding: 32,
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     textAlign: "center",
+    marginBottom: 16,
+    color: "#333",
   },
-  text: {
-    margin: 12,
-    fontSize: 14,
-    textAlign: "justify",
-    // fontFamily: "Times-Roman",
+  row: {
+    flexDirection: "row",
+    marginBottom: 8,
   },
-  image: {
+  col: {
+    flex: 1,
+  },
+  label: {
+    fontSize: 10,
+    color: "#666",
+    marginBottom: 2,
+  },
+  value: {
+    fontSize: 13,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    marginVertical: 12,
+  },
+  mapContainer: {
+    marginTop: 12,
+    marginBottom: 12,
+    width: "100%",
+    height: 300,
+  },
+  mapImage: {
     width: "100%",
     height: "100%",
   },
-  topheader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: "7px",
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 2,
+  link: {
+    fontSize: 10,
+    color: "#1976d2",
     textAlign: "center",
-    color: "grey",
+    marginTop: 8,
   },
   pageNumber: {
     position: "absolute",
-    fontSize: 12,
-    bottom: 30,
+    fontSize: 10,
+    bottom: 20,
     left: 0,
     right: 0,
     textAlign: "center",
     color: "grey",
   },
 });
+
 interface PDFRendererProps {
   grave: Grave;
   mapImageUrl: string;
 }
 
 const PDFFile: React.FC<PDFRendererProps> = ({ grave, mapImageUrl }) => {
-  console.log("PDF RENDERER EXECUTION");
-  //  console.log(mapImageUrl);
   const currentURL = window.location.href;
-  //console.log("Trenutni URL:", currentURL);
   return (
     <Document>
-      <Page style={styles.body} orientation="portrait">
-        <View style={styles.topheader} fixed>
-          <View>
-            <Text style={styles.header}>
-              Naziv Groblja: {grave?.cemetery?.name}
-            </Text>
-            <Text style={styles.header}>Polje: {grave?.field}</Text>
-            <Text style={styles.header}>Red: {grave?.row}</Text>
-            <Text style={styles.header}>Broj: {grave?.number}</Text>
-            <Text style={styles.header}>
-              Broj pokojnika: {grave?.deceased.length}{" "}
-            </Text>
+      <Page style={styles.page} orientation="portrait">
+        <Text style={styles.title}>Podaci o grobnom mestu</Text>
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>Groblje</Text>
+            <Text style={styles.value}>{grave?.cemetery?.name ?? "-"}</Text>
+          </View>
+          <View style={styles.col}>
+            <Text style={styles.label}>Tip grobnog mesta</Text>
+            <Text style={styles.value}>{grave?.graveType?.name ?? "-"}</Text>
           </View>
         </View>
-        <View style={styles.section1}>
-          <Image src={mapImageUrl} />
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>Broj</Text>
+            <Text style={styles.value}>{grave?.number ?? "-"}</Text>
+          </View>
+          <View style={styles.col}>
+            <Text style={styles.label}>Polje</Text>
+            <Text style={styles.value}>{grave?.field ?? "-"}</Text>
+          </View>
         </View>
-        <View style={styles.section2}>
-          <Text>Kraj open mape</Text>
-          <Link src={currentURL}>Idi na stranicu</Link>
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>Red</Text>
+            <Text style={styles.value}>{grave?.row ?? "-"}</Text>
+          </View>
+          <View style={styles.col}>
+            <Text style={styles.label}>Kapacitet</Text>
+            <Text style={styles.value}>{grave?.graveType?.capacity ?? "-"}</Text>
+          </View>
         </View>
-        {/* <Image [...Array(20).keys()]
-              style={styles.image}
-              src={picture.resPath}
-            /> */}
-        {/*    <Image style={styles.image} src={LebronStretch} /> */}
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>LAT</Text>
+            <Text style={styles.value}>{grave?.LAT ?? "-"}</Text>
+          </View>
+          <View style={styles.col}>
+            <Text style={styles.label}>LON</Text>
+            <Text style={styles.value}>{grave?.LON ?? "-"}</Text>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <View style={styles.col}>
+            <Text style={styles.label}>Datum isteka ugovora</Text>
+            <Text style={styles.value}>{dateFormatter(grave?.contractTo)}</Text>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.mapContainer}>
+          <Image style={styles.mapImage} src={mapImageUrl} />
+        </View>
+
+        <Link style={styles.link} src={currentURL}>
+          {currentURL}
+        </Link>
 
         <Text
           fixed
           style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
+          render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
         />
       </Page>
     </Document>
