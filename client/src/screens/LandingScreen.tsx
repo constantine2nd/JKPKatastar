@@ -17,6 +17,7 @@ import {
   getAllCemeteriesError,
   getAllCemeteriesStatus,
 } from "../features/cemeteriesSlice";
+import { resetGravesStatus } from "../features/gravesSlice";
 
 import { Cemetery } from "../interfaces/CemeteryInterfaces";
 import { getSelectedCemetery } from "../utils/cemeterySelector";
@@ -31,6 +32,7 @@ const LandingScreen: React.FC = () => {
   const error = useSelector(getAllCemeteriesError);
   const dispatch = useDispatch<any>();
 
+
   useEffect(() => {
     if (usersStatus === "idle") {
       dispatch(fetchCemeteries());
@@ -40,6 +42,7 @@ const LandingScreen: React.FC = () => {
   const handleSelect = (cemetery: Cemetery) => {
     setCemeteryId(cemetery._id);
     localStorage.setItem("selected-cemetery", JSON.stringify(cemetery));
+    dispatch(resetGravesStatus());
     navigate("/", { state: { cemetery } });
   };
 
