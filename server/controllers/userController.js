@@ -57,7 +57,7 @@ const registerUser = async (req, res, next) => {
 const addUser = async (req, res, next) => {
   //When an error is thrown inside asynchronous code you, you need to tell express to handle the error by passing it to the next function:
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role, isActive, isVerified, avatarUrl } = req.body;
     const userExists = await User.findOne({ email }); // Email must be unique
 
     if (userExists) {
@@ -70,6 +70,10 @@ const addUser = async (req, res, next) => {
       name,
       email,
       password,
+      role,
+      isActive,
+      isVerified,
+      avatarUrl,
     });
     console.log(newUser);
     if (newUser) {
