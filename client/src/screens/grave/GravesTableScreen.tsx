@@ -30,7 +30,7 @@ import {
   statusOfGrave,
 } from "../../components/CommonFuntions";
 import { DeleteAndMaybeRemoveButton } from "../../components/DetailAndMaybeRemoveButton";
-import { ADMINISTRATOR, OFFICER } from "../../utils/constant.js";
+import { ADMINISTRATOR, MAINTAINER, OFFICER } from "../../utils/constant.js";
 
 const GravesTableScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -143,7 +143,7 @@ const GravesTableScreen: React.FC = () => {
     onDensityChange: setDensity,
     onPaginationChange: setPagination,
     renderTopToolbarCustomActions: () =>
-      (user?.role === OFFICER || user?.role === ADMINISTRATOR) ? (
+      (user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER) ? (
         <ButtonMUI
           variant="contained"
           onClick={() => navigate({ pathname: "/add-grave" })}
