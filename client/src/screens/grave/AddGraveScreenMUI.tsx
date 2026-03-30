@@ -87,7 +87,7 @@ const AddGraveScreenMUI: React.FC = () => {
   const onSubmit = (values: IFormValues) => {
     console.log(values);
     dispatch(addSingleGrave(values));
-    navigate("/", { state: { sender: "ADDGraveSreen" } });
+    navigate("/graves-table-crud");
   };
 
   const formik = useFormik<IFormValues>({
