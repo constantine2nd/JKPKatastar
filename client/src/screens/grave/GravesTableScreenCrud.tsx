@@ -56,7 +56,7 @@ import {
 } from "../../features/cemeteriesSlice";
 import { GraveType } from "../../interfaces/GraveTypeInterfaces";
 import { Cemetery } from "../../interfaces/CemeteryInterfaces";
-import { FREE, OCCUPIED, OFFICER, ADMINISTRATOR } from "../../utils/constant";
+import { FREE, OCCUPIED, OFFICER, ADMINISTRATOR, MAINTAINER } from "../../utils/constant";
 
 // Defines the name of the react query
 const queryFunction = "graves-paginated";
@@ -409,7 +409,7 @@ const GravesTableScreenCrud = () => {
       </Box>
     ),
     renderTopToolbarCustomActions: () =>
-      user?.role === OFFICER || user?.role === ADMINISTRATOR ? (
+      user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER ? (
         <Button
           variant="contained"
           onClick={() => {
