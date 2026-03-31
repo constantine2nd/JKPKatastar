@@ -122,6 +122,21 @@
     "exporting": "Exportálás folyamatban...",
     "error": "Az exportálás sikertelen."
   },
+  "backup": {
+    "title": "Adatbázis mentés",
+    "description": "Töltsön le minden gyűjteményt egyetlen fájlban. A fájl visszaállításhoz használható.",
+    "btn-backup": "Mentés letöltése",
+    "backing-up": "Mentés készítése...",
+    "error": "A mentés sikertelen.",
+    "restore-title": "Adatbázis visszaállítás",
+    "restore-description": "Töltsön fel egy mentési fájlt és importálja az összes gyűjteményt. A duplikátumok ki lesznek hagyva.",
+    "btn-restore": "Mentési fájl feltöltése",
+    "restoring": "Visszaállítás folyamatban...",
+    "restore-error": "A visszaállítás sikertelen.",
+    "restore-inserted": "Beillesztve",
+    "restore-total": "Összesen",
+    "restore-errors": "Hibák"
+  },
   "tabs": {
     "grave-data": "Sírhely adatok",
     "deceased-list": "Elhunytak listája",

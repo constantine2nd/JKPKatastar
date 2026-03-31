@@ -122,6 +122,21 @@
     "exporting": "Exporting...",
     "error": "Export failed."
   },
+  "backup": {
+    "title": "Database Backup",
+    "description": "Download all collections in a single file. The file can be used for restore.",
+    "btn-backup": "Download Backup",
+    "backing-up": "Creating backup...",
+    "error": "Backup failed.",
+    "restore-title": "Database Restore",
+    "restore-description": "Upload a backup file and import all collections. Duplicates will be skipped.",
+    "btn-restore": "Upload Backup File",
+    "restoring": "Restoring...",
+    "restore-error": "Restore failed.",
+    "restore-inserted": "Inserted",
+    "restore-total": "Total",
+    "restore-errors": "Errors"
+  },
   "tabs": {
     "grave-data": "Grave Data",
     "deceased-list": "Deceased List",

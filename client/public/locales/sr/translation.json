@@ -122,6 +122,21 @@
     "exporting": "Izvoz u toku...",
     "error": "Izvoz nije uspeo."
   },
+  "backup": {
+    "title": "Backup baze podataka",
+    "description": "Preuzmi sve kolekcije u jednom fajlu. Fajl se može koristiti za restore.",
+    "btn-backup": "Preuzmi backup",
+    "backing-up": "Kreiranje backupa...",
+    "error": "Backup nije uspeo.",
+    "restore-title": "Restore baze podataka",
+    "restore-description": "Učitaj backup fajl i uvezi sve kolekcije. Duplikati će biti preskočeni.",
+    "btn-restore": "Učitaj backup fajl",
+    "restoring": "Restore u toku...",
+    "restore-error": "Restore nije uspeo.",
+    "restore-inserted": "Uvezeno",
+    "restore-total": "Ukupno",
+    "restore-errors": "Greške"
+  },
   "tabs": {
     "grave-data": "Podaci o grobnom mestu",
     "deceased-list": "Lista pokojnika",

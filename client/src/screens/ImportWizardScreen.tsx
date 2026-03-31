@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -28,6 +29,7 @@ import {
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import RestoreIcon from "@mui/icons-material/SettingsBackupRestore";
 
 const COLLECTIONS = [
   "cemeteries",
@@ -66,6 +68,10 @@ const ImportWizardScreen = () => {
   const [importError, setImportError] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const restoreInputRef = useRef<HTMLInputElement>(null);
+  const [restoring, setRestoring] = useState(false);
+  const [restoreResult, setRestoreResult] = useState<Record<string, { inserted: number; total: number; errors: { index: number; message: string }[] }> | null>(null);
+  const [restoreError, setRestoreError] = useState("");
 
   const steps = [
     t("import.step-collection"),
@@ -129,6 +135,35 @@ const ImportWizardScreen = () => {
     }
   };
 
+  const handleRestore = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setRestoring(true);
+    setRestoreError("");
+    setRestoreResult(null);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const { data } = await axios.post(
+        "/api/backup/restore",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user?.token}`,
+          },
+          validateStatus: (s) => s < 500,
+        },
+      );
+      setRestoreResult(data.results);
+    } catch {
+      setRestoreError(t("backup.restore-error"));
+    } finally {
+      setRestoring(false);
+      if (restoreInputRef.current) restoreInputRef.current.value = "";
+    }
+  };
+
   const handleReset = () => {
     setActiveStep(0);
     setFile(null);
@@ -146,6 +181,58 @@ const ImportWizardScreen = () => {
 
   return (
     <Box sx={{ maxWidth: 900, mx: "auto", px: { xs: 2, md: 4 }, py: 4 }}>
+
+      {/* Full restore section */}
+      <Typography variant="h5" fontWeight={600} mb={1}>
+        {t("backup.restore-title")}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" mb={2}>
+        {t("backup.restore-description")}
+      </Typography>
+      {restoreError && <Alert severity="error" sx={{ mb: 2 }}>{restoreError}</Alert>}
+      {restoreResult && (
+        <Box mb={2}>
+          <TableContainer component={Paper} variant="outlined">
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>{t("import.collection-label")}</strong></TableCell>
+                  <TableCell align="right"><strong>{t("backup.restore-inserted")}</strong></TableCell>
+                  <TableCell align="right"><strong>{t("backup.restore-total")}</strong></TableCell>
+                  <TableCell align="right"><strong>{t("backup.restore-errors")}</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.entries(restoreResult).map(([col, r]) => (
+                  <TableRow key={col}>
+                    <TableCell>{t(`import.collection-${col}`)}</TableCell>
+                    <TableCell align="right">{r.inserted}</TableCell>
+                    <TableCell align="right">{r.total}</TableCell>
+                    <TableCell align="right" sx={{ color: r.errors.length > 0 ? "warning.main" : "inherit" }}>
+                      {r.errors.length}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
+      <Button
+        variant="contained"
+        color="warning"
+        size="large"
+        startIcon={restoring ? <CircularProgress size={18} color="inherit" /> : <RestoreIcon />}
+        disabled={restoring}
+        onClick={() => restoreInputRef.current?.click()}
+        sx={{ mb: 4 }}
+      >
+        {restoring ? t("backup.restoring") : t("backup.btn-restore")}
+      </Button>
+      <input ref={restoreInputRef} type="file" accept=".json,.json.gz,.gz" hidden onChange={handleRestore} />
+
+      <Divider sx={{ mb: 4 }} />
+
       <Typography variant="h5" fontWeight={600} mb={3}>
         {t("import.title")}
       </Typography>

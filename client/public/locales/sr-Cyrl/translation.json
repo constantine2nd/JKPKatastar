@@ -122,6 +122,21 @@
     "exporting": "Извоз у току...",
     "error": "Извоз није успео."
   },
+  "backup": {
+    "title": "Бекап базе података",
+    "description": "Преузми све колекције у једном фајлу. Фајл се може користити за restore.",
+    "btn-backup": "Преузми бекап",
+    "backing-up": "Креирање бекапа...",
+    "error": "Бекап није успео.",
+    "restore-title": "Restore базе података",
+    "restore-description": "Учитај бекап фајл и увези све колекције. Дупликати ће бити прескочени.",
+    "btn-restore": "Учитај бекап фајл",
+    "restoring": "Restore у току...",
+    "restore-error": "Restore није успео.",
+    "restore-inserted": "Увезено",
+    "restore-total": "Укупно",
+    "restore-errors": "Грешке"
+  },
   "tabs": {
     "grave-data": "Подаци о гробном месту",
     "deceased-list": "Листа покојника",

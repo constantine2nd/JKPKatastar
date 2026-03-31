@@ -12,6 +12,7 @@ import graveTypesRoutes from "./routes/graveTypes-routes.js";
 import graveRequestRoutes from "./routes/graveRequest-routes.js";
 import importRoutes from "./routes/import-routes.js";
 import exportRoutes from "./routes/export-routes.js";
+import backupRoutes from "./routes/backup-routes.js";
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,7 @@ app.use("/api/grave-types", graveTypesRoutes);
 app.use("/api/grave-requests", graveRequestRoutes);
 app.use("/api/import", importRoutes);
 app.use("/api/export", exportRoutes);
+app.use("/api/backup", backupRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
