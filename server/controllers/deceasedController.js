@@ -262,6 +262,7 @@ const getDeceasedSearch = async (req, res, next) => {
             dateBirth: 1,
             dateDeath: 1,
             cemetery: { $arrayElemAt: ["$cemeteryInfo.name", 0] },
+            graveId: { $arrayElemAt: ["$graveInfo._id", 0] },
           },
         },
       ],

@@ -1,4 +1,5 @@
-import { Chip } from "@mui/material";
+import { Box, Chip, IconButton, Tooltip } from "@mui/material";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -6,6 +7,7 @@ import {
 } from "material-react-table";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Deceased } from "../interfaces/GraveIntefaces";
@@ -23,6 +25,7 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
   const isPaginated = props.manualPagination ?? false;
 
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
 
   // Reset to first page when the search path changes
@@ -95,6 +98,16 @@ const DeceasedTableComponent: React.FC<MyComponentProps> = (props) => {
     localization: getLanguage(i18n),
     createDisplayMode: "modal",
     editDisplayMode: "modal",
+    enableRowActions: true,
+    renderRowActions: ({ row }) => (
+      <Box sx={{ display: "flex", gap: "1rem" }}>
+        <Tooltip title={t("actions.open")}>
+          <IconButton onClick={() => navigate(`/single-grave?id=${row.original.graveId}`)}>
+            <OpenInNewIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    ),
     getRowId: (row) => row._id,
     muiToolbarAlertBannerProps: isError
       ? { color: "error", children: (error as any)?.message }
