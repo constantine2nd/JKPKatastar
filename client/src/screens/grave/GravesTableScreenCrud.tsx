@@ -88,6 +88,8 @@ const GravesTableScreenCrud = () => {
   const [searchStatus, setSearchStatus] = useState("");
   const [searchContractFrom, setSearchContractFrom] = useState<Dayjs | null>(null);
   const [searchContractTo, setSearchContractTo] = useState<Dayjs | null>(null);
+  const [searchPayerName, setSearchPayerName] = useState("");
+  const [searchPayerSurname, setSearchPayerSurname] = useState("");
   const [appliedSearch, setAppliedSearch] = useState<Record<string, string>>({});
   const {
     pagination, setPagination,
@@ -272,6 +274,8 @@ const GravesTableScreenCrud = () => {
     if (searchStatus) params.status = searchStatus;
     if (searchContractFrom) params.contractFrom = searchContractFrom.toISOString();
     if (searchContractTo) params.contractTo = searchContractTo.toISOString();
+    if (searchPayerName) params.payerName = searchPayerName;
+    if (searchPayerSurname) params.payerSurname = searchPayerSurname;
     setPagination({ ...pagination, pageIndex: 0 });
     setAppliedSearch(params);
   };
@@ -285,6 +289,8 @@ const GravesTableScreenCrud = () => {
     setSearchStatus("");
     setSearchContractFrom(null);
     setSearchContractTo(null);
+    setSearchPayerName("");
+    setSearchPayerSurname("");
     setPagination({ ...pagination, pageIndex: 0 });
     setAppliedSearch({});
   };
@@ -602,6 +608,26 @@ const GravesTableScreenCrud = () => {
                   slotProps={{ textField: { fullWidth: true } }}
                 />
               </Grid>
+              {(user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER) && (
+                <>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label={t("payer.name")}
+                      value={searchPayerName}
+                      onChange={(e) => setSearchPayerName(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label={t("payer.surname")}
+                      value={searchPayerSurname}
+                      onChange={(e) => setSearchPayerSurname(e.target.value)}
+                    />
+                  </Grid>
+                </>
+              )}
               <Grid item xs={12} sm={6}>
                 <Button type="submit" variant="contained" fullWidth>
                   {t("search-deceased.search")}

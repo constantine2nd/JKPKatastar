@@ -67,7 +67,9 @@
   "payer": {
     "create-new": "Kreiraj novog platioca",
     "edit": "Uredi platioca",
-    "active": "Platioc aktivan:"
+    "active": "Platioc aktivan:",
+    "name": "Ime platioca",
+    "surname": "Prezime platioca"
   },
   "user": {
     "create-new": "Napravite novog korisnika",

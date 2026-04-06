@@ -195,6 +195,14 @@ const getGravesPaginated = async (req, res, next) => {
       if (req.query.contractTo) matchFilter.contractTo.$lte = new Date(req.query.contractTo);
     }
 
+    if (req.query.payerName || req.query.payerSurname) {
+      const payerFilter = {};
+      if (req.query.payerName) payerFilter.name = { $regex: req.query.payerName, $options: "i" };
+      if (req.query.payerSurname) payerFilter.surname = { $regex: req.query.payerSurname, $options: "i" };
+      const graveIds = await Payer.distinct("grave", payerFilter);
+      matchFilter._id = { $in: graveIds };
+    }
+
     const hasFilter = Object.keys(matchFilter).length > 0;
 
     const [data, totalItems] = await Promise.all([

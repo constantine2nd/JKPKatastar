@@ -67,7 +67,9 @@
   "payer": {
     "create-new": "Create New Payer",
     "edit": "Edit Payer",
-    "active": "Payer Active:"
+    "active": "Payer Active:",
+    "name": "Payer Name",
+    "surname": "Payer Surname"
   },
   "user": {
     "create-new": "Create New User",

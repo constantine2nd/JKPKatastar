@@ -67,7 +67,9 @@
   "payer": {
     "create-new": "Új fizető létrehozása",
     "edit": "Fizető szerkesztése",
-    "active": "Fizető aktív:"
+    "active": "Fizető aktív:",
+    "name": "Fizető neve",
+    "surname": "Fizető vezetékneve"
   },
   "user": {
     "create-new": "Új felhasználó létrehozása",
