@@ -10,22 +10,30 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/sr";
 import {
+  Autocomplete,
   Box,
   Button,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
   IconButton,
+  MenuItem,
+  Paper,
+  TextField,
   Tooltip,
 } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getLanguage } from "../../utils/languageSelector";
@@ -71,6 +79,16 @@ const GravesTableScreenCrud = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchCemeteries, setSearchCemeteries] = useState<Cemetery[]>([]);
+  const [searchNumber, setSearchNumber] = useState("");
+  const [searchField, setSearchField] = useState("");
+  const [searchRow, setSearchRow] = useState("");
+  const [searchGraveTypeId, setSearchGraveTypeId] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
+  const [searchContractFrom, setSearchContractFrom] = useState<Dayjs | null>(null);
+  const [searchContractTo, setSearchContractTo] = useState<Dayjs | null>(null);
+  const [appliedSearch, setAppliedSearch] = useState<Record<string, string>>({});
   const {
     pagination, setPagination,
     columnVisibility, setColumnVisibility,
@@ -242,6 +260,35 @@ const GravesTableScreenCrud = () => {
     },
   ];
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params: Record<string, string> = {};
+    if (searchCemeteries.length > 0)
+      params.cemeteryIds = searchCemeteries.map((c) => c._id).join(",");
+    if (searchNumber) params.number = searchNumber;
+    if (searchField) params.field = searchField;
+    if (searchRow) params.row = searchRow;
+    if (searchGraveTypeId) params.graveTypeId = searchGraveTypeId;
+    if (searchStatus) params.status = searchStatus;
+    if (searchContractFrom) params.contractFrom = searchContractFrom.toISOString();
+    if (searchContractTo) params.contractTo = searchContractTo.toISOString();
+    setPagination({ ...pagination, pageIndex: 0 });
+    setAppliedSearch(params);
+  };
+
+  const handleClear = () => {
+    setSearchCemeteries([]);
+    setSearchNumber("");
+    setSearchField("");
+    setSearchRow("");
+    setSearchGraveTypeId("");
+    setSearchStatus("");
+    setSearchContractFrom(null);
+    setSearchContractTo(null);
+    setPagination({ ...pagination, pageIndex: 0 });
+    setAppliedSearch({});
+  };
+
   // call READ hook (server-side paginated)
   const {
     data: pagedResult,
@@ -250,12 +297,15 @@ const GravesTableScreenCrud = () => {
     isFetching: isFetchingData,
     isLoading: isLoadingData,
   } = useQuery({
-    queryKey: [queryFunction, pagination.pageIndex, pagination.pageSize],
+    queryKey: [queryFunction, pagination.pageIndex, pagination.pageSize, appliedSearch],
     queryFn: async () => {
       const start = pagination.pageIndex * pagination.pageSize;
-      const response = await axios.get(
-        `/api/graves/paginate?start=${start}&size=${pagination.pageSize}`
-      );
+      const params = new URLSearchParams({
+        start: String(start),
+        size: String(pagination.pageSize),
+        ...appliedSearch,
+      });
+      const response = await axios.get(`/api/graves/paginate?${params}`);
       return response.data;
     },
     refetchOnWindowFocus: false,
@@ -354,7 +404,9 @@ const GravesTableScreenCrud = () => {
     muiTableContainerProps: {
       sx: {
         // 64px AppBar + 64px MRT top toolbar + 56px MRT bottom toolbar/pagination
-        height: "calc(100vh - 184px)",
+        // + ~340px search form when open
+        height: showSearch ? "calc(100vh - 524px)" : "calc(100vh - 184px)",
+        minHeight: "200px",
         overflowY: "auto",
       },
     },
@@ -408,18 +460,28 @@ const GravesTableScreenCrud = () => {
         </Tooltip>
       </Box>
     ),
-    renderTopToolbarCustomActions: () =>
-      user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER ? (
+    renderTopToolbarCustomActions: () => (
+      <Box sx={{ display: "flex", gap: 1 }}>
         <Button
-          variant="contained"
-          onClick={() => {
-            const url = "/add-grave";
-            window.open(url, "_blank");
-          }}
+          variant={showSearch ? "contained" : "outlined"}
+          startIcon={<SearchIcon />}
+          onClick={() => setShowSearch((prev) => !prev)}
         >
-          {t("grave.add")}
+          {t("search-deceased.search")}
         </Button>
-      ) : null,
+        {(user?.role === OFFICER || user?.role === ADMINISTRATOR || user?.role === MAINTAINER) && (
+          <Button
+            variant="contained"
+            onClick={() => {
+              const url = "/add-grave";
+              window.open(url, "_blank");
+            }}
+          >
+            {t("grave.add")}
+          </Button>
+        )}
+      </Box>
+    ),
     state: {
       pagination,
       columnVisibility,
@@ -435,6 +497,125 @@ const GravesTableScreenCrud = () => {
 
   return (
     <>
+      <Collapse in={showSearch}>
+        <Paper elevation={2} sx={{ p: 2, mb: 0 }}>
+          <Box component="form" onSubmit={handleSearch}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12}>
+                <Autocomplete
+                  multiple
+                  value={searchCemeteries}
+                  onChange={(_, value) => setSearchCemeteries(value)}
+                  options={cemeteries}
+                  getOptionLabel={(option) => option.name}
+                  disableCloseOnSelect
+                  renderInput={(params) => (
+                    <TextField
+                      {...(params as any)}
+                      label={t("cemetery.title") as string}
+                      placeholder={t("cemetery.selection") as string}
+                    />
+                  )}
+                  renderOption={(props, option, { selected }) => (
+                    <MenuItem
+                      {...props}
+                      key={option._id}
+                      value={option._id}
+                      sx={{ justifyContent: "space-between" }}
+                    >
+                      {option.name}
+                      {selected ? <CheckIcon color="info" /> : null}
+                    </MenuItem>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label={t("grave.number")}
+                  value={searchNumber}
+                  onChange={(e) => setSearchNumber(e.target.value)}
+                  type="number"
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label={t("grave.field")}
+                  value={searchField}
+                  onChange={(e) => setSearchField(e.target.value)}
+                  type="number"
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label={t("grave.row")}
+                  value={searchRow}
+                  onChange={(e) => setSearchRow(e.target.value)}
+                  type="number"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  select
+                  fullWidth
+                  label={t("grave-type.title")}
+                  value={searchGraveTypeId}
+                  onChange={(e) => setSearchGraveTypeId(e.target.value)}
+                >
+                  <MenuItem value=""><em>—</em></MenuItem>
+                  {myGraveTypes.map((gt) => (
+                    <MenuItem key={gt.value} value={gt.value}>{gt.label}</MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  select
+                  fullWidth
+                  label={t("status.status")}
+                  value={searchStatus}
+                  onChange={(e) => setSearchStatus(e.target.value)}
+                >
+                  <MenuItem value=""><em>—</em></MenuItem>
+                  {statuses.map((s) => (
+                    <MenuItem key={s.value} value={s.value}>{s.label}</MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <DatePicker
+                  label={t("search-graves.contract-from")}
+                  value={searchContractFrom}
+                  onChange={(val) => setSearchContractFrom(val)}
+                  format="DD.MM.YYYY"
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <DatePicker
+                  label={t("search-graves.contract-to")}
+                  value={searchContractTo}
+                  onChange={(val) => setSearchContractTo(val)}
+                  format="DD.MM.YYYY"
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button type="submit" variant="contained" fullWidth>
+                  {t("search-deceased.search")}
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Button variant="outlined" fullWidth onClick={handleClear}>
+                  {t("search-graves.clear")}
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+      </Collapse>
       <MaterialReactTable table={table} />
       <Dialog
         open={open}

@@ -163,9 +163,44 @@ const getGravesPaginated = async (req, res, next) => {
     const start = parseInt(req.query.start) || 0;
     const size = parseInt(req.query.size) || 20;
 
+    const matchFilter = {};
+
+    if (req.query.cemeteryIds) {
+      const ids = req.query.cemeteryIds.split(",").filter(Boolean);
+      if (ids.length > 0) {
+        matchFilter.cemetery = { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) };
+      }
+    }
+    if (req.query.number) {
+      const num = parseInt(req.query.number);
+      if (!isNaN(num)) matchFilter.number = { $in: [num, String(num)] };
+    }
+    if (req.query.field) {
+      const num = parseInt(req.query.field);
+      if (!isNaN(num)) matchFilter.field = { $in: [num, String(num)] };
+    }
+    if (req.query.row) {
+      const num = parseInt(req.query.row);
+      if (!isNaN(num)) matchFilter.row = { $in: [num, String(num)] };
+    }
+    if (req.query.graveTypeId) {
+      matchFilter.graveType = new mongoose.Types.ObjectId(req.query.graveTypeId);
+    }
+    if (req.query.status) {
+      matchFilter.status = req.query.status;
+    }
+    if (req.query.contractFrom || req.query.contractTo) {
+      matchFilter.contractTo = {};
+      if (req.query.contractFrom) matchFilter.contractTo.$gte = new Date(req.query.contractFrom);
+      if (req.query.contractTo) matchFilter.contractTo.$lte = new Date(req.query.contractTo);
+    }
+
+    const hasFilter = Object.keys(matchFilter).length > 0;
+
     const [data, totalItems] = await Promise.all([
       Grave.aggregate([
-        // Paginate FIRST — only 'size' documents go through the joins below
+        // Filter FIRST so pagination operates on the matching subset
+        ...(hasFilter ? [{ $match: matchFilter }] : []),
         { $sort: { _id: 1 } },
         { $skip: start },
         { $limit: size },
@@ -224,7 +259,7 @@ const getGravesPaginated = async (req, res, next) => {
           },
         },
       ]),
-      Grave.countDocuments(),
+      hasFilter ? Grave.countDocuments(matchFilter) : Grave.countDocuments(),
     ]);
 
     res.json({ data, totalItems });

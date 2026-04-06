@@ -142,6 +142,11 @@
     "deceased-list": "Листа покојника",
     "payer-list": "Листа платилаца"
   },
+  "search-graves": {
+    "clear": "Ресетуј",
+    "contract-from": "Уговор од",
+    "contract-to": "Уговор до"
+  },
   "search-deceased": {
     "search": "Претрага",
     "birth-year": "Година рођења",

@@ -142,6 +142,11 @@
     "deceased-list": "Elhunytak listája",
     "payer-list": "Fizetők listája"
   },
+  "search-graves": {
+    "clear": "Törlés",
+    "contract-from": "Szerződéstől",
+    "contract-to": "Szerződésig"
+  },
   "search-deceased": {
     "search": "Keresés",
     "birth-year": "Születési év",

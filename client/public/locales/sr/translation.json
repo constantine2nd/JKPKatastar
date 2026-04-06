@@ -142,6 +142,11 @@
     "deceased-list": "Lista pokojnika",
     "payer-list": "Lista platioca"
   },
+  "search-graves": {
+    "clear": "Resetuj",
+    "contract-from": "Ugovor od",
+    "contract-to": "Ugovor do"
+  },
   "search-deceased": {
     "search": "Pretraga",
     "birth-year": "Godina rođenja",

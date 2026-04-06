@@ -142,6 +142,11 @@
     "deceased-list": "Deceased List",
     "payer-list": "Payer List"
   },
+  "search-graves": {
+    "clear": "Clear",
+    "contract-from": "Contract From",
+    "contract-to": "Contract To"
+  },
   "search-deceased": {
     "search": "Search",
     "birth-year": "Birth Year",
