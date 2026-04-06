@@ -171,7 +171,9 @@
     "name-required": "Ime je obavezno",
     "surname-required": "Prezime je obavezno",
     "email-required": "Email je obavezan",
-    "phone-required": "Broj telefona je obavezan"
+    "phone-required": "Broj telefona je obavezan",
+    "address-required": "Adresa je obavezna",
+    "jmbg-required": "JMBG je obavezno polje"
   },
   "location": {
     "lat": "Geografska širina",

@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 import { addPayer } from "../../features/singleGraveSlice";
 
@@ -27,11 +28,11 @@ interface FormData {
 }
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Ime platioca je obavezno polje"),
-  surname: Yup.string().required("Prezime platioca je obavezno polje"),
-  address: Yup.string().required("Red grobnog mesta je obavezno polje"),
-  phone: Yup.string().required("Broj telefona je obavezno polje"),
-  jmbg: Yup.string().required("JMBG je obavezno polje"),
+  name: Yup.string().required(t("form.name-required")),
+  surname: Yup.string().required(t("form.surname-required")),
+  address: Yup.string().required(t("form.address-required")),
+  phone: Yup.string().required(t("form.phone-required")),
+  jmbg: Yup.string(),
 });
 
 const AddPayer: React.FC = () => {
@@ -68,7 +69,7 @@ const AddPayer: React.FC = () => {
 
   return (
     <Container>
-      <h1>Unesite platioca grobnog mesta:</h1>
+      <h1>{t("payer.create-new")}</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -79,12 +80,12 @@ const AddPayer: React.FC = () => {
             <Row>
               <Col>
                 <BootstrapForm.Group controlId="name">
-                  <BootstrapForm.Label>Ime:</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("form.name")}</BootstrapForm.Label>
                   <Field
                     type="text"
                     name="name"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite ime platioca"
+                    placeholder={t("form.name")}
                   />
                   <ErrorMessage
                     name="name"
@@ -95,12 +96,12 @@ const AddPayer: React.FC = () => {
               </Col>
               <Col>
                 <BootstrapForm.Group controlId="surname">
-                  <BootstrapForm.Label>Prezime:</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("form.surname")}</BootstrapForm.Label>
                   <Field
                     type="text"
                     name="surname"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite prezime platioca"
+                    placeholder={t("form.surname")}
                   />
                   <ErrorMessage
                     name="surname"
@@ -113,12 +114,12 @@ const AddPayer: React.FC = () => {
             <Row>
               <Col>
                 <BootstrapForm.Group controlId="address">
-                  <BootstrapForm.Label>Adresa:</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("form.address")}</BootstrapForm.Label>
                   <Field
                     type="text"
                     name="address"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite adresu platioca"
+                    placeholder={t("form.address")}
                   />
                   <ErrorMessage
                     name="address"
@@ -129,12 +130,12 @@ const AddPayer: React.FC = () => {
               </Col>
               <Col>
                 <BootstrapForm.Group controlId="phone">
-                  <BootstrapForm.Label>Broj telefona:</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("form.phone")}</BootstrapForm.Label>
                   <Field
                     type="text"
                     name="phone"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite broj telefona platioca"
+                    placeholder={t("form.phone")}
                   />
                   <ErrorMessage
                     name="phone"
@@ -147,12 +148,12 @@ const AddPayer: React.FC = () => {
             <Row>
               <Col>
                 <BootstrapForm.Group controlId="jmbg">
-                  <BootstrapForm.Label>JMBG:</BootstrapForm.Label>
+                  <BootstrapForm.Label>{t("form.jmbg")}</BootstrapForm.Label>
                   <Field
                     type="text"
                     name="jmbg"
                     as={BootstrapForm.Control}
-                    placeholder="Unesite JMBG platioca"
+                    placeholder={t("form.jmbg")}
                   />
                   <ErrorMessage
                     name="jmbg"
@@ -163,7 +164,6 @@ const AddPayer: React.FC = () => {
               </Col>
               <Col>
                 <BootstrapForm.Group controlId="active">
-                  <BootstrapForm.Label>Platioc aktivan:</BootstrapForm.Label>
                   <BootstrapForm.Check
                     type="switch"
                     name="active"
@@ -180,7 +180,7 @@ const AddPayer: React.FC = () => {
             <br />
 
             <Button type="submit" disabled={isSubmitting}>
-              Pošalji
+              {t("actions.send")}
             </Button>
           </Form>
         )}

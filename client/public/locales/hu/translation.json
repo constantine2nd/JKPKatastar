@@ -171,7 +171,9 @@
     "name-required": "A név kötelező",
     "surname-required": "A vezetéknév kötelező",
     "email-required": "Az e-mail kötelező",
-    "phone-required": "A telefon kötelező"
+    "phone-required": "A telefon kötelező",
+    "address-required": "A cím megadása kötelező",
+    "jmbg-required": "A JMBG megadása kötelező"
   },
   "location": {
     "lat": "Szélességi fok",

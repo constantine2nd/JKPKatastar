@@ -171,7 +171,9 @@
     "name-required": "Име је обавезно",
     "surname-required": "Презиме је обавезно",
     "email-required": "Имejл је обавезан",
-    "phone-required": "Број телефона је обавезан"
+    "phone-required": "Број телефона је обавезан",
+    "address-required": "Адреса је обавезна",
+    "jmbg-required": "ЈМБГ је обавезно поље"
   },
   "location": {
     "lat": "Географска ширина",

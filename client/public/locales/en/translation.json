@@ -171,7 +171,9 @@
     "name-required": "Name is required",
     "surname-required": "Surname is required",
     "email-required": "Email is required",
-    "phone-required": "Phone is required"
+    "phone-required": "Phone is required",
+    "address-required": "Address is required",
+    "jmbg-required": "JMBG is required"
   },
   "location": {
     "lat": "Latitude",

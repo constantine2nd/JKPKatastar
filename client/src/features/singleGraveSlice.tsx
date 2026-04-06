@@ -13,7 +13,7 @@ export const addPayer = createAsyncThunk(
       },
     };
     const response = await axios.post(
-      `/api/payer/${graveId}`,
+      `/api/payer/addpayer/${graveId}`,
       dataToSend,
       config
     );
@@ -26,7 +26,7 @@ export const deletePayer = createAsyncThunk(
   async (payerId: any) => {
     console.log(payerId);
     try {
-      const response = await axios.delete(`/api/payer/single/${payerId}`);
+      const response = await axios.delete(`/api/payer/${payerId}`);
       return response.data;
     } catch (error: any) {
       console.log(error);
