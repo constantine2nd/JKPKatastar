@@ -91,7 +91,26 @@
     "group-visitor": "Látogató",
     "group-officer": "Tisztviselő",
     "group-admin": "Adminisztrátor",
-    "group-maintainer": "Karbantartó"
+    "group-maintainer": "Karbantartó",
+    "contract-expiry-report": "Szerződés lejárati jelentés",
+    "contract-reminders": "Emlékeztetők küldése"
+  },
+  "report": {
+    "contract-expiry-title": "Szerződés lejárati jelentés",
+    "expired": "Lejártak",
+    "within-30": "30 napon belül lejár",
+    "within-60": "31–60 napon belül lejár",
+    "within-90": "61–90 napon belül lejár",
+    "active-payer": "Aktív fizető",
+    "no-records": "Nincs rekord ebben a kategóriában"
+  },
+  "reminder": {
+    "title": "Emlékeztetők küldése",
+    "subtitle": "{{total}} szerződés jár le",
+    "tab-all": "Összes",
+    "no-phone": "Nincs telefonszám",
+    "no-payer": "Nincs aktív fizető",
+    "sms-body": "Tisztelt {{payerName}}! Értesítjük, hogy a {{cemetery}} temetőben lévő {{graveNumber}}. sírhelyre kötött szerződése {{date}}-án lejár. Kérjük, vegye fel velünk a kapcsolatot a megújítás érdekében. Köszönjük."
   },
   "import": {
     "title": "Importálási varázsló",
@@ -229,7 +248,8 @@
     "id": "ID",
     "yes": "IGEN",
     "no": "NEM",
-    "avatar": "Profilkép"
+    "avatar": "Profilkép",
+    "error": "Hiba történt"
   },
   "home": {
     "num-of-graves": "Sírhelyek száma",

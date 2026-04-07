@@ -73,6 +73,8 @@ const Header = () => {
         { item: t("menu.view-deceased"), link: "deceased-table" },
         { item: t("menu.cemeteries"), link: "cemeteries-table-crud" },
         { item: t("menu.grave-types"), link: "grave-types-crud" },
+        { item: t("menu.contract-expiry-report"), link: "contract-expiry-report" },
+        { item: t("menu.contract-reminders"), link: "contract-reminders" },
       ],
     },
     {

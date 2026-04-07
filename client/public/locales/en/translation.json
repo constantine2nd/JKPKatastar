@@ -91,7 +91,26 @@
     "group-visitor": "Visitor",
     "group-officer": "Officer",
     "group-admin": "Administrator",
-    "group-maintainer": "Maintainer"
+    "group-maintainer": "Maintainer",
+    "contract-expiry-report": "Contract Expiry Report",
+    "contract-reminders": "Send Reminders"
+  },
+  "report": {
+    "contract-expiry-title": "Contract Expiry Report",
+    "expired": "Expired",
+    "within-30": "Expires within 30 days",
+    "within-60": "Expires in 31–60 days",
+    "within-90": "Expires in 61–90 days",
+    "active-payer": "Active Payer",
+    "no-records": "No records in this category"
+  },
+  "reminder": {
+    "title": "Send Reminders",
+    "subtitle": "{{total}} contracts expiring",
+    "tab-all": "All",
+    "no-phone": "No phone number",
+    "no-payer": "No active payer",
+    "sms-body": "Dear {{payerName}}, this is a notice that your contract for grave no. {{graveNumber}} at {{cemetery}} expires on {{date}}. Please contact us to renew. Thank you."
   },
   "import": {
     "title": "Import Wizard",
@@ -229,7 +248,8 @@
     "id": "ID",
     "yes": "YES",
     "no": "NO",
-    "avatar": "Avatar"
+    "avatar": "Avatar",
+    "error": "An error occurred"
   },
   "home": {
     "num-of-graves": "Num of graves",

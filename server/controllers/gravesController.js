@@ -479,6 +479,102 @@ const updateGrave = async (req, res) => {
   }
 };
 
+const getContractExpiryReport = async (req, res, next) => {
+  try {
+    const now = new Date();
+    const in30 = new Date(now); in30.setDate(in30.getDate() + 30);
+    const in60 = new Date(now); in60.setDate(in60.getDate() + 60);
+    const in90 = new Date(now); in90.setDate(in90.getDate() + 90);
+
+    // Fetch all graves with contractTo set, within 90 days or already expired
+    const graves = await Grave.aggregate([
+      {
+        $match: {
+          contractTo: { $ne: null, $exists: true, $lte: in90 },
+        },
+      },
+      {
+        $lookup: {
+          from: "cemeteries",
+          let: { cemeteryId: "$cemetery" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$cemeteryId"] } } },
+            { $project: { name: 1 } },
+          ],
+          as: "cemetery",
+        },
+      },
+      { $unwind: { path: "$cemetery", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "gravetypes",
+          let: { graveTypeId: "$graveType" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$graveTypeId"] } } },
+            { $project: { name: 1 } },
+          ],
+          as: "graveType",
+        },
+      },
+      { $unwind: { path: "$graveType", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "payers",
+          let: { graveId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $and: [{ $eq: ["$grave", "$$graveId"] }, { $eq: ["$active", true] }] } } },
+            { $project: { name: 1, surname: 1, phone: 1 } },
+          ],
+          as: "activePayer",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          number: 1,
+          field: 1,
+          row: 1,
+          contractTo: 1,
+          status: 1,
+          cemetery: 1,
+          graveType: 1,
+          activePayer: { $arrayElemAt: ["$activePayer", 0] },
+        },
+      },
+      { $sort: { contractTo: 1 } },
+    ]);
+
+    const expired = [];
+    const within30 = [];
+    const within60 = [];
+    const within90 = [];
+
+    for (const g of graves) {
+      const d = new Date(g.contractTo);
+      if (d < now) expired.push(g);
+      else if (d <= in30) within30.push(g);
+      else if (d <= in60) within60.push(g);
+      else within90.push(g);
+    }
+
+    res.json({
+      generatedAt: now,
+      summary: {
+        expired: expired.length,
+        within30days: within30.length,
+        within60days: within60.length,
+        within90days: within90.length,
+      },
+      expired,
+      within30days: within30,
+      within60days: within60,
+      within90days: within90,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   saveGrave,
   getGraves,
@@ -488,4 +584,5 @@ export {
   getGravesForCemetery,
   updateGrave,
   saveGravesFromExcel,
+  getContractExpiryReport,
 };

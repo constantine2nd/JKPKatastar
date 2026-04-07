@@ -40,6 +40,8 @@ import AddGraveScreenMUI from "./screens/grave/AddGraveScreenMUI";
 import ManualScreen from "./screens/ManualScreen";
 import ImportWizardScreen from "./screens/ImportWizardScreen";
 import ExportWizardScreen from "./screens/ExportWizardScreen";
+import ContractExpiryReportScreen from "./screens/reports/ContractExpiryReportScreen";
+import ContractReminderScreen from "./screens/reports/ContractReminderScreen";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
@@ -150,6 +152,14 @@ function App() {
                   <Route
                     path="/grave-requests-crud"
                     element={<GraveRequestTableScreenCrud />}
+                  />
+                  <Route
+                    path="/contract-expiry-report"
+                    element={<ContractExpiryReportScreen />}
+                  />
+                  <Route
+                    path="/contract-reminders"
+                    element={<ContractReminderScreen />}
                   />
                 </Route>
 

@@ -91,7 +91,26 @@
     "group-visitor": "Posetilac",
     "group-officer": "Službenik",
     "group-admin": "Administrator",
-    "group-maintainer": "Održavalac"
+    "group-maintainer": "Održavalac",
+    "contract-expiry-report": "Izveštaj o isteku ugovora",
+    "contract-reminders": "Slanje podsetnika"
+  },
+  "report": {
+    "contract-expiry-title": "Izveštaj o isteku ugovora",
+    "expired": "Istekli",
+    "within-30": "Ističu za 30 dana",
+    "within-60": "Ističu za 31–60 dana",
+    "within-90": "Ističu za 61–90 dana",
+    "active-payer": "Aktivni platilac",
+    "no-records": "Nema zapisa u ovoj kategoriji"
+  },
+  "reminder": {
+    "title": "Slanje podsetnika",
+    "subtitle": "{{total}} ugovora ističe",
+    "tab-all": "Svi",
+    "no-phone": "Nema broja telefona",
+    "no-payer": "Nema aktivnog platioca",
+    "sms-body": "Poštovani/a {{payerName}}, obaveštavamo Vas da Vam ugovor za grobno mesto broj {{graveNumber}} na groblju {{cemetery}} ističe {{date}}. Molimo Vas da kontaktirate JKP radi produženja ugovora. Hvala."
   },
   "import": {
     "title": "Čarobnjak za uvoz",
@@ -229,7 +248,8 @@
     "id": "ID",
     "yes": "DA",
     "no": "NE",
-    "avatar": "Avatar"
+    "avatar": "Avatar",
+    "error": "Došlo je do greške"
   },
   "home": {
     "num-of-graves": "Broj grobnih mesta",
